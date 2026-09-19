@@ -11,26 +11,28 @@ const links = [
 ];
 ---
 
-<header class="site-header">
-  <a class="logo" href={withBase("/")}>Kairon Plage</a>
+<div class="header-shell">
+  <header class="site-header">
+    <a class="logo" href={withBase("/")}>Kairon Plage</a>
 
-  <nav class="nav" id="nav-desktop">
+    <nav class="nav" id="nav-desktop">
+      {links.map((l) => <a href={withBase(l.href)}>{l.label}</a>)}
+    </nav>
+    <a class="cta cta-desktop" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
+
+    <button type="button" class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="nav-mobile">
+      <span class="sr-only">Menu</span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+  </header>
+
+  <nav class="nav-mobile" id="nav-mobile" hidden>
     {links.map((l) => <a href={withBase(l.href)}>{l.label}</a>)}
+    <a class="cta" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
   </nav>
-  <a class="cta cta-desktop" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
-
-  <button type="button" class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="nav-mobile">
-    <span class="sr-only">Menu</span>
-    <span class="bar"></span>
-    <span class="bar"></span>
-    <span class="bar"></span>
-  </button>
-</header>
-
-<nav class="nav-mobile" id="nav-mobile" hidden>
-  {links.map((l) => <a href={withBase(l.href)}>{l.label}</a>)}
-  <a class="cta" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
-</nav>
+</div>
 
 <script>
   const toggle = document.getElementById("menu-toggle")!;
@@ -51,25 +53,38 @@ const links = [
 </script>
 
 <style>
-  .site-header {
+  /* Barre "pilule" flottante, façon Freehold : inset de tous les
+     bords, coins très arrondis, ombre portée — pas un bandeau plein
+     largeur collé en haut. */
+  .header-shell {
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 20;
+    padding: var(--space-2) var(--space-2) 0;
+    background: transparent;
+  }
+
+  .site-header {
+    max-width: 1180px;
+    margin: 0 auto;
     display: flex;
     align-items: center;
     gap: var(--space-2);
-    padding: var(--space-2) var(--space-3);
+    padding: 0.7rem 0.9rem 0.7rem 1.3rem;
     background: var(--color-paper);
-    border-bottom: 1px solid var(--color-line);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    box-shadow: 0 10px 30px -12px rgba(35, 40, 30, 0.25);
   }
 
   .logo {
     font-family: var(--font-display);
     text-transform: uppercase;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     color: var(--color-pine);
     text-decoration: none;
     margin-right: auto;
+    white-space: nowrap;
   }
 
   .nav {
@@ -79,7 +94,7 @@ const links = [
 
   .nav a {
     font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: 0.74rem;
     color: var(--color-ink-soft);
     text-decoration: none;
     white-space: nowrap;
@@ -94,7 +109,7 @@ const links = [
     background: var(--color-pine);
     color: var(--color-paper);
     font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     padding: 0.6rem 1.1rem;
     border-radius: var(--radius-pill);
     text-decoration: none;
@@ -113,26 +128,37 @@ const links = [
     display: none;
     flex-direction: column;
     gap: 4px;
-    background: none;
+    background: var(--color-paper);
     border: 1px solid var(--color-line);
-    border-radius: 8px;
-    padding: 0.5rem 0.6rem;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
+    flex: none;
   }
 
   .menu-toggle .bar {
-    width: 18px;
+    width: 16px;
     height: 2px;
     background: var(--color-ink);
+    border-radius: 1px;
   }
 
+  /* Panneau déroulant : carte flottante blanche sous la pilule, pas un
+     bandeau plein largeur. */
   .nav-mobile {
     display: none;
     flex-direction: column;
     gap: var(--space-2);
-    padding: var(--space-2) var(--space-3) var(--space-3);
-    border-bottom: 1px solid var(--color-line);
+    max-width: 1180px;
+    margin: 10px auto 0;
+    padding: var(--space-3);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
     background: var(--color-paper);
+    box-shadow: 0 10px 30px -12px rgba(35, 40, 30, 0.25);
   }
 
   .nav-mobile a {
@@ -148,7 +174,7 @@ const links = [
     color: var(--color-paper);
   }
 
-  @media (max-width: 860px) {
+  @media (max-width: 980px) {
     .nav,
     .cta-desktop {
       display: none;
