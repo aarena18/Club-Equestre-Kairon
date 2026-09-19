@@ -1,0 +1,46 @@
+---
+interface Props {
+  titre: string;
+  trancheAge?: string | null;
+  resume?: string | null;
+}
+
+const { titre, trancheAge, resume } = Astro.props;
+---
+
+<article class="activity-card">
+  <h3>{titre}</h3>
+  {trancheAge && <span class="tranche">{trancheAge}</span>}
+  {resume && <p>{resume}</p>}
+</article>
+
+<style>
+  .activity-card {
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    padding: var(--space-3);
+  }
+
+  .activity-card h3 {
+    font-size: 1.15rem;
+    color: var(--color-pine);
+  }
+
+  .tranche {
+    display: inline-block;
+    margin-top: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-sky-deep);
+  }
+
+  .activity-card p {
+    margin: 0.75rem 0 0;
+    color: var(--color-ink-soft);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+</style>
