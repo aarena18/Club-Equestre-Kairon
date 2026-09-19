@@ -1,0 +1,242 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import { sanityClient, urlFor } from "../../lib/sanity";
+
+const equipe = await sanityClient.fetch(
+  `*[_type == "membreEquipe"] | order(ordre asc){nom, role, bio, photo}`,
+);
+---
+
+<Layout
+  title="Le centre — Kairon Plage"
+  description="Pédagogie, équipe, installations, cavalerie et valeurs du centre équestre de Kairon Plage, entre mer et campagne à Saint-Pair-sur-Mer."
+>
+  <Header />
+
+  <main>
+    <section class="intro">
+      <p class="eyebrow">Le centre</p>
+      <h1>Un club qui accompagne chaque cavalier</h1>
+    </section>
+
+    <section id="pedagogie" class="pedagogie">
+      <h2>Notre pédagogie</h2>
+      <p>
+        Le centre équestre de Kairon Plage développe depuis plus de 50 ans une pédagogie « poney », dans l'esprit
+        du mouvement poney né en France dans les années 1970. Dès 2 ans, les baby cavaliers se familiarisent avec
+        le poney ; la pédagogie ludique accompagne ensuite chaque cavalier vers l'instruction et les passages de
+        galops, jusqu'à la compétition pour qui le souhaite — CSO, Equifun, pony games. Les cours « Expert »,
+        réservés aux cavaliers d'un minimum Galop 4, sont plafonnés à 4 cavaliers.
+      </p>
+      <a class="see-all" href="/activites">Voir toutes les activités →</a>
+    </section>
+
+    <section id="equipe" class="equipe">
+      <h2>Notre équipe</h2>
+      {
+        equipe.length > 0 ? (
+          <div class="equipe-grid">
+            {equipe.map((m: any) => (
+              <div class="membre">
+                {m.photo && <img src={urlFor(m.photo).width(300).height(300).fit("crop").url()} alt={m.photo.alt || m.nom} />}
+                <h3>{m.nom}</h3>
+                {m.role && <span class="role">{m.role}</span>}
+                {m.bio && <p>{m.bio}</p>}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p class="note">L'équipe arrive bientôt.</p>
+        )
+      }
+    </section>
+
+    <section id="installations" class="installations">
+      <h2>Nos installations & notre cadre</h2>
+      <p>
+        Situé entre mer et campagne à Saint-Pair-sur-Mer, le centre équestre de Kairon Plage bénéficie d'un cadre
+        particulièrement adapté à la pratique de l'équitation comme aux promenades et randonnées — carrières,
+        sentiers, et un accès direct aux paysages normands de la baie.
+      </p>
+      <p class="note">Détail des équipements (nombre de carrières, box, manège...) à préciser avec le club.</p>
+    </section>
+
+    <section id="cavalerie" class="cavalerie">
+      <h2>Notre cavalerie</h2>
+      <p>
+        Le centre accueille des poneys d'expérience, dont certains pratiquent la compétition : Shetland, Welsh et
+        poney B notamment. La cavalerie s'enrichit chaque saison, en lien avec l'entreprise familiale de l'un de
+        nos enseignants.
+      </p>
+    </section>
+
+    <section id="valeurs" class="valeurs">
+      <h2>Nos valeurs, notre association & nos labels</h2>
+      <div class="valeurs-grid">
+        <div>
+          <h3>Association loi 1901</h3>
+          <p>Le centre équestre de Kairon Plage est porté par l'association « Saint Pair Équitation ».</p>
+        </div>
+        <div>
+          <h3>Label Bien-être animal</h3>
+          <p>Le centre est labellisé Bien-être animal par la FFE, et inscrit ses cavaliers dans cette démarche.</p>
+        </div>
+        <div>
+          <h3>Club affilié FFE</h3>
+          <p>Poney club et club hippique affiliés à la Fédération Française d'Équitation.</p>
+        </div>
+        <div>
+          <h3>Crinières solidaires</h3>
+          <p>
+            Un dispositif du Comité départemental d'équitation de la Manche pour les familles à revenus modestes —
+            voir les <a href="/tarifs#solidarite">aides & solidarité</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Centre équestre de Kairon Plage — Saint-Pair-sur-Mer</p>
+  </footer>
+</Layout>
+
+<style>
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 var(--space-3) var(--space-5);
+  }
+
+  section {
+    padding: var(--space-4) 0;
+  }
+
+  section + section {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .intro {
+    padding-top: var(--space-5);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    color: var(--color-sky-deep);
+    margin: 0;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+    color: var(--color-pine);
+    margin: var(--space-2) 0;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+    color: var(--color-ink);
+    margin: 0 0 var(--space-2);
+  }
+
+  .pedagogie p,
+  .installations p,
+  .cavalerie p {
+    color: var(--color-ink-soft);
+    line-height: 1.65;
+    max-width: 68ch;
+  }
+
+  .note {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--color-ink-faint);
+  }
+
+  .see-all {
+    display: inline-block;
+    margin-top: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-coral);
+    text-decoration: none;
+  }
+
+  /* équipe */
+  .equipe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .membre img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: var(--radius-card);
+    margin-bottom: 0.6rem;
+  }
+
+  .membre h3 {
+    font-size: 1.1rem;
+    font-family: var(--font-body);
+    font-weight: 700;
+    color: var(--color-pine);
+    margin: 0;
+    text-transform: none;
+  }
+
+  .membre .role {
+    display: block;
+    margin-top: 0.2rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-sky-deep);
+  }
+
+  .membre p {
+    margin: 0.6rem 0 0;
+    color: var(--color-ink-soft);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  /* valeurs */
+  .valeurs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .valeurs-grid h3 {
+    font-size: 1rem;
+    font-family: var(--font-body);
+    font-weight: 700;
+    color: var(--color-pine);
+    margin: 0 0 0.4rem;
+    text-transform: none;
+  }
+
+  .valeurs-grid p {
+    margin: 0;
+    color: var(--color-ink-soft);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .valeurs-grid a {
+    color: var(--color-coral);
+  }
+
+  .site-footer {
+    padding: var(--space-3);
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-ink-faint);
+    border-top: 1px solid var(--color-line);
+  }
+</style>
