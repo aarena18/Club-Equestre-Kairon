@@ -9,7 +9,7 @@ const activites = await sanityClient.fetch(
 );
 
 const articles = await sanityClient.fetch(
-  `*[_type == "article"] | order(datePublication desc)[0...3]{titre, resume, datePublication}`,
+  `*[_type == "article"] | order(datePublication desc)[0...3]{titre, "slug": slug.current, resume, datePublication}`,
 );
 
 const pensionMoinsCher = await sanityClient.fetch(
@@ -109,16 +109,17 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
       {articles.length > 0 ? (
         <div class="actualites-grid">
           {articles.map((article: any) => (
-            <article class="actu-card">
+            <a class="actu-card" href={`/competition-vie-club/actualites/${article.slug}`}>
               <span class="actu-date">{dateFormatter.format(new Date(article.datePublication))}</span>
               <h3>{article.titre}</h3>
               {article.resume && <p>{article.resume}</p>}
-            </article>
+            </a>
           ))}
         </div>
       ) : (
         <p class="note">Les premières actualités arrivent bientôt.</p>
       )}
+      <a class="see-all" href="/competition-vie-club#actualites">Toutes les actualités →</a>
     </section>
 
     <section id="essai" class="essai">
@@ -290,9 +291,12 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
   }
 
   .actu-card {
+    display: block;
     border: 1px solid var(--color-line);
     border-radius: var(--radius-card);
     padding: var(--space-3);
+    text-decoration: none;
+    color: inherit;
   }
 
   .actu-date {

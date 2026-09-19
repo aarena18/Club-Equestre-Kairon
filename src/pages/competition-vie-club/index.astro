@@ -1,0 +1,304 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import { sanityClient, urlFor } from "../../lib/sanity";
+
+const articles = await sanityClient.fetch(
+  `*[_type == "article"] | order(datePublication desc){titre, "slug": slug.current, categorie, datePublication, resume, photoCouverture}`,
+);
+
+const annees = [...new Set(articles.map((a: any) => new Date(a.datePublication).getFullYear()))].sort(
+  (a, b) => (b as number) - (a as number),
+);
+
+const categoriesActu = [
+  { value: "rentree", label: "Rentrée" },
+  { value: "competition", label: "Compétition" },
+  { value: "vie-du-club", label: "Vie du club" },
+];
+
+const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+
+// La galerie se remplit automatiquement des photos déjà présentes sur les
+// activités et les actualités — pas besoin d'un type de contenu à part
+// tant qu'il n'y a pas de vraies photos à y mettre.
+const photosActivites = await sanityClient.fetch(
+  `*[_type == "activite" && defined(photo)]{titre, photo}`,
+);
+const galerie = [
+  ...photosActivites.map((a: any) => ({ alt: a.photo.alt || a.titre, image: a.photo })),
+  ...articles.filter((a: any) => a.photoCouverture).map((a: any) => ({ alt: a.photoCouverture.alt || a.titre, image: a.photoCouverture })),
+];
+---
+
+<Layout
+  title="Compétition & vie du club — Kairon Plage"
+  description="Challenge club d'hiver, sorties officielles, actualités et vie du centre équestre de Kairon Plage."
+>
+  <Header />
+
+  <main>
+    <section class="intro">
+      <p class="eyebrow">Compétition & vie du club</p>
+      <h1>Ce qui se passe à Kairon Plage</h1>
+    </section>
+
+    <section id="challenge" class="challenge">
+      <h2>Challenge club d'hiver</h2>
+      <p>
+        Le centre organise sur place un challenge d'hiver en CSO et Equifun, en 4 étapes — une première approche
+        de la compétition ouverte à tous les niveaux. Récompenses pour tous les participants, coupes aux trois
+        premiers du classement général.
+      </p>
+    </section>
+
+    <section id="sorties" class="sorties">
+      <h2>Résultats & sorties officielles</h2>
+      <p>
+        Accès à la compétition officielle dès le Galop 2. Des sorties sont organisées tout au long de l'année, et
+        le club organise sur place au moins deux compétitions officielles chaque saison. Pour participer à une
+        sortie, un bulletin d'engagement doit être adressé au club au plus tard le dimanche précédant la
+        compétition.
+      </p>
+      <p class="note">Calendrier et résultats de la saison 2026/2027 à venir.</p>
+    </section>
+
+    <section id="actualites" class="actualites">
+      <h2>Actualités & événements</h2>
+
+      {
+        articles.length > 0 ? (
+          <>
+            <div class="filters" role="group" aria-label="Filtrer les actualités">
+              <button type="button" class="filter-btn" data-filter-type="annee" data-filter="tout" aria-pressed="true">
+                Toutes les années
+              </button>
+              {annees.map((a) => (
+                <button type="button" class="filter-btn" data-filter-type="annee" data-filter={String(a)}>
+                  {a}
+                </button>
+              ))}
+            </div>
+            <div class="filters" role="group" aria-label="Filtrer par catégorie">
+              <button type="button" class="filter-btn" data-filter-type="categorie" data-filter="tout" aria-pressed="true">
+                Tout
+              </button>
+              {categoriesActu.map((c) => (
+                <button type="button" class="filter-btn" data-filter-type="categorie" data-filter={c.value}>
+                  {c.label}
+                </button>
+              ))}
+            </div>
+
+            <div class="actu-grid">
+              {articles.map((a: any) => (
+                <a
+                  class="actu-card"
+                  href={`/competition-vie-club/actualites/${a.slug}`}
+                  data-annee={new Date(a.datePublication).getFullYear()}
+                  data-categorie={a.categorie}
+                >
+                  <span class="actu-date">{dateFormatter.format(new Date(a.datePublication))}</span>
+                  <h3>{a.titre}</h3>
+                  {a.resume && <p>{a.resume}</p>}
+                </a>
+              ))}
+            </div>
+          </>
+        ) : (
+          <p class="note">Les premières actualités arrivent bientôt.</p>
+        )
+      }
+    </section>
+
+    <section id="galerie" class="galerie">
+      <h2>Galerie photos</h2>
+      {
+        galerie.length > 0 ? (
+          <div class="galerie-grid">
+            {galerie.map((g) => (
+              <img src={urlFor(g.image).width(400).height(400).fit("crop").url()} alt={g.alt} loading="lazy" />
+            ))}
+          </div>
+        ) : (
+          <p class="note">La galerie arrive dès que des photos sont ajoutées dans le Studio.</p>
+        )
+      }
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Centre équestre de Kairon Plage — Saint-Pair-sur-Mer</p>
+  </footer>
+</Layout>
+
+<script>
+  const groups = new Map<string, string>([
+    ["annee", "tout"],
+    ["categorie", "tout"],
+  ]);
+
+  const buttons = document.querySelectorAll<HTMLButtonElement>(".filter-btn");
+  const cards = document.querySelectorAll<HTMLElement>(".actu-card");
+
+  function applyFilters() {
+    cards.forEach((card) => {
+      const matchAnnee = groups.get("annee") === "tout" || card.dataset.annee === groups.get("annee");
+      const matchCategorie = groups.get("categorie") === "tout" || card.dataset.categorie === groups.get("categorie");
+      card.hidden = !(matchAnnee && matchCategorie);
+    });
+  }
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const type = button.dataset.filterType!;
+      groups.set(type, button.dataset.filter!);
+
+      document.querySelectorAll<HTMLButtonElement>(`[data-filter-type="${type}"]`).forEach((b) => {
+        b.setAttribute("aria-pressed", String(b === button));
+      });
+
+      applyFilters();
+    });
+  });
+</script>
+
+<style>
+  main {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 var(--space-3) var(--space-5);
+  }
+
+  section {
+    padding: var(--space-4) 0;
+  }
+
+  section + section {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .intro {
+    padding-top: var(--space-5);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    color: var(--color-sky-deep);
+    margin: 0;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+    color: var(--color-pine);
+    margin: var(--space-2) 0;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+    color: var(--color-ink);
+    margin: 0 0 var(--space-2);
+  }
+
+  .challenge p,
+  .sorties p {
+    color: var(--color-ink-soft);
+    line-height: 1.65;
+    max-width: 64ch;
+  }
+
+  .note {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-ink-faint);
+  }
+
+  /* actualités */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: var(--space-2);
+  }
+
+  .filter-btn {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+    color: var(--color-ink-soft);
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--color-pine);
+  }
+
+  .filter-btn[aria-pressed="true"] {
+    background: var(--color-pine);
+    border-color: var(--color-pine);
+    color: var(--color-paper);
+  }
+
+  .actu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+
+  .actu-card {
+    display: block;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    padding: var(--space-3);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .actu-date {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-ink-faint);
+  }
+
+  .actu-card h3 {
+    font-size: 1.05rem;
+    margin: 0.4rem 0;
+    color: var(--color-pine);
+  }
+
+  .actu-card p {
+    margin: 0;
+    color: var(--color-ink-soft);
+    font-size: 0.88rem;
+  }
+
+  /* galerie */
+  .galerie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: var(--space-1);
+  }
+
+  .galerie-grid img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  .site-footer {
+    padding: var(--space-3);
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-ink-faint);
+    border-top: 1px solid var(--color-line);
+  }
+</style>
