@@ -112,9 +112,26 @@ chaque brique technique transverse) se développe sur sa propre branche
 
 ## Statut
 
-- [x] Scaffold Astro + tokens de la DA + home minimale
-- [x] Intégration Sanity (CMS) — projet connecté, contenu réel saisi (tarifs, activités, équipe)
-- [x] Page d'accueil — branchée sur le CMS (activités, tarif pension, actualités)
-- [ ] Reste des pages de l'arborescence validée (activités & cours, propriétaires & pension, tarifs & inscription, compétition & vie du club, infos pratiques)
-- [ ] Formulaire de demande d'essai (Netlify Forms)
+**L'arborescence des 6 rubriques est entièrement construite et branchée sur le CMS.**
+
+- [x] Scaffold Astro + tokens de la DA
+- [x] Intégration Sanity (CMS) — projet connecté, contenu réel saisi (24 tarifs, 8 activités, 3 membres d'équipe, 1 actualité)
+- [x] Accueil — hero, 3 portes d'entrée, activités, réassurance, actus, essai
+- [x] Le centre — pédagogie, équipe (CMS), installations, cavalerie, valeurs
+- [x] Activités & cours — hub filtrable + une page par activité
+- [x] Propriétaires & pension — services, tarifs, formulaire dédié
+- [x] Tarifs & inscription — grille complète, inscription, solidarité, documents
+- [x] Compétition & vie du club — challenge, sorties, actualités filtrables, galerie
+- [x] Infos pratiques — nous trouver, horaires, FAQ, **formulaire de demande d'essai** (Netlify Forms)
+- [x] Nav responsive (menu mobile au-delà de 5 liens)
 - [ ] Déploiement Netlify + nom de domaine
+
+### Contenu à compléter avant mise en ligne réelle
+
+Pas bloquant pour continuer à développer, mais à ne pas oublier — tout est signalé directement dans le code/CMS, pas cité de mémoire :
+
+- **4 lignes tarifaires** (Trimestre 1 ×2, Forfait famille ×2) affichent encore une note interne « à vérifier » dans leur champ Précisions — à relire sur le document source et à nettoyer dans le Studio.
+- **Réglages du site** (téléphone, email, adresse, horaires) jamais renseignés — plusieurs pages s'en accommodent (« coordonnées à venir ») mais ce n'est pas vendeur.
+- **Photos** : aucune pour l'instant, nulle part (équipe, activités, galerie). Les pages sont prêtes à les afficher dès qu'elles sont ajoutées dans le Studio.
+- L'actualité de rentrée n'a que son résumé, pas son contenu complet (le corps de la fiche détail est vide).
+- Nombre exact de carrières/box/manège sur la page Le centre — resté volontairement vague, faute de donnée vérifiée.
