@@ -1,0 +1,331 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import { sanityClient } from "../../lib/sanity";
+
+const tarifsPension = await sanityClient.fetch(
+  `*[_type == "tarif" && categorie == "pension"] | order(ordre asc){titre, prix, periode, description}`,
+);
+
+const euro = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
+---
+
+<Layout
+  title="Propriétaires & pension — Kairon Plage"
+  description="Pension et demi-pension pour chevaux et poneys au centre équestre de Kairon Plage : box, soins, accès aux installations, tarifs par classe."
+>
+  <Header />
+
+  <main>
+    <section class="intro">
+      <p class="eyebrow">Propriétaires & pension</p>
+      <h1>Confier son cheval à Kairon Plage</h1>
+      <p class="subtitle">
+        Box individuel ou plein-air, soins quotidiens, accès aux carrières et sentiers entre mer et campagne.
+      </p>
+    </section>
+
+    <section id="services" class="services">
+      <h2>Nos services</h2>
+      <p>
+        Le centre équestre de Kairon Plage accueille les chevaux et poneys de propriétaires en pension ou
+        demi-pension, sur trois classes selon le niveau de pratique du cheval — du loisir jusqu'à la compétition
+        élite ou amateur. Chaque formule inclut des heures de cours encadrés, des sorties individuelles sur le plat
+        et un accès aux soins quotidiens, avec un casier personnel. Le travail à l'obstacle n'est pas autorisé lors
+        d'un cours encadré ; les sorties en extérieur restent possibles sous conditions.
+      </p>
+    </section>
+
+    <section id="tarifs-pension" class="tarifs-pension">
+      <h2>Tarifs pension</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Formule</th>
+              <th>Tarif</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              tarifsPension.map((t: any) => (
+                <tr>
+                  <td>
+                    {t.titre}
+                    {t.description && <span class="precision">{t.description}</span>}
+                  </td>
+                  <td>
+                    {euro.format(t.prix)} <span class="periode">/ {t.periode}</span>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <a class="see-all" href="/tarifs#grille">Voir la grille tarifaire complète →</a>
+    </section>
+
+    <section id="admission" class="admission">
+      <h2>Conditions d'admission</h2>
+      <p>
+        L'accueil d'un cheval ou poney en pension se prépare avec l'équipe du centre : vaccins à jour, période
+        d'adaptation, et échange préalable sur les habitudes du cheval. Contactez le centre pour organiser une
+        visite et convenir ensemble des modalités précises.
+      </p>
+    </section>
+
+    <section id="contact-proprietaires" class="contact">
+      <h2>Une place en pension ?</h2>
+      <p class="subtitle">Décrivez-nous votre cheval, on revient vers vous avec les disponibilités.</p>
+
+      <form
+        name="demande-pension"
+        method="POST"
+        data-netlify="true"
+        data-netlify-honeypot="bot-field"
+        action="/merci-pension"
+      >
+        <input type="hidden" name="form-name" value="demande-pension" />
+        <p class="hidden-field">
+          <label>Ne pas remplir : <input name="bot-field" /></label>
+        </p>
+
+        <div class="field">
+          <label for="nom">Nom et prénom</label>
+          <input id="nom" name="nom" type="text" required />
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" required />
+          </div>
+          <div class="field">
+            <label for="telephone">Téléphone</label>
+            <input id="telephone" name="telephone" type="tel" />
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="cheval">Nom du cheval / poney</label>
+            <input id="cheval" name="cheval" type="text" />
+          </div>
+          <div class="field">
+            <label for="formule">Formule souhaitée</label>
+            <select id="formule" name="formule">
+              <option value="demi-pension">1/2 pension</option>
+              <option value="pension-complete">Pension complète</option>
+              <option value="ne-sait-pas">Je ne sais pas encore</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="message">Message (niveau du cheval, disponibilités, questions)</label>
+          <textarea id="message" name="message" rows="4" />
+        </div>
+
+        <button type="submit" class="cta-primary">Envoyer ma demande</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Centre équestre de Kairon Plage — Saint-Pair-sur-Mer</p>
+  </footer>
+</Layout>
+
+<style>
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 var(--space-3) var(--space-5);
+  }
+
+  section {
+    padding: var(--space-4) 0;
+  }
+
+  section + section {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .intro {
+    padding-top: var(--space-5);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    color: var(--color-sky-deep);
+    margin: 0;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+    color: var(--color-pine);
+    margin: var(--space-2) 0;
+  }
+
+  .subtitle {
+    color: var(--color-ink-soft);
+    font-size: 1.05rem;
+    margin: 0;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+    color: var(--color-ink);
+    margin: 0 0 var(--space-2);
+  }
+
+  .services p,
+  .admission p {
+    color: var(--color-ink-soft);
+    line-height: 1.65;
+    max-width: 62ch;
+  }
+
+  /* tarifs table */
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    min-width: 420px;
+  }
+
+  th {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-ink-faint);
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-line);
+    color: var(--color-ink-soft);
+    vertical-align: top;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  td:first-child {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+
+  .precision {
+    display: block;
+    margin-top: 0.3rem;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--color-ink-faint);
+  }
+
+  .periode {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: var(--color-ink-faint);
+  }
+
+  .see-all {
+    display: inline-block;
+    margin-top: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-coral);
+    text-decoration: none;
+  }
+
+  /* form (partagé avec le style de la page contact cavalier) */
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .hidden-field {
+    position: absolute;
+    left: -9999px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
+  }
+
+  .field-row {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  label {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-ink-soft);
+  }
+
+  input,
+  select,
+  textarea {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    padding: 0.65rem 0.8rem;
+    border: 1px solid var(--color-line);
+    border-radius: 8px;
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: 2px solid var(--color-sky);
+    outline-offset: 1px;
+  }
+
+  .cta-primary {
+    align-self: flex-start;
+    margin-top: var(--space-1);
+    background: var(--color-pine);
+    color: var(--color-paper);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    padding: 0.8rem 1.6rem;
+    border: none;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+  }
+
+  .site-footer {
+    padding: var(--space-3);
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-ink-faint);
+    border-top: 1px solid var(--color-line);
+  }
+</style>
