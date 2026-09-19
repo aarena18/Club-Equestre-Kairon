@@ -23,7 +23,10 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Lit la version dans "engines" de package.json plutôt qu'un
+          # chiffre en dur ici — évite un nouveau décalage silencieux
+          # entre la CI et ce que le projet déclare réellement requérir.
+          node-version-file: package.json
           cache: npm
 
       - run: npm ci
