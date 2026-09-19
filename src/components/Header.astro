@@ -1,16 +1,51 @@
 ---
+const links = [
+  { href: "/activites", label: "Activités & cours" },
+  { href: "/proprietaires-pension", label: "Propriétaires & pension" },
+  { href: "/tarifs", label: "Tarifs & inscription" },
+  { href: "/competition-vie-club", label: "Compétition & vie du club" },
+  { href: "/infos-pratiques", label: "Infos pratiques" },
+];
 ---
 
 <header class="site-header">
   <a class="logo" href="/">Kairon Plage</a>
-  <nav class="nav">
-    <a href="/activites">Activités & cours</a>
-    <a href="/proprietaires-pension">Propriétaires & pension</a>
-    <a href="/tarifs">Tarifs & inscription</a>
-    <a href="/infos-pratiques">Infos pratiques</a>
+
+  <nav class="nav" id="nav-desktop">
+    {links.map((l) => <a href={l.href}>{l.label}</a>)}
   </nav>
-  <a class="cta" href="/infos-pratiques#essai">Réserver un cours d'essai</a>
+  <a class="cta cta-desktop" href="/infos-pratiques#essai">Réserver un cours d'essai</a>
+
+  <button type="button" class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="nav-mobile">
+    <span class="sr-only">Menu</span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+  </button>
 </header>
+
+<nav class="nav-mobile" id="nav-mobile" hidden>
+  {links.map((l) => <a href={l.href}>{l.label}</a>)}
+  <a class="cta" href="/infos-pratiques#essai">Réserver un cours d'essai</a>
+</nav>
+
+<script>
+  const toggle = document.getElementById("menu-toggle")!;
+  const mobileNav = document.getElementById("nav-mobile")!;
+
+  toggle.addEventListener("click", () => {
+    const isOpen = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!isOpen));
+    mobileNav.hidden = isOpen;
+  });
+
+  mobileNav.querySelectorAll("a").forEach((a) => {
+    a.addEventListener("click", () => {
+      toggle.setAttribute("aria-expanded", "false");
+      mobileNav.hidden = true;
+    });
+  });
+</script>
 
 <style>
   .site-header {
@@ -19,12 +54,10 @@
     z-index: 10;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: var(--space-2);
     padding: var(--space-2) var(--space-3);
     background: var(--color-paper);
     border-bottom: 1px solid var(--color-line);
-    flex-wrap: wrap;
   }
 
   .logo {
@@ -33,20 +66,20 @@
     font-size: 1.1rem;
     color: var(--color-pine);
     text-decoration: none;
+    margin-right: auto;
   }
 
   .nav {
     display: flex;
     gap: var(--space-2);
-    margin-right: auto;
-    margin-left: var(--space-3);
   }
 
   .nav a {
     font-family: var(--font-mono);
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--color-ink-soft);
     text-decoration: none;
+    white-space: nowrap;
   }
 
   .nav a:hover {
@@ -63,5 +96,67 @@
     border-radius: var(--radius-pill);
     text-decoration: none;
     white-space: nowrap;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    background: none;
+    border: 1px solid var(--color-line);
+    border-radius: 8px;
+    padding: 0.5rem 0.6rem;
+    cursor: pointer;
+  }
+
+  .menu-toggle .bar {
+    width: 18px;
+    height: 2px;
+    background: var(--color-ink);
+  }
+
+  .nav-mobile {
+    display: none;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3) var(--space-3);
+    border-bottom: 1px solid var(--color-line);
+    background: var(--color-paper);
+  }
+
+  .nav-mobile a {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--color-ink-soft);
+    text-decoration: none;
+  }
+
+  .nav-mobile a.cta {
+    align-self: flex-start;
+    margin-top: 0.3rem;
+    color: var(--color-paper);
+  }
+
+  @media (max-width: 860px) {
+    .nav,
+    .cta-desktop {
+      display: none;
+    }
+
+    .menu-toggle {
+      display: flex;
+    }
+
+    .nav-mobile:not([hidden]) {
+      display: flex;
+    }
   }
 </style>
