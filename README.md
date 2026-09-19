@@ -113,7 +113,8 @@ chaque brique technique transverse) se développe sur sa propre branche
 ## Statut
 
 - [x] Scaffold Astro + tokens de la DA + home minimale
-- [x] Intégration Sanity (CMS) — schémas prêts, projet à créer côté Sanity (voir section CMS)
-- [ ] Pages de l'arborescence validée
+- [x] Intégration Sanity (CMS) — projet connecté, contenu réel saisi (tarifs, activités, équipe)
+- [x] Page d'accueil — branchée sur le CMS (activités, tarif pension, actualités)
+- [ ] Reste des pages de l'arborescence validée (activités & cours, propriétaires & pension, tarifs & inscription, compétition & vie du club, infos pratiques)
 - [ ] Formulaire de demande d'essai (Netlify Forms)
 - [ ] Déploiement Netlify + nom de domaine
