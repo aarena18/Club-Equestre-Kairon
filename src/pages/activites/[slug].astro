@@ -3,6 +3,7 @@ import { toHTML } from "@portabletext/to-html";
 import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/Header.astro";
 import { sanityClient } from "../../lib/sanity";
+import { withBase } from "../../lib/url";
 
 export async function getStaticPaths() {
   const activites = await sanityClient.fetch(
@@ -26,14 +27,14 @@ const descriptionHtml = activite?.description ? toHTML(activite.description) : "
   <Header />
 
   <main>
-    <a class="back" href="/activites">← Toutes les activités</a>
+    <a class="back" href={withBase("/activites")}>← Toutes les activités</a>
     <p class="eyebrow">Activités & cours</p>
     <h1>{activite.titre}</h1>
     {activite.trancheAge && <span class="tranche">{activite.trancheAge}</span>}
 
     <div class="body" set:html={descriptionHtml} />
 
-    <a class="cta-primary" href="/infos-pratiques#essai">Réserver un cours d'essai</a>
+    <a class="cta-primary" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
   </main>
 
   <footer class="site-footer">

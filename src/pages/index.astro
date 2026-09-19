@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import ActivityCard from "../components/ActivityCard.astro";
 import { sanityClient } from "../lib/sanity";
+import { withBase } from "../lib/url";
 
 const activites = await sanityClient.fetch(
   `*[_type == "activite"] | order(ordre asc){titre, "slug": slug.current, categorie, trancheAge, resume, texteBouton}`,
@@ -29,21 +30,21 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
       <p class="subtitle">
         Devenez cavalier dès 2 ans, entre mer et campagne à Saint-Pair-sur-Mer.
       </p>
-      <a class="cta-primary" href="/infos-pratiques#essai">Réserver un cours d'essai</a>
+      <a class="cta-primary" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
     </section>
 
     <section class="doors">
-      <a class="door" href="/activites">
+      <a class="door" href={withBase("/activites")}>
         <span class="door-eyebrow">Débuter</span>
         <h2>Mon enfant débute</h2>
         <p>Baby cavaliers dès 2 ans, pédagogie ludique jusqu'aux premiers galops.</p>
       </a>
-      <a class="door" href="/activites">
+      <a class="door" href={withBase("/activites")}>
         <span class="door-eyebrow">Progresser</span>
         <h2>Je veux progresser & concourir</h2>
         <p>Cours Expert dès le Galop 4, challenge club d'hiver, compétitions officielles.</p>
       </a>
-      <a class="door" href="/proprietaires-pension">
+      <a class="door" href={withBase("/proprietaires-pension")}>
         <span class="door-eyebrow">Confier son cheval</span>
         <h2>J'ai un cheval à mettre en pension</h2>
         <p>
@@ -65,12 +66,12 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
               resume={a.resume}
               categorie={a.categorie}
               texteBouton={a.texteBouton}
-              href={a.slug ? `/activites/${a.slug}` : undefined}
+              href={a.slug ? withBase(`/activites/${a.slug}`) : undefined}
             />
           ))
         }
       </div>
-      <a class="see-all" href="/activites">Voir toutes les activités & filtrer →</a>
+      <a class="see-all" href={withBase("/activites")}>Voir toutes les activités & filtrer →</a>
     </section>
 
     <section class="reassurance">
@@ -93,7 +94,7 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
           <p>Un dispositif du Comité départemental d'équitation de la Manche pour les familles à revenus modestes.</p>
         </div>
       </div>
-      <a class="see-all" href="/le-centre">Notre équipe, nos installations, nos valeurs →</a>
+      <a class="see-all" href={withBase("/le-centre")}>Notre équipe, nos installations, nos valeurs →</a>
     </section>
 
     <section id="pension" class="pension-teaser">
@@ -102,7 +103,7 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
         Box individuel ou plein-air, soins quotidiens, accès aux carrières et sentiers.
         {pensionMoinsCher && ` À partir de ${pensionMoinsCher.prix} € / ${pensionMoinsCher.periode}.`}
       </p>
-      <a class="see-all" href="/proprietaires-pension">Nos services & tarifs pension →</a>
+      <a class="see-all" href={withBase("/proprietaires-pension")}>Nos services & tarifs pension →</a>
     </section>
 
     <section class="actualites">
@@ -110,7 +111,7 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
       {articles.length > 0 ? (
         <div class="actualites-grid">
           {articles.map((article: any) => (
-            <a class="actu-card" href={`/competition-vie-club/actualites/${article.slug}`}>
+            <a class="actu-card" href={withBase(`/competition-vie-club/actualites/${article.slug}`)}>
               <span class="actu-date">{dateFormatter.format(new Date(article.datePublication))}</span>
               <h3>{article.titre}</h3>
               {article.resume && <p>{article.resume}</p>}
@@ -120,13 +121,13 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
       ) : (
         <p class="note">Les premières actualités arrivent bientôt.</p>
       )}
-      <a class="see-all" href="/competition-vie-club#actualites">Toutes les actualités →</a>
+      <a class="see-all" href={withBase("/competition-vie-club#actualites")}>Toutes les actualités →</a>
     </section>
 
     <section id="essai" class="essai">
       <h2>Envie d'essayer ?</h2>
       <p>Un seul formulaire, deux minutes : dites-nous l'âge et le niveau du cavalier, on s'occupe du reste.</p>
-      <a class="cta-primary" href="/infos-pratiques#essai">Réserver un cours d'essai</a>
+      <a class="cta-primary" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
     </section>
   </main>
 

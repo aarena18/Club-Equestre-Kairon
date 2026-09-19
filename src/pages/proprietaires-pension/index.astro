@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/Header.astro";
 import { sanityClient } from "../../lib/sanity";
+import { withBase } from "../../lib/url";
 
 const tarifsPension = await sanityClient.fetch(
   `*[_type == "tarif" && categorie == "pension"] | order(ordre asc){titre, prix, periode, description}`,
@@ -63,7 +64,7 @@ const euro = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR"
           </tbody>
         </table>
       </div>
-      <a class="see-all" href="/tarifs#grille">Voir la grille tarifaire complète →</a>
+      <a class="see-all" href={withBase("/tarifs#grille")}>Voir la grille tarifaire complète →</a>
     </section>
 
     <section id="admission" class="admission">
@@ -84,7 +85,7 @@ const euro = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR"
         method="POST"
         data-netlify="true"
         data-netlify-honeypot="bot-field"
-        action="/merci-pension"
+        action={withBase("/merci-pension")}
       >
         <input type="hidden" name="form-name" value="demande-pension" />
         <p class="hidden-field">

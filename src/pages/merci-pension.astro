@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
+import { withBase } from "../lib/url";
 ---
 
 <Layout title="Merci — Kairon Plage">
@@ -12,7 +13,7 @@ import Header from "../components/Header.astro";
       Votre demande de pension a bien été reçue. Le centre équestre de Kairon Plage vous recontacte avec les
       disponibilités.
     </p>
-    <a class="back" href="/">← Retour à l'accueil</a>
+    <a class="back" href={withBase("/")}>← Retour à l'accueil</a>
   </main>
 </Layout>
 

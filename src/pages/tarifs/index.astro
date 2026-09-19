@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/Header.astro";
 import { sanityClient } from "../../lib/sanity";
+import { withBase } from "../../lib/url";
 
 const tarifs = await sanityClient.fetch(
   `*[_type == "tarif"] | order(ordre asc){titre, categorie, publicConcerne, prix, prixPromo, periode, description, eligibleSolidarite}`,
@@ -90,7 +91,7 @@ const euro = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR"
       <h2>Comment s'inscrire</h2>
       <ol>
         <li>
-          <strong>Réservez un cours d'essai</strong> — voir la page <a href="/infos-pratiques#essai">Nous contacter</a>, sans
+          <strong>Réservez un cours d'essai</strong> — voir la page <a href={withBase("/infos-pratiques#essai")}>Nous contacter</a>, sans
           engagement.
         </li>
         <li>

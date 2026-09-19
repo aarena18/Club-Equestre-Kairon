@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/Header.astro";
 import { sanityClient } from "../../lib/sanity";
+import { withBase } from "../../lib/url";
 
 const siteSettings = await sanityClient.fetch(
   `*[_type == "siteSettings"][0]{telephone, email, adresse, horaires, facebook, instagram}`,
@@ -82,7 +83,7 @@ const faq = [
       <h2>Réserver un cours d'essai</h2>
       <p class="subtitle">Remplissez ce formulaire, le centre vous recontacte pour convenir d'un créneau.</p>
 
-      <form name="demande-essai" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" action="/merci">
+      <form name="demande-essai" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" action={withBase("/merci")}>
         <input type="hidden" name="form-name" value="demande-essai" />
         <p class="hidden-field">
           <label>Ne pas remplir : <input name="bot-field" /></label>

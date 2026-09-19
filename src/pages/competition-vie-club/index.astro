@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/Header.astro";
 import { sanityClient, urlFor } from "../../lib/sanity";
+import { withBase } from "../../lib/url";
 
 const articles = await sanityClient.fetch(
   `*[_type == "article"] | order(datePublication desc){titre, "slug": slug.current, categorie, datePublication, resume, photoCouverture}`,
@@ -94,7 +95,7 @@ const galerie = [
               {articles.map((a: any) => (
                 <a
                   class="actu-card"
-                  href={`/competition-vie-club/actualites/${a.slug}`}
+                  href={withBase(`/competition-vie-club/actualites/${a.slug}`)}
                   data-annee={new Date(a.datePublication).getFullYear()}
                   data-categorie={a.categorie}
                 >

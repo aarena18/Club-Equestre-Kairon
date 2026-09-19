@@ -96,6 +96,44 @@ associé) — c'est le seul pré-requis avant de pouvoir travailler dessus.
 Une fois en ligne sur Netlify, les deux mêmes variables devront être
 renseignées dans les réglages d'environnement du site Netlify.
 
+## Déploiement
+
+### Preview sur GitHub Pages (temporaire)
+
+Pour voir le site en ligne rapidement, avant la mise en ligne réelle sur
+Netlify. Le repo n'ayant pas de nom de domaine personnalisé, GitHub
+Pages sert le site sous `https://aarena18.github.io/Club-Equestre-Kairon/`
+— tous les liens internes s'adaptent automatiquement à ce sous-chemin via
+`src/lib/url.ts` (`withBase()`), piloté par la variable d'env
+`GITHUB_PAGES` au moment du build (voir `astro.config.mjs`). Rien à
+changer dans le code le jour du vrai déploiement.
+
+**Limite connue, volontairement pas corrigée ici** : les deux
+formulaires (`/infos-pratiques#essai` et `/proprietaires-pension`)
+utilisent Netlify Forms, qui n'existe pas sur GitHub Pages — ils ne
+mèneront nulle part tant que le site n'est pas sur Netlify. Pas
+bloquant pour une preview, à garder en tête avant de partager le lien.
+
+Le workflow `.github/workflows/deploy-gh-pages.yml` build et déploie
+automatiquement à chaque push sur `main`. Deux réglages une seule fois
+sur GitHub (pas faisables en ligne de commande sans être connecté) :
+
+1. **Settings → Pages → Build and deployment → Source : "GitHub
+   Actions"** (pas "Deploy from a branch").
+2. **Settings → Secrets and variables → Actions**, ajouter
+   `PUBLIC_SANITY_PROJECT_ID` et `PUBLIC_SANITY_DATASET` (mêmes valeurs
+   que dans `.env`) — le build en CI n'a pas accès à votre `.env` local.
+
+Le déploiement ne se redéclenche pas automatiquement quand le contenu
+change dans Sanity (pas de webhook configuré, contrairement à ce que
+Netlify proposera) — relancez le workflow manuellement (onglet
+*Actions* → *Run workflow*) après une mise à jour du CMS si besoin.
+
+### Netlify (hébergement final, prévu)
+
+Voir le choix de stack : déploiement Git automatique, formulaires
+inclus, domaine personnalisé. Pas encore configuré.
+
 ## Workflow de branches
 
 `main` reste toujours buildable. Chaque rubrique de l'arborescence (et
@@ -124,7 +162,8 @@ chaque brique technique transverse) se développe sur sa propre branche
 - [x] Compétition & vie du club — challenge, sorties, actualités filtrables, galerie
 - [x] Infos pratiques — nous trouver, horaires, FAQ, **formulaire de demande d'essai** (Netlify Forms)
 - [x] Nav responsive (menu mobile au-delà de 5 liens)
-- [ ] Déploiement Netlify + nom de domaine
+- [x] Preview GitHub Pages — workflow prêt, reste à activer côté GitHub (secrets + Pages source)
+- [ ] Déploiement Netlify + nom de domaine (formulaires ne marcheront qu'à cette étape)
 
 ### Contenu à compléter avant mise en ligne réelle
 

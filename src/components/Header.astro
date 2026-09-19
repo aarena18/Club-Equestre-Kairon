@@ -1,4 +1,6 @@
 ---
+import { withBase } from "../lib/url";
+
 const links = [
   { href: "/le-centre", label: "Le centre" },
   { href: "/activites", label: "Activités & cours" },
@@ -10,12 +12,12 @@ const links = [
 ---
 
 <header class="site-header">
-  <a class="logo" href="/">Kairon Plage</a>
+  <a class="logo" href={withBase("/")}>Kairon Plage</a>
 
   <nav class="nav" id="nav-desktop">
-    {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    {links.map((l) => <a href={withBase(l.href)}>{l.label}</a>)}
   </nav>
-  <a class="cta cta-desktop" href="/infos-pratiques#essai">Réserver un cours d'essai</a>
+  <a class="cta cta-desktop" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
 
   <button type="button" class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="nav-mobile">
     <span class="sr-only">Menu</span>
@@ -26,8 +28,8 @@ const links = [
 </header>
 
 <nav class="nav-mobile" id="nav-mobile" hidden>
-  {links.map((l) => <a href={l.href}>{l.label}</a>)}
-  <a class="cta" href="/infos-pratiques#essai">Réserver un cours d'essai</a>
+  {links.map((l) => <a href={withBase(l.href)}>{l.label}</a>)}
+  <a class="cta" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
 </nav>
 
 <script>

@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/Header.astro";
 import { sanityClient, urlFor } from "../../lib/sanity";
+import { withBase } from "../../lib/url";
 
 const equipe = await sanityClient.fetch(
   `*[_type == "membreEquipe"] | order(ordre asc){nom, role, bio, photo}`,
@@ -29,7 +30,7 @@ const equipe = await sanityClient.fetch(
         galops, jusqu'à la compétition pour qui le souhaite — CSO, Equifun, pony games. Les cours « Expert »,
         réservés aux cavaliers d'un minimum Galop 4, sont plafonnés à 4 cavaliers.
       </p>
-      <a class="see-all" href="/activites">Voir toutes les activités →</a>
+      <a class="see-all" href={withBase("/activites")}>Voir toutes les activités →</a>
     </section>
 
     <section id="equipe" class="equipe">
@@ -90,7 +91,7 @@ const equipe = await sanityClient.fetch(
           <h3>Crinières solidaires</h3>
           <p>
             Un dispositif du Comité départemental d'équitation de la Manche pour les familles à revenus modestes —
-            voir les <a href="/tarifs#solidarite">aides & solidarité</a>.
+            voir les <a href={withBase("/tarifs#solidarite")}>aides & solidarité</a>.
           </p>
         </div>
       </div>

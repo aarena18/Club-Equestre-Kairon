@@ -3,6 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/Header.astro";
 import ActivityCard from "../../components/ActivityCard.astro";
 import { sanityClient } from "../../lib/sanity";
+import { withBase } from "../../lib/url";
 
 const activites = await sanityClient.fetch(
   `*[_type == "activite"] | order(ordre asc){titre, "slug": slug.current, categorie, trancheAge, resume, texteBouton}`,
@@ -58,7 +59,7 @@ const categories = [
             resume={a.resume}
             categorie={a.categorie}
             texteBouton={a.texteBouton}
-            href={a.slug ? `/activites/${a.slug}` : undefined}
+            href={a.slug ? withBase(`/activites/${a.slug}`) : undefined}
           />
         ))
       }

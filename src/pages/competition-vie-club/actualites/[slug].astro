@@ -3,6 +3,7 @@ import { toHTML } from "@portabletext/to-html";
 import Layout from "../../../layouts/Layout.astro";
 import Header from "../../../components/Header.astro";
 import { sanityClient, urlFor } from "../../../lib/sanity";
+import { withBase } from "../../../lib/url";
 
 export async function getStaticPaths() {
   const articles = await sanityClient.fetch(
@@ -36,7 +37,7 @@ const contenuHtml = article?.contenu
   <Header />
 
   <main>
-    <a class="back" href="/competition-vie-club#actualites">← Toutes les actualités</a>
+    <a class="back" href={withBase("/competition-vie-club#actualites")}>← Toutes les actualités</a>
     <p class="eyebrow">{dateFormatter.format(new Date(article.datePublication))}</p>
     <h1>{article.titre}</h1>
 
