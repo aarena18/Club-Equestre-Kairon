@@ -1,0 +1,322 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import { sanityClient } from "../../lib/sanity";
+
+const siteSettings = await sanityClient.fetch(
+  `*[_type == "siteSettings"][0]{telephone, email, adresse, horaires, facebook, instagram}`,
+);
+
+const faq = [
+  {
+    q: "À partir de quel âge peut-on commencer ?",
+    r: "Dès 2 ans, avec les baby cavaliers — voir la page Activités & cours.",
+  },
+  {
+    q: "Faut-il déjà avoir de l'expérience ?",
+    r: "Non. La pédagogie du club accompagne chaque cavalier depuis ses débuts, jusqu'à l'instruction et la compétition pour qui le souhaite.",
+  },
+  {
+    q: "Comment se passe le premier contact ?",
+    r: "Remplissez le formulaire ci-dessous ou contactez directement le centre : on convient ensemble d'un premier cours adapté à l'âge et au niveau du cavalier.",
+  },
+  {
+    q: "Proposez-vous l'équitation adaptée aux cavaliers en situation de handicap ?",
+    r: "Oui — voir la fiche Équitation adaptée dans les activités.",
+  },
+  {
+    q: "Puis-je mettre mon cheval en pension au centre ?",
+    r: "Oui, box individuel ou plein-air selon 3 classes — voir la grille tarifaire.",
+  },
+];
+---
+
+<Layout
+  title="Infos pratiques & contact — Kairon Plage"
+  description="Horaires, accès et formulaire de demande de cours d'essai au centre équestre de Kairon Plage, Saint-Pair-sur-Mer."
+>
+  <Header />
+
+  <main>
+    <section class="intro">
+      <p class="eyebrow">Infos pratiques</p>
+      <h1>Nous trouver, nous contacter</h1>
+    </section>
+
+    <section id="trouver" class="trouver">
+      <h2>Nous trouver</h2>
+      <p>
+        Centre équestre de Kairon Plage — Saint-Pair-sur-Mer, Manche (Normandie), entre mer et campagne.
+        {siteSettings?.adresse ? <><br />{siteSettings.adresse}</> : <span class="note"> Adresse précise à venir.</span>}
+      </p>
+    </section>
+
+    <section id="horaires" class="horaires">
+      <h2>Horaires</h2>
+      {
+        siteSettings?.horaires && siteSettings.horaires.length > 0 ? (
+          <ul>
+            {siteSettings.horaires.map((h: string) => <li>{h}</li>)}
+          </ul>
+        ) : (
+          <p class="note">Horaires à venir — contactez le centre directement en attendant.</p>
+        )
+      }
+    </section>
+
+    <section id="faq" class="faq">
+      <h2>Questions fréquentes</h2>
+      <div class="faq-list">
+        {
+          faq.map((item) => (
+            <details>
+              <summary>{item.q}</summary>
+              <p set:html={item.r} />
+            </details>
+          ))
+        }
+      </div>
+    </section>
+
+    <section id="essai" class="essai">
+      <h2>Réserver un cours d'essai</h2>
+      <p class="subtitle">Remplissez ce formulaire, le centre vous recontacte pour convenir d'un créneau.</p>
+
+      <form name="demande-essai" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" action="/merci">
+        <input type="hidden" name="form-name" value="demande-essai" />
+        <p class="hidden-field">
+          <label>Ne pas remplir : <input name="bot-field" /></label>
+        </p>
+
+        <div class="field">
+          <label for="nom">Nom et prénom</label>
+          <input id="nom" name="nom" type="text" required />
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" required />
+          </div>
+          <div class="field">
+            <label for="telephone">Téléphone</label>
+            <input id="telephone" name="telephone" type="tel" />
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="age">Âge du cavalier</label>
+            <input id="age" name="age" type="text" placeholder="Ex. 5 ans" />
+          </div>
+          <div class="field">
+            <label for="niveau">Niveau</label>
+            <select id="niveau" name="niveau">
+              <option value="debutant">Débutant / jamais monté</option>
+              <option value="quelques-cours">Quelques cours suivis ailleurs</option>
+              <option value="confirme">Confirmé, cherche un club</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="disponibilites">Disponibilités</label>
+          <input id="disponibilites" name="disponibilites" type="text" placeholder="Ex. mercredi après-midi" />
+        </div>
+
+        <div class="field">
+          <label for="message">Message (facultatif)</label>
+          <textarea id="message" name="message" rows="4" />
+        </div>
+
+        <button type="submit" class="cta-primary">Envoyer ma demande</button>
+      </form>
+
+      {
+        (siteSettings?.telephone || siteSettings?.email) && (
+          <p class="alt-contact">
+            Vous préférez appeler ou écrire directement ?
+            {siteSettings.telephone && <> {siteSettings.telephone}</>}
+            {siteSettings.email && <> — {siteSettings.email}</>}
+          </p>
+        )
+      }
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Centre équestre de Kairon Plage — Saint-Pair-sur-Mer</p>
+  </footer>
+</Layout>
+
+<style>
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 var(--space-3) var(--space-5);
+  }
+
+  section {
+    padding: var(--space-4) 0;
+  }
+
+  section + section {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .intro {
+    padding-top: var(--space-5);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    color: var(--color-sky-deep);
+    margin: 0;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+    color: var(--color-pine);
+    margin: var(--space-2) 0 0;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+    color: var(--color-ink);
+    margin: 0 0 var(--space-2);
+  }
+
+  .trouver p,
+  .horaires ul {
+    color: var(--color-ink-soft);
+    line-height: 1.6;
+  }
+
+  .horaires ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .note {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-ink-faint);
+  }
+
+  /* faq */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  details {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    padding: 0.9rem 1.1rem;
+  }
+
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  details p {
+    margin: 0.6rem 0 0;
+    color: var(--color-ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  /* form */
+  .subtitle {
+    color: var(--color-ink-soft);
+    margin: 0 0 var(--space-3);
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .hidden-field {
+    position: absolute;
+    left: -9999px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
+  }
+
+  .field-row {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  label {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-ink-soft);
+  }
+
+  input,
+  select,
+  textarea {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    padding: 0.65rem 0.8rem;
+    border: 1px solid var(--color-line);
+    border-radius: 8px;
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: 2px solid var(--color-sky);
+    outline-offset: 1px;
+  }
+
+  .cta-primary {
+    align-self: flex-start;
+    margin-top: var(--space-1);
+    background: var(--color-pine);
+    color: var(--color-paper);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    padding: 0.8rem 1.6rem;
+    border: none;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+  }
+
+  .alt-contact {
+    margin-top: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-ink-soft);
+  }
+
+  .site-footer {
+    padding: var(--space-3);
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-ink-faint);
+    border-top: 1px solid var(--color-line);
+  }
+</style>
