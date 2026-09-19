@@ -1,0 +1,166 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import ActivityCard from "../../components/ActivityCard.astro";
+import { sanityClient } from "../../lib/sanity";
+
+const activites = await sanityClient.fetch(
+  `*[_type == "activite"] | order(ordre asc){titre, "slug": slug.current, categorie, trancheAge, resume, texteBouton}`,
+);
+
+// Reprend le découpage validé dans la direction artistique : les cours
+// réguliers d'un côté, la découverte et les vacances de l'autre — plutôt
+// qu'un menu à 8 entrées.
+const categories = [
+  { value: "tout", label: "Tout" },
+  { value: "baby-cavaliers", label: "Baby cavaliers" },
+  { value: "enfants-ados", label: "Enfants & ados" },
+  { value: "adultes", label: "Adultes" },
+  { value: "expert-competition", label: "Expert & compétition" },
+  { value: "equitation-adaptee", label: "Équitation adaptée" },
+  { value: "balades-randonnees", label: "Balades & randonnées" },
+  { value: "stages-vacances", label: "Stages vacances" },
+];
+---
+
+<Layout
+  title="Activités & cours — Kairon Plage"
+  description="Baby cavaliers, cours Expert, Equifeel, balades, stages vacances : toutes les activités du centre équestre de Kairon Plage, filtrables par public."
+>
+  <Header />
+
+  <main>
+    <section class="intro">
+      <p class="eyebrow">Activités & cours</p>
+      <h1>Une activité pour chaque cavalier</h1>
+      <p class="subtitle">
+        Du baby cavalier au cours Expert, en passant par l'Equifeel et les balades en bord de mer — filtrez par
+        public pour trouver la vôtre.
+      </p>
+    </section>
+
+    <section class="filters" role="group" aria-label="Filtrer les activités par catégorie">
+      {
+        categories.map((c) => (
+          <button type="button" class="filter-btn" data-filter={c.value} aria-pressed={c.value === "tout"}>
+            {c.label}
+          </button>
+        ))
+      }
+    </section>
+
+    <section class="activites-grid">
+      {
+        activites.map((a: any) => (
+          <ActivityCard
+            titre={a.titre}
+            trancheAge={a.trancheAge}
+            resume={a.resume}
+            categorie={a.categorie}
+            texteBouton={a.texteBouton}
+            href={a.slug ? `/activites/${a.slug}` : undefined}
+          />
+        ))
+      }
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Centre équestre de Kairon Plage — Saint-Pair-sur-Mer</p>
+  </footer>
+</Layout>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>(".filter-btn");
+  const cards = document.querySelectorAll<HTMLElement>(".activity-card");
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const filter = button.dataset.filter;
+
+      buttons.forEach((b) => b.setAttribute("aria-pressed", String(b === button)));
+
+      cards.forEach((card) => {
+        const match = filter === "tout" || card.dataset.categorie === filter;
+        card.hidden = !match;
+      });
+    });
+  });
+</script>
+
+<style>
+  main {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 var(--space-3) var(--space-5);
+  }
+
+  .intro {
+    padding: var(--space-5) 0 var(--space-3);
+    max-width: 640px;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    color: var(--color-sky-deep);
+    margin: 0;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+    color: var(--color-pine);
+    margin: var(--space-2) 0;
+  }
+
+  .subtitle {
+    color: var(--color-ink-soft);
+    font-size: 1.05rem;
+    margin: 0;
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-bottom: var(--space-3);
+  }
+
+  .filter-btn {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+    color: var(--color-ink-soft);
+    padding: 0.5rem 0.9rem;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--color-pine);
+  }
+
+  .filter-btn[aria-pressed="true"] {
+    background: var(--color-pine);
+    border-color: var(--color-pine);
+    color: var(--color-paper);
+  }
+
+  .activites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--space-2);
+  }
+
+  .site-footer {
+    padding: var(--space-3);
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-ink-faint);
+    border-top: 1px solid var(--color-line);
+  }
+</style>
