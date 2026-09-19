@@ -1,23 +1,158 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import ActivityCard from "../components/ActivityCard.astro";
+import { sanityClient } from "../lib/sanity";
+
+const activites = await sanityClient.fetch(
+  `*[_type == "activite"] | order(ordre asc){titre, categorie, trancheAge, resume}`,
+);
+
+const articles = await sanityClient.fetch(
+  `*[_type == "article"] | order(datePublication desc)[0...3]{titre, resume, datePublication}`,
+);
+
+const pensionMoinsCher = await sanityClient.fetch(
+  `*[_type == "tarif" && categorie == "pension"] | order(prix asc)[0]{prix, periode}`,
+);
+
+const siteSettings = await sanityClient.fetch(`*[_type == "siteSettings"][0]{telephone, email}`);
+
+const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 ---
 
 <Layout title="Kairon Plage — Poney club & club hippique à Saint-Pair-sur-Mer">
-  <main class="hero">
-    <p class="eyebrow">Centre équestre de Kairon Plage</p>
-    <h1>Les poneys et les chevaux aident à grandir</h1>
-    <p class="subtitle">
-      Devenez cavalier dès 2 ans, entre mer et campagne à Saint-Pair-sur-Mer.
-    </p>
-    <a class="cta" href="#essai">Réserver un cours d'essai</a>
+  <Header />
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Centre équestre de Kairon Plage</p>
+      <h1>Les poneys et les chevaux aident à grandir</h1>
+      <p class="subtitle">
+        Devenez cavalier dès 2 ans, entre mer et campagne à Saint-Pair-sur-Mer.
+      </p>
+      <a class="cta-primary" href="#essai">Réserver un cours d'essai</a>
+    </section>
+
+    <section class="doors">
+      <a class="door" href="#activites">
+        <span class="door-eyebrow">Débuter</span>
+        <h2>Mon enfant débute</h2>
+        <p>Baby cavaliers dès 2 ans, pédagogie ludique jusqu'aux premiers galops.</p>
+      </a>
+      <a class="door" href="#activites">
+        <span class="door-eyebrow">Progresser</span>
+        <h2>Je veux progresser & concourir</h2>
+        <p>Cours Expert dès le Galop 4, challenge club d'hiver, compétitions officielles.</p>
+      </a>
+      <a class="door" href="#pension">
+        <span class="door-eyebrow">Confier son cheval</span>
+        <h2>J'ai un cheval à mettre en pension</h2>
+        <p>
+          {pensionMoinsCher
+            ? `À partir de ${pensionMoinsCher.prix} € / ${pensionMoinsCher.periode}, box ou pré, soins inclus.`
+            : "Box ou pré, soins inclus — nous contacter pour les tarifs."}
+        </p>
+      </a>
+    </section>
+
+    <section id="activites" class="activites">
+      <h2>Nos activités</h2>
+      <div class="activites-grid">
+        {activites.map((a: any) => <ActivityCard titre={a.titre} trancheAge={a.trancheAge} resume={a.resume} />)}
+      </div>
+    </section>
+
+    <section class="reassurance">
+      <h2>Depuis plus de 50 ans</h2>
+      <div class="reassurance-grid">
+        <div>
+          <h3>Pédagogie poney</h3>
+          <p>Une pédagogie « poney » développée depuis plus de 50 ans, dans l'esprit du mouvement poney né en France dans les années 1970.</p>
+        </div>
+        <div>
+          <h3>Label Bien-être animal</h3>
+          <p>Le centre équestre de Kairon Plage est labellisé Bien-être animal par la FFE.</p>
+        </div>
+        <div>
+          <h3>Entre mer et campagne</h3>
+          <p>Un cadre à Saint-Pair-sur-Mer particulièrement adapté aux promenades et randonnées.</p>
+        </div>
+        <div>
+          <h3>Crinières solidaires</h3>
+          <p>Un dispositif du Comité départemental d'équitation de la Manche pour les familles à revenus modestes.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pension" class="pension-teaser">
+      <h2>Propriétaires & pension</h2>
+      <p>
+        Box individuel ou plein-air, soins quotidiens, accès aux carrières et sentiers.
+        {pensionMoinsCher && ` À partir de ${pensionMoinsCher.prix} € / ${pensionMoinsCher.periode}.`}
+      </p>
+      <p class="note">La fiche détaillée « Propriétaires & pension » arrive avec sa propre page.</p>
+    </section>
+
+    <section class="actualites">
+      <h2>Actualités</h2>
+      {articles.length > 0 ? (
+        <div class="actualites-grid">
+          {articles.map((article: any) => (
+            <article class="actu-card">
+              <span class="actu-date">{dateFormatter.format(new Date(article.datePublication))}</span>
+              <h3>{article.titre}</h3>
+              {article.resume && <p>{article.resume}</p>}
+            </article>
+          ))}
+        </div>
+      ) : (
+        <p class="note">Les premières actualités arrivent bientôt.</p>
+      )}
+    </section>
+
+    <section id="essai" class="essai">
+      <h2>Envie d'essayer ?</h2>
+      <p>
+        Le formulaire de demande d'essai en ligne arrive avec la page « Infos pratiques ».
+        En attendant, contactez directement le centre
+        {siteSettings?.telephone && <> au <strong>{siteSettings.telephone}</strong></>}
+        {siteSettings?.email && <> ou par email à <strong>{siteSettings.email}</strong></>}
+        {!siteSettings?.telephone && !siteSettings?.email && " — coordonnées à venir."}
+      </p>
+    </section>
   </main>
+
+  <footer class="site-footer">
+    <p>Centre équestre de Kairon Plage — Saint-Pair-sur-Mer</p>
+  </footer>
 </Layout>
 
 <style>
+  main {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 var(--space-3);
+  }
+
+  section {
+    padding: var(--space-5) 0;
+  }
+
+  section + section {
+    border-top: 1px solid var(--color-line);
+  }
+
+  h2 {
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    color: var(--color-ink);
+    margin: 0 0 var(--space-3);
+  }
+
+  /* hero */
   .hero {
     max-width: 640px;
-    margin: 0 auto;
-    padding: var(--space-5) var(--space-3);
+    padding-top: var(--space-5);
   }
 
   .eyebrow {
@@ -29,21 +164,21 @@ import Layout from "../layouts/Layout.astro";
     margin: 0;
   }
 
-  h1 {
+  .hero h1 {
     font-size: clamp(2rem, 6vw, 3.5rem);
     line-height: 1;
     color: var(--color-pine);
     margin: var(--space-2) 0;
   }
 
-  .subtitle {
+  .hero .subtitle {
     color: var(--color-ink-soft);
     font-size: 1.1rem;
     max-width: 36ch;
     margin: 0;
   }
 
-  .cta {
+  .cta-primary {
     display: inline-block;
     margin-top: var(--space-3);
     background: var(--color-pine);
@@ -53,5 +188,134 @@ import Layout from "../layouts/Layout.astro";
     padding: 0.8rem 1.4rem;
     border-radius: var(--radius-pill);
     text-decoration: none;
+  }
+
+  /* doors */
+  .doors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: var(--space-2);
+  }
+
+  .door {
+    display: block;
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    padding: var(--space-3);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .door-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-coral);
+  }
+
+  .door h2 {
+    font-size: 1.2rem;
+    margin: 0.5rem 0;
+  }
+
+  .door p {
+    margin: 0;
+    color: var(--color-ink-soft);
+    font-size: 0.9rem;
+  }
+
+  /* activités grid */
+  .activites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--space-2);
+  }
+
+  /* reassurance */
+  .reassurance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .reassurance-grid h3 {
+    font-size: 1rem;
+    text-transform: none;
+    font-family: var(--font-body);
+    font-weight: 700;
+    color: var(--color-pine);
+    margin: 0 0 0.4rem;
+  }
+
+  .reassurance-grid p {
+    margin: 0;
+    color: var(--color-ink-soft);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  /* pension teaser */
+  .pension-teaser p {
+    color: var(--color-ink-soft);
+    max-width: 60ch;
+  }
+
+  .note {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-ink-faint);
+  }
+
+  /* actualites */
+  .actualites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-2);
+  }
+
+  .actu-card {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    padding: var(--space-3);
+  }
+
+  .actu-date {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-ink-faint);
+  }
+
+  .actu-card h3 {
+    font-size: 1.05rem;
+    margin: 0.4rem 0;
+    color: var(--color-ink);
+  }
+
+  .actu-card p {
+    margin: 0;
+    color: var(--color-ink-soft);
+    font-size: 0.88rem;
+  }
+
+  /* essai */
+  .essai p {
+    max-width: 56ch;
+    color: var(--color-ink-soft);
+  }
+
+  .essai strong {
+    color: var(--color-ink);
+  }
+
+  /* footer */
+  .site-footer {
+    padding: var(--space-3);
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-ink-faint);
+    border-top: 1px solid var(--color-line);
   }
 </style>
