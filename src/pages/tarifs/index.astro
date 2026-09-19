@@ -1,0 +1,323 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import { sanityClient } from "../../lib/sanity";
+
+const tarifs = await sanityClient.fetch(
+  `*[_type == "tarif"] | order(ordre asc){titre, categorie, publicConcerne, prix, prixPromo, periode, description, eligibleSolidarite}`,
+);
+
+const groupes = [
+  { value: "licence-cotisation", label: "Licence & cotisation", note: "Exigibles à compter du 01/09." },
+  { value: "forfait-eco-annuel", label: "Forfaits éco — à l'année", note: "Tarif promo si souscription avant le 28/08/2026." },
+  { value: "forfait-eco-trimestriel", label: "Forfaits éco — au trimestre", note: "Tarif promo si souscription avant le 28/08/2026." },
+  { value: "forfait-famille", label: "Forfait famille", note: "Réservé aux jours et horaires accessibles aux forfaits famille." },
+  { value: "forfait-performance", label: "Forfait Expert (performance)", note: "Tarif promo si souscription avant le 28/08/2026." },
+  { value: "pension", label: "Pension & demi-pension", note: "Par mois, de septembre à juin." },
+];
+
+const parGroupe = groupes.map((g) => ({
+  ...g,
+  lignes: tarifs.filter((t: any) => t.categorie === g.value),
+}));
+
+const euro = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
+---
+
+<Layout
+  title="Tarifs & inscription — Kairon Plage"
+  description="Grille tarifaire complète du centre équestre de Kairon Plage : licence, cotisation, forfaits, pension. Comment s'inscrire et les aides disponibles."
+>
+  <Header />
+
+  <main>
+    <section class="intro">
+      <p class="eyebrow">Tarifs & inscription</p>
+      <h1>Une grille claire, pas un PDF à télécharger</h1>
+      <p class="subtitle">
+        Tous les tarifs 2026/2027 du centre, à jour. Le contrat d'inscription reste disponible en PDF plus bas.
+      </p>
+    </section>
+
+    <section id="grille" class="grille">
+      <h2>Grille tarifaire</h2>
+      {
+        parGroupe.map(
+          (groupe) =>
+            groupe.lignes.length > 0 && (
+              <div class="groupe">
+                <div class="groupe-head">
+                  <h3>{groupe.label}</h3>
+                  <p>{groupe.note}</p>
+                </div>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Forfait</th>
+                        {groupe.lignes.some((l: any) => l.publicConcerne) && <th>Public</th>}
+                        {groupe.lignes.some((l: any) => l.prixPromo) && <th>Tarif promo</th>}
+                        <th>{groupe.lignes.some((l: any) => l.prixPromo) ? "Tarif rentrée" : "Tarif"}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {groupe.lignes.map((ligne: any) => (
+                        <tr>
+                          <td>
+                            {ligne.titre}
+                            {ligne.eligibleSolidarite && <span class="badge">Crinières solidaires</span>}
+                            {ligne.description && <span class="precision">{ligne.description}</span>}
+                          </td>
+                          {groupe.lignes.some((l: any) => l.publicConcerne) && <td>{ligne.publicConcerne ?? "—"}</td>}
+                          {groupe.lignes.some((l: any) => l.prixPromo) && (
+                            <td>{ligne.prixPromo ? euro.format(ligne.prixPromo) : "—"}</td>
+                          )}
+                          <td>
+                            {euro.format(ligne.prix)} <span class="periode">/ {ligne.periode}</span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ),
+        )
+      }
+    </section>
+
+    <section id="inscription" class="inscription">
+      <h2>Comment s'inscrire</h2>
+      <ol>
+        <li>
+          <strong>Réservez un cours d'essai</strong> — voir la page <a href="/#essai">Nous contacter</a>, sans
+          engagement.
+        </li>
+        <li>
+          <strong>Remplissez le contrat d'inscription</strong> (mineur ou majeur) — souscrit chaque année entre le
+          centre et le cavalier.
+        </li>
+        <li>
+          <strong>Choisissez votre forfait</strong> dans la grille ci-dessus. Un règlement échelonné jusqu'à 5
+          échéances peut être proposé.
+        </li>
+      </ol>
+    </section>
+
+    <section id="solidarite" class="solidarite">
+      <h2>Aides & solidarité</h2>
+      <p>
+        Le dispositif <strong>« Crinières solidaires »</strong>, porté par le Comité départemental d'équitation de
+        la Manche, aide les familles à revenus modestes à accéder aux forfaits marqués « Crinières solidaires »
+        ci-dessus. Contactez le centre pour connaître votre éligibilité.
+      </p>
+    </section>
+
+    <section id="documents" class="documents">
+      <h2>Documents & règlement</h2>
+      <p class="note">
+        Les documents du club (contrat d'inscription, règlement intérieur, conditions générales de vente,
+        attestation d'assurance) seront mis en téléchargement ici dès que le club nous aura transmis les fichiers à
+        jour.
+      </p>
+      <ul>
+        <li>Contrat d'inscription — cavalier mineur</li>
+        <li>Contrat d'inscription — cavalier majeur</li>
+        <li>Règlement intérieur du centre équestre</li>
+        <li>Conditions générales de vente</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Centre équestre de Kairon Plage — Saint-Pair-sur-Mer</p>
+  </footer>
+</Layout>
+
+<style>
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 var(--space-3) var(--space-5);
+  }
+
+  section {
+    padding: var(--space-4) 0;
+  }
+
+  section + section {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .intro {
+    padding-top: var(--space-5);
+    max-width: 640px;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    color: var(--color-sky-deep);
+    margin: 0;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+    color: var(--color-pine);
+    margin: var(--space-2) 0;
+  }
+
+  .subtitle {
+    color: var(--color-ink-soft);
+    font-size: 1.05rem;
+    margin: 0;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    color: var(--color-ink);
+    margin: 0 0 var(--space-3);
+  }
+
+  /* grille */
+  .groupe + .groupe {
+    margin-top: var(--space-4);
+  }
+
+  .groupe-head h3 {
+    font-size: 1.05rem;
+    font-family: var(--font-body);
+    font-weight: 700;
+    color: var(--color-pine);
+    margin: 0;
+    text-transform: none;
+  }
+
+  .groupe-head p {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-ink-faint);
+    margin: 0.25rem 0 0.75rem;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    min-width: 480px;
+  }
+
+  th {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-ink-faint);
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-line);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-line);
+    color: var(--color-ink-soft);
+    vertical-align: top;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  td:first-child {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+
+  .periode {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: var(--color-ink-faint);
+  }
+
+  .badge {
+    display: block;
+    margin-top: 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 400;
+    color: var(--color-meadow-deep);
+  }
+
+  .precision {
+    display: block;
+    margin-top: 0.3rem;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: var(--color-ink-faint);
+  }
+
+  /* inscription */
+  .inscription ol {
+    padding-left: 1.2rem;
+    color: var(--color-ink-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    font-size: 0.98rem;
+  }
+
+  .inscription strong,
+  .solidarite strong {
+    color: var(--color-ink);
+  }
+
+  .inscription a {
+    color: var(--color-coral);
+  }
+
+  /* solidarite */
+  .solidarite p {
+    color: var(--color-ink-soft);
+    max-width: 64ch;
+    line-height: 1.6;
+  }
+
+  /* documents */
+  .documents .note {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--color-ink-faint);
+    max-width: 64ch;
+  }
+
+  .documents ul {
+    margin-top: var(--space-2);
+    padding-left: 1.2rem;
+    color: var(--color-ink-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .site-footer {
+    padding: var(--space-3);
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-ink-faint);
+    border-top: 1px solid var(--color-line);
+  }
+</style>
