@@ -61,10 +61,40 @@ public/        assets statiques (favicon, images non optimisées)
 
 ```bash
 npm install
-npm run dev       # http://localhost:4321
-npm run build      # build de prod dans ./dist
-npm run preview    # prévisualiser le build
+cp .env.example .env   # puis remplir PUBLIC_SANITY_PROJECT_ID (voir ci-dessous)
+npm run dev             # http://localhost:4321
+npm run build           # build de prod dans ./dist
+npm run preview         # prévisualiser le build
 ```
+
+## CMS (Sanity)
+
+Le Studio d'administration vit dans ce même repo, à l'adresse `/studio`
+une fois le serveur lancé. Les types de contenu éditables sont définis
+dans `src/sanity/schema/` : Activité, Tarif, Actualité, Membre d'équipe,
+Réglages du site.
+
+**Créer le projet Sanity** (étape à faire une seule fois, avec votre
+propre compte — je ne peux pas la faire à votre place) :
+
+```bash
+npx sanity login    # ouvre le navigateur pour créer un compte ou se connecter
+npx sanity init      # crée un projet Sanity, choisir "production" comme dataset
+```
+
+La commande affiche un `project ID`. Copiez-le dans `.env` :
+
+```
+PUBLIC_SANITY_PROJECT_ID=votre-project-id
+PUBLIC_SANITY_DATASET=production
+```
+
+Sans ce fichier `.env` rempli, `npm run build` échoue volontairement sur
+la route `/studio` (le Studio ne peut pas exister sans projet Sanity
+associé) — c'est le seul pré-requis avant de pouvoir travailler dessus.
+
+Une fois en ligne sur Netlify, les deux mêmes variables devront être
+renseignées dans les réglages d'environnement du site Netlify.
 
 ## Workflow de branches
 
@@ -83,7 +113,7 @@ chaque brique technique transverse) se développe sur sa propre branche
 ## Statut
 
 - [x] Scaffold Astro + tokens de la DA + home minimale
-- [ ] Intégration Sanity (CMS)
+- [x] Intégration Sanity (CMS) — schémas prêts, projet à créer côté Sanity (voir section CMS)
 - [ ] Pages de l'arborescence validée
 - [ ] Formulaire de demande d'essai (Netlify Forms)
 - [ ] Déploiement Netlify + nom de domaine
