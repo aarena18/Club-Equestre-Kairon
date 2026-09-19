@@ -31,6 +31,16 @@ const {
     />
   </head>
   <body>
+    <!-- Formes de découpe partagées par tout le site (cadres photo
+         "neo pop") — 0×0, jamais visible directement. -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <clipPath id="clip-horseshoe" clipPathUnits="objectBoundingBox">
+        <path
+          d="M 0.783,0.203 A 0.44,0.44 0 1,1 0.217,0.203 L 0.346,0.356 A 0.24,0.24 0 1,0 0.654,0.356 Z"
+        ></path>
+      </clipPath>
+    </svg>
+
     <slot />
   </body>
 </html>

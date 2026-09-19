@@ -73,3 +73,53 @@ h3 {
 a {
   color: var(--color-sky-deep);
 }
+
+/*
+  Système "neo pop" (direction validée en phase de dev) : dividers
+  festonnés entre blocs de couleur pleine, bandeau défilant, cadres
+  photo découpés en fer à cheval. Utilitaires globaux pour rester
+  cohérent d'une page à l'autre sans dupliquer le CSS.
+*/
+
+/* Bord festonné en bas d'une section — la section doit avoir son
+   propre background-color ; les demi-cercles laissent apparaître ce
+   qu'il y a derrière (le fond blanc de la page). */
+.scallop-bottom {
+  --scallop-r: 22px;
+  -webkit-mask:
+    radial-gradient(circle at var(--scallop-r) var(--scallop-r), #000 calc(var(--scallop-r) - 0.5px), transparent var(--scallop-r))
+      bottom / calc(var(--scallop-r) * 2) var(--scallop-r) repeat-x,
+    linear-gradient(#000, #000) top / 100% calc(100% - var(--scallop-r)) no-repeat;
+  mask:
+    radial-gradient(circle at var(--scallop-r) var(--scallop-r), #000 calc(var(--scallop-r) - 0.5px), transparent var(--scallop-r))
+      bottom / calc(var(--scallop-r) * 2) var(--scallop-r) repeat-x,
+    linear-gradient(#000, #000) top / 100% calc(100% - var(--scallop-r)) no-repeat;
+}
+
+/* Même principe, festons en haut de section. */
+.scallop-top {
+  --scallop-r: 22px;
+  -webkit-mask:
+    radial-gradient(circle at var(--scallop-r) 0, #000 calc(var(--scallop-r) - 0.5px), transparent var(--scallop-r))
+      top / calc(var(--scallop-r) * 2) var(--scallop-r) repeat-x,
+    linear-gradient(#000, #000) bottom / 100% calc(100% - var(--scallop-r)) no-repeat;
+  mask:
+    radial-gradient(circle at var(--scallop-r) 0, #000 calc(var(--scallop-r) - 0.5px), transparent var(--scallop-r))
+      top / calc(var(--scallop-r) * 2) var(--scallop-r) repeat-x,
+    linear-gradient(#000, #000) bottom / 100% calc(100% - var(--scallop-r)) no-repeat;
+}
+
+/* Cadre photo découpé en fer à cheval — clipPath défini une fois dans
+   Layout.astro. Sans effet tant qu'il n'y a pas de vraie photo dans le
+   CMS ; s'active automatiquement dès qu'il y en a une. */
+.frame-horseshoe {
+  clip-path: url(#clip-horseshoe);
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none !important;
+  }
+}

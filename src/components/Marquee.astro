@@ -1,0 +1,52 @@
+---
+interface Props {
+  text: string;
+  background?: string;
+  color?: string;
+}
+
+const { text, background = "var(--color-sun)", color = "var(--color-ink)" } = Astro.props;
+
+// Répété plusieurs fois pour remplir l'écran en boucle continue, quelle
+// que soit sa largeur.
+const repeated = Array.from({ length: 8 }, () => text);
+---
+
+<div class="marquee" style={`background:${background}; color:${color};`} aria-hidden="true">
+  <div class="marquee-track">
+    {repeated.map((t) => <span>{t}</span>)}
+  </div>
+</div>
+
+<style>
+  .marquee {
+    overflow: hidden;
+    padding: 0.7rem 0;
+    white-space: nowrap;
+  }
+
+  .marquee-track {
+    display: inline-flex;
+    gap: 2.5rem;
+    animation: marquee 24s linear infinite;
+  }
+
+  .marquee-track span {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    padding-right: 2.5rem;
+    border-right: 2px solid currentColor;
+    opacity: 0.9;
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

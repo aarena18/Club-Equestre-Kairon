@@ -2,6 +2,8 @@
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import ActivityCard from "../components/ActivityCard.astro";
+import Marquee from "../components/Marquee.astro";
+import Sparkle from "../components/Sparkle.astro";
 import { sanityClient } from "../lib/sanity";
 import { withBase } from "../lib/url";
 
@@ -24,111 +26,135 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
   <Header />
 
   <main>
-    <section class="hero">
-      <p class="eyebrow">Centre équestre de Kairon Plage</p>
-      <h1>Les poneys et les chevaux aident à grandir</h1>
-      <p class="subtitle">
-        Devenez cavalier dès 2 ans, entre mer et campagne à Saint-Pair-sur-Mer.
-      </p>
-      <a class="cta-primary" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
-    </section>
-
-    <section class="doors">
-      <a class="door" href={withBase("/activites")}>
-        <span class="door-eyebrow">Débuter</span>
-        <h2>Mon enfant débute</h2>
-        <p>Baby cavaliers dès 2 ans, pédagogie ludique jusqu'aux premiers galops.</p>
-      </a>
-      <a class="door" href={withBase("/activites")}>
-        <span class="door-eyebrow">Progresser</span>
-        <h2>Je veux progresser & concourir</h2>
-        <p>Cours Expert dès le Galop 4, challenge club d'hiver, compétitions officielles.</p>
-      </a>
-      <a class="door" href={withBase("/proprietaires-pension")}>
-        <span class="door-eyebrow">Confier son cheval</span>
-        <h2>J'ai un cheval à mettre en pension</h2>
-        <p>
-          {pensionMoinsCher
-            ? `À partir de ${pensionMoinsCher.prix} € / ${pensionMoinsCher.periode}, box ou pré, soins inclus.`
-            : "Box ou pré, soins inclus — nous contacter pour les tarifs."}
-        </p>
-      </a>
-    </section>
-
-    <section id="activites" class="activites">
-      <h2>Nos activités</h2>
-      <div class="activites-grid">
-        {
-          activites.map((a: any) => (
-            <ActivityCard
-              titre={a.titre}
-              trancheAge={a.trancheAge}
-              resume={a.resume}
-              categorie={a.categorie}
-              texteBouton={a.texteBouton}
-              href={a.slug ? withBase(`/activites/${a.slug}`) : undefined}
-            />
-          ))
-        }
+    <section class="hero scallop-bottom">
+      <Sparkle color="var(--color-sun)" size={30} />
+      <Sparkle color="var(--color-paper)" size={18} />
+      <Sparkle color="var(--color-coral)" size={22} />
+      <div class="wrap hero-content">
+        <p class="eyebrow">Centre équestre de Kairon Plage</p>
+        <h1>Les poneys et les chevaux aident à grandir</h1>
+        <p class="subtitle">Devenez cavalier dès 2 ans, entre mer et campagne à Saint-Pair-sur-Mer.</p>
+        <a class="cta-primary" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
       </div>
-      <a class="see-all" href={withBase("/activites")}>Voir toutes les activités & filtrer →</a>
     </section>
 
-    <section class="reassurance">
-      <h2>Depuis plus de 50 ans</h2>
-      <div class="reassurance-grid">
-        <div>
-          <h3>Pédagogie poney</h3>
-          <p>Une pédagogie « poney » développée depuis plus de 50 ans, dans l'esprit du mouvement poney né en France dans les années 1970.</p>
+    <Marquee
+      text="RÉSERVEZ UN COURS D'ESSAI"
+      background="var(--color-sun)"
+      color="var(--color-ink)"
+    />
+
+    <div class="wrap">
+      <section class="doors">
+        <a class="door door-coral" href={withBase("/activites")}>
+          <span class="door-eyebrow">Débuter</span>
+          <h2>Mon enfant débute</h2>
+          <p>Baby cavaliers dès 2 ans, pédagogie ludique jusqu'aux premiers galops.</p>
+        </a>
+        <a class="door door-sky" href={withBase("/activites")}>
+          <span class="door-eyebrow">Progresser</span>
+          <h2>Je veux progresser & concourir</h2>
+          <p>Cours Expert dès le Galop 4, challenge club d'hiver, compétitions officielles.</p>
+        </a>
+        <a class="door door-meadow" href={withBase("/proprietaires-pension")}>
+          <span class="door-eyebrow">Confier son cheval</span>
+          <h2>J'ai un cheval à mettre en pension</h2>
+          <p>
+            {pensionMoinsCher
+              ? `À partir de ${pensionMoinsCher.prix} € / ${pensionMoinsCher.periode}, box ou pré, soins inclus.`
+              : "Box ou pré, soins inclus — nous contacter pour les tarifs."}
+          </p>
+        </a>
+      </section>
+
+      <section id="activites" class="activites">
+        <h2>Nos activités</h2>
+        <div class="activites-grid">
+          {
+            activites.map((a: any) => (
+              <ActivityCard
+                titre={a.titre}
+                trancheAge={a.trancheAge}
+                resume={a.resume}
+                categorie={a.categorie}
+                texteBouton={a.texteBouton}
+                href={a.slug ? withBase(`/activites/${a.slug}`) : undefined}
+              />
+            ))
+          }
         </div>
-        <div>
-          <h3>Label Bien-être animal</h3>
-          <p>Le centre équestre de Kairon Plage est labellisé Bien-être animal par la FFE.</p>
+        <a class="see-all" href={withBase("/activites")}>Voir toutes les activités & filtrer →</a>
+      </section>
+    </div>
+
+    <section class="reassurance scallop-top scallop-bottom">
+      <div class="wrap">
+        <h2>Depuis plus de 50 ans</h2>
+        <div class="reassurance-grid">
+          <div>
+            <h3>Pédagogie poney</h3>
+            <p>Une pédagogie « poney » développée depuis plus de 50 ans, dans l'esprit du mouvement poney né en France dans les années 1970.</p>
+          </div>
+          <div>
+            <h3>Label Bien-être animal</h3>
+            <p>Le centre équestre de Kairon Plage est labellisé Bien-être animal par la FFE.</p>
+          </div>
+          <div>
+            <h3>Entre mer et campagne</h3>
+            <p>Un cadre à Saint-Pair-sur-Mer particulièrement adapté aux promenades et randonnées.</p>
+          </div>
+          <div>
+            <h3>Crinières solidaires</h3>
+            <p>Un dispositif du Comité départemental d'équitation de la Manche pour les familles à revenus modestes.</p>
+          </div>
         </div>
-        <div>
-          <h3>Entre mer et campagne</h3>
-          <p>Un cadre à Saint-Pair-sur-Mer particulièrement adapté aux promenades et randonnées.</p>
-        </div>
-        <div>
-          <h3>Crinières solidaires</h3>
-          <p>Un dispositif du Comité départemental d'équitation de la Manche pour les familles à revenus modestes.</p>
-        </div>
+        <a class="see-all see-all-light" href={withBase("/le-centre")}>Notre équipe, nos installations, nos valeurs →</a>
       </div>
-      <a class="see-all" href={withBase("/le-centre")}>Notre équipe, nos installations, nos valeurs →</a>
     </section>
 
-    <section id="pension" class="pension-teaser">
-      <h2>Propriétaires & pension</h2>
-      <p>
-        Box individuel ou plein-air, soins quotidiens, accès aux carrières et sentiers.
-        {pensionMoinsCher && ` À partir de ${pensionMoinsCher.prix} € / ${pensionMoinsCher.periode}.`}
-      </p>
-      <a class="see-all" href={withBase("/proprietaires-pension")}>Nos services & tarifs pension →</a>
-    </section>
-
-    <section class="actualites">
-      <h2>Actualités</h2>
-      {articles.length > 0 ? (
-        <div class="actualites-grid">
-          {articles.map((article: any) => (
-            <a class="actu-card" href={withBase(`/competition-vie-club/actualites/${article.slug}`)}>
-              <span class="actu-date">{dateFormatter.format(new Date(article.datePublication))}</span>
-              <h3>{article.titre}</h3>
-              {article.resume && <p>{article.resume}</p>}
-            </a>
-          ))}
+    <div class="wrap">
+      <section id="pension" class="pension-teaser">
+        <div class="pension-badge">
+          {pensionMoinsCher ? (
+            <>
+              <strong>{pensionMoinsCher.prix}€</strong>
+              <span>/ {pensionMoinsCher.periode}</span>
+            </>
+          ) : (
+            <strong>Pension</strong>
+          )}
         </div>
-      ) : (
-        <p class="note">Les premières actualités arrivent bientôt.</p>
-      )}
-      <a class="see-all" href={withBase("/competition-vie-club#actualites")}>Toutes les actualités →</a>
-    </section>
+        <div>
+          <h2>Propriétaires & pension</h2>
+          <p>Box individuel ou plein-air, soins quotidiens, accès aux carrières et sentiers.</p>
+          <a class="see-all" href={withBase("/proprietaires-pension")}>Nos services & tarifs pension →</a>
+        </div>
+      </section>
 
-    <section id="essai" class="essai">
-      <h2>Envie d'essayer ?</h2>
-      <p>Un seul formulaire, deux minutes : dites-nous l'âge et le niveau du cavalier, on s'occupe du reste.</p>
-      <a class="cta-primary" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
-    </section>
+      <section class="actualites">
+        <h2>Actualités</h2>
+        {articles.length > 0 ? (
+          <div class="actualites-grid">
+            {articles.map((article: any) => (
+              <a class="actu-card" href={withBase(`/competition-vie-club/actualites/${article.slug}`)}>
+                <span class="actu-date">{dateFormatter.format(new Date(article.datePublication))}</span>
+                <h3>{article.titre}</h3>
+                {article.resume && <p>{article.resume}</p>}
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p class="note">Les premières actualités arrivent bientôt.</p>
+        )}
+        <a class="see-all" href={withBase("/competition-vie-club#actualites")}>Toutes les actualités →</a>
+      </section>
+
+      <section id="essai" class="essai">
+        <h2>Envie d'essayer ?</h2>
+        <p>Un seul formulaire, deux minutes : dites-nous l'âge et le niveau du cavalier, on s'occupe du reste.</p>
+        <a class="cta-primary" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
+      </section>
+    </div>
   </main>
 
   <footer class="site-footer">
@@ -137,7 +163,7 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
 </Layout>
 
 <style>
-  main {
+  .wrap {
     max-width: 1080px;
     margin: 0 auto;
     padding: 0 var(--space-3);
@@ -147,7 +173,7 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
     padding: var(--space-5) 0;
   }
 
-  section + section {
+  .wrap > section + section {
     border-top: 1px solid var(--color-line);
   }
 
@@ -157,10 +183,37 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
     margin: 0 0 var(--space-3);
   }
 
-  /* hero */
+  /* hero — bloc plein bleu ciel, scallop en bas */
   .hero {
+    position: relative;
+    background: var(--color-sky);
+    padding-bottom: calc(var(--space-5) + 22px);
+    overflow: hidden;
+  }
+
+  .hero :global(.sparkle) {
+    position: absolute;
+  }
+
+  .hero :global(.sparkle:nth-of-type(1)) {
+    top: 12%;
+    right: 10%;
+  }
+
+  .hero :global(.sparkle:nth-of-type(2)) {
+    bottom: 18%;
+    left: 8%;
+  }
+
+  .hero :global(.sparkle:nth-of-type(3)) {
+    top: 55%;
+    right: 22%;
+  }
+
+  .hero-content {
     max-width: 640px;
     padding-top: var(--space-5);
+    position: relative;
   }
 
   .eyebrow {
@@ -168,20 +221,20 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
     text-transform: uppercase;
     letter-spacing: 0.08em;
     font-size: 0.8rem;
-    color: var(--color-sky-deep);
+    color: var(--color-pine);
     margin: 0;
   }
 
   .hero h1 {
-    font-size: clamp(2rem, 6vw, 3.5rem);
-    line-height: 1;
+    font-size: clamp(2.4rem, 7vw, 4.2rem);
+    line-height: 0.95;
     color: var(--color-pine);
     margin: var(--space-2) 0;
   }
 
   .hero .subtitle {
-    color: var(--color-ink-soft);
-    font-size: 1.1rem;
+    color: var(--color-ink);
+    font-size: 1.15rem;
     max-width: 36ch;
     margin: 0;
   }
@@ -208,11 +261,24 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
   .door {
     display: block;
     background: var(--color-paper);
-    border: 1px solid var(--color-line);
+    border: 2px solid var(--color-line);
     border-radius: var(--radius-card);
     padding: var(--space-3);
     text-decoration: none;
     color: inherit;
+    border-top-width: 6px;
+  }
+
+  .door-coral {
+    border-top-color: var(--color-coral);
+  }
+
+  .door-sky {
+    border-top-color: var(--color-sky-deep);
+  }
+
+  .door-meadow {
+    border-top-color: var(--color-meadow);
   }
 
   .door-eyebrow {
@@ -250,7 +316,22 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
     text-decoration: none;
   }
 
-  /* reassurance */
+  .see-all-light {
+    color: var(--color-paper);
+  }
+
+  /* reassurance — bloc plein vert pin */
+  .reassurance {
+    background: var(--color-pine);
+    color: var(--color-paper);
+    padding-top: calc(var(--space-5) + 22px);
+    padding-bottom: calc(var(--space-5) + 22px);
+  }
+
+  .reassurance h2 {
+    color: var(--color-paper);
+  }
+
   .reassurance-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -262,21 +343,56 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
     text-transform: none;
     font-family: var(--font-body);
     font-weight: 700;
-    color: var(--color-pine);
+    color: var(--color-sun);
     margin: 0 0 0.4rem;
   }
 
   .reassurance-grid p {
     margin: 0;
-    color: var(--color-ink-soft);
+    color: var(--color-paper);
+    opacity: 0.85;
     font-size: 0.9rem;
     line-height: 1.5;
   }
 
   /* pension teaser */
+  .pension-teaser {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .pension-badge {
+    flex: none;
+    width: 108px;
+    height: 108px;
+    border-radius: 50%;
+    background: var(--color-sun);
+    color: var(--color-ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(-8deg);
+    font-family: var(--font-display);
+  }
+
+  .pension-badge strong {
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+
+  .pension-badge span {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+  }
+
   .pension-teaser p {
     color: var(--color-ink-soft);
     max-width: 60ch;
+    margin: 0.5rem 0 0;
   }
 
   .note {
@@ -323,10 +439,6 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
   .essai p {
     max-width: 56ch;
     color: var(--color-ink-soft);
-  }
-
-  .essai strong {
-    color: var(--color-ink);
   }
 
   /* footer */
