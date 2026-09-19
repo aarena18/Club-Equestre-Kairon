@@ -1,0 +1,75 @@
+/*
+  Design tokens — direction artistique validée (phase 2/3 du projet).
+  Palette ancrée sur la photo réelle de la baie de Kairon plutôt que sur
+  un vert sapin "club privé" : blanc dominant, vert/bleu de prairie et de
+  ciel, corail en accent premier plan, jaune réservé aux illustrations
+  dessinées à la main, vert profond réservé au CTA principal et au footer.
+*/
+
+:root {
+  /* couleur */
+  --color-paper: #ffffff;
+  --color-ink: #23281e;
+  --color-ink-soft: #565f49;
+  --color-ink-faint: #8a9180;
+  --color-line: #e2d9be;
+
+  --color-sky: #86aab2;
+  --color-sky-deep: #4e7681;
+  --color-meadow: #74905a;
+  --color-meadow-deep: #4c6238;
+  --color-coral: #d97c4c; /* accent premier plan : CTA secondaires, surlignage, tags */
+  --color-sun: #e2a238; /* réservé aux illustrations dessinées à la main */
+  --color-pine: #2c4430; /* CTA principal, footer, texte fort */
+
+  /* typographie */
+  /* "Big Shoulders Display" est un stand-in libre pour Chopen (police
+     commerciale de la DA d'origine) — à remplacer une fois la licence
+     Chopen acquise pour le site en production. */
+  --font-display: "Big Shoulders Display", system-ui, sans-serif;
+  --font-body: "Schibsted Grotesk", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* échelle */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2.5rem;
+  --space-5: 4rem;
+  --radius-card: 14px;
+  --radius-pill: 100px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: var(--color-ink);
+  margin: 0;
+}
+
+a {
+  color: var(--color-sky-deep);
+}

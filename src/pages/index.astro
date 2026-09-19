@@ -1,0 +1,57 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Kairon Plage — Poney club & club hippique à Saint-Pair-sur-Mer">
+  <main class="hero">
+    <p class="eyebrow">Centre équestre de Kairon Plage</p>
+    <h1>Les poneys et les chevaux aident à grandir</h1>
+    <p class="subtitle">
+      Devenez cavalier dès 2 ans, entre mer et campagne à Saint-Pair-sur-Mer.
+    </p>
+    <a class="cta" href="#essai">Réserver un cours d'essai</a>
+  </main>
+</Layout>
+
+<style>
+  .hero {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: var(--space-5) var(--space-3);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    color: var(--color-sky-deep);
+    margin: 0;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    line-height: 1;
+    color: var(--color-pine);
+    margin: var(--space-2) 0;
+  }
+
+  .subtitle {
+    color: var(--color-ink-soft);
+    font-size: 1.1rem;
+    max-width: 36ch;
+    margin: 0;
+  }
+
+  .cta {
+    display: inline-block;
+    margin-top: var(--space-3);
+    background: var(--color-pine);
+    color: var(--color-paper);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    padding: 0.8rem 1.4rem;
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+  }
+</style>
