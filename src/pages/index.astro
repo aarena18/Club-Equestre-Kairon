@@ -16,8 +16,6 @@ const pensionMoinsCher = await sanityClient.fetch(
   `*[_type == "tarif" && categorie == "pension"] | order(prix asc)[0]{prix, periode}`,
 );
 
-const siteSettings = await sanityClient.fetch(`*[_type == "siteSettings"][0]{telephone, email}`);
-
 const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 ---
 
@@ -31,7 +29,7 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
       <p class="subtitle">
         Devenez cavalier dès 2 ans, entre mer et campagne à Saint-Pair-sur-Mer.
       </p>
-      <a class="cta-primary" href="#essai">Réserver un cours d'essai</a>
+      <a class="cta-primary" href="/infos-pratiques#essai">Réserver un cours d'essai</a>
     </section>
 
     <section class="doors">
@@ -125,13 +123,8 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
 
     <section id="essai" class="essai">
       <h2>Envie d'essayer ?</h2>
-      <p>
-        Le formulaire de demande d'essai en ligne arrive avec la page « Infos pratiques ».
-        En attendant, contactez directement le centre
-        {siteSettings?.telephone && <> au <strong>{siteSettings.telephone}</strong></>}
-        {siteSettings?.email && <> ou par email à <strong>{siteSettings.email}</strong></>}
-        {!siteSettings?.telephone && !siteSettings?.email && " — coordonnées à venir."}
-      </p>
+      <p>Un seul formulaire, deux minutes : dites-nous l'âge et le niveau du cavalier, on s'occupe du reste.</p>
+      <a class="cta-primary" href="/infos-pratiques#essai">Réserver un cours d'essai</a>
     </section>
   </main>
 
