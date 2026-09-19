@@ -5,7 +5,7 @@ import ActivityCard from "../components/ActivityCard.astro";
 import { sanityClient } from "../lib/sanity";
 
 const activites = await sanityClient.fetch(
-  `*[_type == "activite"] | order(ordre asc){titre, categorie, trancheAge, resume}`,
+  `*[_type == "activite"] | order(ordre asc){titre, "slug": slug.current, categorie, trancheAge, resume, texteBouton}`,
 );
 
 const articles = await sanityClient.fetch(
@@ -35,12 +35,12 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
     </section>
 
     <section class="doors">
-      <a class="door" href="#activites">
+      <a class="door" href="/activites">
         <span class="door-eyebrow">Débuter</span>
         <h2>Mon enfant débute</h2>
         <p>Baby cavaliers dès 2 ans, pédagogie ludique jusqu'aux premiers galops.</p>
       </a>
-      <a class="door" href="#activites">
+      <a class="door" href="/activites">
         <span class="door-eyebrow">Progresser</span>
         <h2>Je veux progresser & concourir</h2>
         <p>Cours Expert dès le Galop 4, challenge club d'hiver, compétitions officielles.</p>
@@ -59,8 +59,20 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
     <section id="activites" class="activites">
       <h2>Nos activités</h2>
       <div class="activites-grid">
-        {activites.map((a: any) => <ActivityCard titre={a.titre} trancheAge={a.trancheAge} resume={a.resume} />)}
+        {
+          activites.map((a: any) => (
+            <ActivityCard
+              titre={a.titre}
+              trancheAge={a.trancheAge}
+              resume={a.resume}
+              categorie={a.categorie}
+              texteBouton={a.texteBouton}
+              href={a.slug ? `/activites/${a.slug}` : undefined}
+            />
+          ))
+        }
       </div>
+      <a class="see-all" href="/activites">Voir toutes les activités & filtrer →</a>
     </section>
 
     <section class="reassurance">
@@ -231,6 +243,15 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: var(--space-2);
+  }
+
+  .see-all {
+    display: inline-block;
+    margin-top: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-coral);
+    text-decoration: none;
   }
 
   /* reassurance */

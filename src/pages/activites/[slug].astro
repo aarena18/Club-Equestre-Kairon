@@ -1,0 +1,117 @@
+---
+import { toHTML } from "@portabletext/to-html";
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import { sanityClient } from "../../lib/sanity";
+
+export async function getStaticPaths() {
+  const activites = await sanityClient.fetch(
+    `*[_type == "activite" && defined(slug.current)]{"slug": slug.current}`,
+  );
+
+  return activites.map((a: { slug: string }) => ({ params: { slug: a.slug } }));
+}
+
+const { slug } = Astro.params;
+
+const activite = await sanityClient.fetch(
+  `*[_type == "activite" && slug.current == $slug][0]{titre, categorie, trancheAge, resume, description}`,
+  { slug },
+);
+
+const descriptionHtml = activite?.description ? toHTML(activite.description) : "";
+---
+
+<Layout title={`${activite.titre} — Kairon Plage`} description={activite.resume ?? undefined}>
+  <Header />
+
+  <main>
+    <a class="back" href="/activites">← Toutes les activités</a>
+    <p class="eyebrow">Activités & cours</p>
+    <h1>{activite.titre}</h1>
+    {activite.trancheAge && <span class="tranche">{activite.trancheAge}</span>}
+
+    <div class="body" set:html={descriptionHtml} />
+
+    <a class="cta-primary" href="/#essai">Réserver un cours d'essai</a>
+  </main>
+
+  <footer class="site-footer">
+    <p>Centre équestre de Kairon Plage — Saint-Pair-sur-Mer</p>
+  </footer>
+</Layout>
+
+<style>
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: var(--space-5) var(--space-3);
+  }
+
+  .back {
+    display: inline-block;
+    margin-bottom: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-sky-deep);
+    text-decoration: none;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    color: var(--color-sky-deep);
+    margin: 0;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+    color: var(--color-pine);
+    margin: var(--space-2) 0 0;
+  }
+
+  .tranche {
+    display: inline-block;
+    margin-top: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-coral);
+  }
+
+  .body {
+    margin-top: var(--space-3);
+    color: var(--color-ink-soft);
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  .body :global(p) {
+    margin: 0 0 1em;
+  }
+
+  .cta-primary {
+    display: inline-block;
+    margin-top: var(--space-3);
+    background: var(--color-pine);
+    color: var(--color-paper);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    padding: 0.8rem 1.4rem;
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+  }
+
+  .site-footer {
+    margin-top: var(--space-5);
+    padding: var(--space-3);
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-ink-faint);
+    border-top: 1px solid var(--color-line);
+  }
+</style>

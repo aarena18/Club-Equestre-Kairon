@@ -3,15 +3,22 @@ interface Props {
   titre: string;
   trancheAge?: string | null;
   resume?: string | null;
+  href?: string;
+  categorie?: string;
+  texteBouton?: string | null;
 }
 
-const { titre, trancheAge, resume } = Astro.props;
+const { titre, trancheAge, resume, href, categorie, texteBouton } = Astro.props;
+const Tag = href ? "a" : "div";
 ---
 
-<article class="activity-card">
-  <h3>{titre}</h3>
-  {trancheAge && <span class="tranche">{trancheAge}</span>}
-  {resume && <p>{resume}</p>}
+<article class="activity-card" data-categorie={categorie}>
+  <Tag class="activity-card-inner" href={href}>
+    <h3>{titre}</h3>
+    {trancheAge && <span class="tranche">{trancheAge}</span>}
+    {resume && <p>{resume}</p>}
+    {href && <span class="lien">{texteBouton || "Découvrir"} →</span>}
+  </Tag>
 </article>
 
 <style>
@@ -19,7 +26,14 @@ const { titre, trancheAge, resume } = Astro.props;
     background: var(--color-paper);
     border: 1px solid var(--color-line);
     border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+
+  .activity-card-inner {
+    display: block;
     padding: var(--space-3);
+    color: inherit;
+    text-decoration: none;
   }
 
   .activity-card h3 {
@@ -42,5 +56,14 @@ const { titre, trancheAge, resume } = Astro.props;
     color: var(--color-ink-soft);
     font-size: 0.9rem;
     line-height: 1.5;
+  }
+
+  .lien {
+    display: inline-block;
+    margin-top: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--color-coral);
   }
 </style>
