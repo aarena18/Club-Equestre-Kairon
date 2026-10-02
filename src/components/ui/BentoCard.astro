@@ -1,0 +1,255 @@
+---
+import { withBase } from "../../lib/url";
+import { bentoIcons, type BentoIcon } from "./bento-icons";
+
+/**
+ * Carte bento. Fond photo (avec voile sombre pour la lisibilité) ou
+ * aplat de couleur ; icône, titre, texte, contenu libre en slot. Au
+ * survol, le texte remonte et un bouton apparaît — sur écran tactile ou
+ * au clavier, le bouton est toujours visible.
+ */
+interface Props {
+  name: string;
+  description?: string;
+  icon?: BentoIcon;
+  image?: string;
+  tone?: "mist" | "teal" | "meadow" | "sun" | "pine";
+  href?: string;
+  cta?: string;
+  /** row-start / col-start / row-end / col-end (≥ 900px) */
+  area?: string;
+  id?: string;
+}
+
+const { name, description, icon, image, tone = "mist", href, cta = "En savoir plus", area, id } = Astro.props;
+---
+
+<article
+  id={id}
+  class:list={["bento-card", `tone-${tone}`, { "has-image": !!image, "has-cta": !!href }]}
+  style={area ? `--area:${area}` : undefined}
+>
+  {image && <img class="bento-bg" src={withBase(image)} alt="" loading="lazy" />}
+  <div class="bento-shade" aria-hidden="true"></div>
+
+  <div class="bento-body">
+    {
+      icon && (
+        <span class="bento-icon" aria-hidden="true">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            set:html={bentoIcons[icon]}
+          />
+        </span>
+      )
+    }
+    <h3>{name}</h3>
+    {description && <p>{description}</p>}
+    <div class="bento-extra"><slot /></div>
+  </div>
+
+  {
+    href && (
+      <div class="bento-cta">
+        <a class="bento-link" href={withBase(href)}>
+          {cta} <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    )
+  }
+</article>
+
+<style>
+  .bento-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    background: var(--bg);
+    color: var(--fg);
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.03),
+      0 2px 4px rgba(0, 0, 0, 0.05),
+      0 14px 28px -10px rgba(0, 0, 0, 0.12);
+    isolation: isolate;
+    scroll-margin-top: 110px;
+  }
+
+  @media (min-width: 900px) {
+    .bento-card {
+      grid-area: var(--area, auto);
+    }
+  }
+
+  .tone-mist {
+    --bg: var(--color-teal-mist);
+    --fg: var(--color-ink);
+    --accent: var(--color-meadow-deep);
+  }
+  .tone-teal {
+    --bg: var(--color-teal-strong);
+    --fg: #fff;
+    --accent: #fff;
+  }
+  .tone-meadow {
+    --bg: var(--color-meadow-deep);
+    --fg: #fff;
+    --accent: #fff;
+  }
+  .tone-sun {
+    --bg: var(--color-sun);
+    --fg: var(--color-ink);
+    --accent: var(--color-ink);
+  }
+  .tone-pine {
+    --bg: var(--color-pine);
+    --fg: #fff;
+    --accent: var(--color-sun);
+  }
+  .has-image {
+    --fg: #fff;
+    --accent: #fff;
+  }
+
+  .bento-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .bento-shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    transition: background 0.3s ease;
+  }
+
+  .has-image .bento-shade {
+    background: linear-gradient(to top, rgba(14, 34, 22, 0.88) 0%, rgba(14, 34, 22, 0.4) 58%, rgba(14, 34, 22, 0.05) 100%);
+  }
+
+  .bento-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: var(--space-3);
+    transition: transform 0.3s ease;
+  }
+
+  .bento-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 0.4rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--fg) 14%, transparent);
+    color: var(--accent);
+    transform-origin: left center;
+    transition: transform 0.3s ease;
+  }
+
+  .bento-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: var(--fg);
+  }
+
+  p {
+    margin: 0;
+    max-width: 38ch;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--fg) 88%, transparent);
+  }
+
+  .bento-extra :global(ul) {
+    list-style: none;
+    margin: 0.4rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-size: 0.95rem;
+  }
+
+  .bento-extra :global(a) {
+    color: inherit;
+    text-underline-offset: 3px;
+  }
+
+  .bento-cta {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: var(--space-2) var(--space-3);
+    opacity: 0;
+    transform: translateY(1.5rem);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .bento-link {
+    display: inline-flex;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-pill);
+    background: #fff;
+    color: var(--color-pine);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+
+  /* Survol (souris) : le texte remonte, le bouton apparaît. */
+  @media (hover: hover) {
+    .has-cta:hover .bento-body {
+      transform: translateY(-2.6rem);
+    }
+    .has-cta:hover .bento-icon {
+      transform: scale(0.75);
+    }
+    .has-cta:hover .bento-cta,
+    .bento-cta:focus-within {
+      opacity: 1;
+      transform: none;
+    }
+    .has-image:hover .bento-bg {
+      transform: scale(1.05);
+    }
+  }
+
+  /* Tactile : pas de survol, le bouton reste visible sous le texte. */
+  @media (hover: none) {
+    .bento-cta {
+      position: static;
+      opacity: 1;
+      transform: none;
+      padding-top: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bento-bg,
+    .bento-body,
+    .bento-icon,
+    .bento-cta {
+      transition: none;
+    }
+  }
+</style>

@@ -3,10 +3,12 @@ import Horse from "./Horse.astro";
 import SocialIcons from "./SocialIcons.astro";
 import { sanityClient } from "../lib/sanity";
 import { withBase } from "../lib/url";
-import { navLinks, ctaInscription } from "../data/site";
+import { navLinks, ctaInscription, reseauxSociaux } from "../data/site";
 
 const settings = await sanityClient.fetch(`*[_type == "siteSettings"][0]{telephone, email, adresse, facebook, instagram}`);
-const hasSocials = settings?.instagram || settings?.facebook;
+const instagram = settings?.instagram ?? reseauxSociaux.instagram;
+const facebook = settings?.facebook ?? reseauxSociaux.facebook;
+const hasSocials = Boolean(instagram || facebook);
 ---
 
 <footer class="site-footer scallop-top">
@@ -17,7 +19,7 @@ const hasSocials = settings?.instagram || settings?.facebook;
         hasSocials && (
           <>
             <p>Suivez-nous sur :</p>
-            <SocialIcons instagram={settings.instagram} facebook={settings.facebook} size={30} />
+            <SocialIcons instagram={instagram} facebook={facebook} size={30} />
           </>
         )
       }

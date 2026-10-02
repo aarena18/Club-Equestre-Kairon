@@ -1,5 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import BentoGrid from "../../components/ui/BentoGrid.astro";
+import BentoCard from "../../components/ui/BentoCard.astro";
 import PageHero from "../../components/PageHero.astro";
 import Horse from "../../components/Horse.astro";
 import { sanityClient, urlFor } from "../../lib/sanity";
@@ -109,23 +111,38 @@ const valeurs = [
       <div class="center">
         <h2 class="title-dots">Nos valeurs, notre association & nos labels</h2>
       </div>
-      <div class="grid valeurs">
-        {
-          valeurs.map((v) => (
-            <div class="card">
-              <h3>{v.titre}</h3>
-              <p>{v.texte}</p>
-            </div>
-          ))
-        }
-        <div class="card card-sun">
-          <h3>Crinières solidaires</h3>
-          <p>
-            Un dispositif du Comité départemental d'équitation de la Manche pour les familles à revenus modestes —
-            voir les <a href={withBase("/tarifs#solidarite")}>aides & solidarité</a>.
-          </p>
-        </div>
-      </div>
+      <BentoGrid rows={2}>
+        <BentoCard
+          name="Label Bien-être animal"
+          description="Le centre est labellisé Bien-être animal par la FFE, et inscrit ses cavaliers dans cette démarche."
+          icon="heart"
+          image="/images/pre-baie.jpg"
+          area="1 / 1 / 3 / 2"
+        />
+        <BentoCard
+          name="Association loi 1901"
+          description="Le centre équestre de Kairon Plage est porté par l'association « Saint Pair Équitation »."
+          icon="shield"
+          tone="teal"
+          area="1 / 2 / 2 / 4"
+        />
+        <BentoCard
+          name="Club affilié FFE"
+          description="Poney club et club hippique affiliés à la Fédération Française d'Équitation."
+          icon="award"
+          image="/images/carriere.jpg"
+          area="2 / 2 / 3 / 3"
+        />
+        <BentoCard
+          name="Crinières solidaires"
+          description="Un dispositif du Comité départemental d'équitation de la Manche pour les familles à revenus modestes."
+          icon="users"
+          tone="sun"
+          href="/tarifs#solidarite"
+          cta="Aides & solidarité"
+          area="2 / 3 / 3 / 4"
+        />
+      </BentoGrid>
       <img
         class="labels"
         src={withBase("/images/labels.png")}

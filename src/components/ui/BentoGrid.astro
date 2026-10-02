@@ -1,0 +1,32 @@
+---
+/**
+ * Grille bento : 3 colonnes de lignes égales, chaque carte se place
+ * elle-même via sa prop `area` (row-start / col-start / row-end /
+ * col-end). Sous 900px : une seule colonne, les placements sont ignorés.
+ */
+interface Props {
+  rows?: number;
+}
+
+const { rows = 2 } = Astro.props;
+---
+
+<div class="bento-grid" style={`--rows:${rows}`}>
+  <slot />
+</div>
+
+<style>
+  .bento-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: minmax(15rem, auto);
+    gap: var(--space-2);
+  }
+
+  @media (min-width: 900px) {
+    .bento-grid {
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(var(--rows), minmax(16rem, auto));
+    }
+  }
+</style>
