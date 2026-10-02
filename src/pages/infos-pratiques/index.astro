@@ -1,5 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import BentoGrid from "../../components/ui/BentoGrid.astro";
+import BentoCard from "../../components/ui/BentoCard.astro";
 import PageHero from "../../components/PageHero.astro";
 import Faq from "../../components/Faq.astro";
 import Horse from "../../components/Horse.astro";
@@ -24,42 +26,44 @@ const siteSettings = await sanityClient.fetch(
   />
 
   <section class="section">
-    <div class="container info-grid">
-      <div id="trouver" class="info-card">
-        <h2 class="title-dots">Nous trouver</h2>
-        <p>
-          Centre équestre de Kairon Plage<br />Saint-Pair-sur-Mer, Manche (Normandie)
-          {siteSettings?.adresse && <><br />{siteSettings.adresse}</>}
-        </p>
-        {!siteSettings?.adresse && <p class="note">Adresse précise à venir.</p>}
-      </div>
+    <div class="container">
+      <BentoGrid rows={2}>
+        <BentoCard
+          id="trouver"
+          name="Nous trouver"
+          description="Centre équestre de Kairon Plage, Saint-Pair-sur-Mer, Manche (Normandie)."
+          icon="pin"
+          image="/images/hero-vue-aerienne.jpg"
+          area="1 / 1 / 3 / 2"
+        >
+          {siteSettings?.adresse ? <ul><li>{siteSettings.adresse}</li></ul> : <ul><li>Adresse précise à venir.</li></ul>}
+        </BentoCard>
 
-      <div id="horaires" class="info-card">
-        <h2 class="title-dots">Horaires</h2>
-        {
-          siteSettings?.horaires && siteSettings.horaires.length > 0 ? (
-            <ul>
-              {siteSettings.horaires.map((h: string) => <li>{h}</li>)}
-            </ul>
-          ) : (
-            <p class="note">Horaires à venir — contactez le centre directement en attendant.</p>
-          )
-        }
-      </div>
+        <BentoCard id="horaires" name="Horaires" icon="clock" tone="mist" area="1 / 2 / 2 / 4">
+          {
+            siteSettings?.horaires && siteSettings.horaires.length > 0 ? (
+              <ul>
+                {siteSettings.horaires.map((h: string) => <li>{h}</li>)}
+              </ul>
+            ) : (
+              <ul><li>Horaires à venir — contactez le centre directement en attendant.</li></ul>
+            )
+          }
+        </BentoCard>
 
-      <div class="info-card">
-        <h2 class="title-dots">Nous joindre</h2>
-        {
-          siteSettings?.telephone || siteSettings?.email ? (
-            <ul>
-              {siteSettings.telephone && <li><a href={`tel:${siteSettings.telephone.replace(/\s/g, "")}`}>{siteSettings.telephone}</a></li>}
-              {siteSettings.email && <li><a href={`mailto:${siteSettings.email}`}>{siteSettings.email}</a></li>}
-            </ul>
-          ) : (
-            <p class="note">Coordonnées à venir — utilisez le formulaire ci-dessous.</p>
-          )
-        }
-      </div>
+        <BentoCard name="Nous joindre" icon="phone" tone="sun" area="2 / 2 / 3 / 4">
+          {
+            siteSettings?.telephone || siteSettings?.email ? (
+              <ul>
+                {siteSettings.telephone && <li><a href={`tel:${siteSettings.telephone.replace(/\s/g, "")}`}>{siteSettings.telephone}</a></li>}
+                {siteSettings.email && <li><a href={`mailto:${siteSettings.email}`}>{siteSettings.email}</a></li>}
+              </ul>
+            ) : (
+              <ul><li>Coordonnées à venir — utilisez le formulaire ci-dessous.</li></ul>
+            )
+          }
+        </BentoCard>
+      </BentoGrid>
     </div>
   </section>
 
@@ -131,38 +135,6 @@ const siteSettings = await sanityClient.fetch(
 </Layout>
 
 <style>
-  .info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
-    gap: var(--space-3);
-  }
-
-  .info-card {
-    padding: var(--space-3);
-    border-radius: var(--radius-card);
-    background: var(--color-teal-mist);
-    scroll-margin-top: 110px;
-  }
-
-  .info-card h2 {
-    font-size: 1.15rem;
-    margin-bottom: var(--space-2);
-  }
-
-  .info-card p,
-  .info-card ul {
-    margin: 0;
-    color: var(--color-ink-soft);
-  }
-
-  .info-card ul {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-
   .faq-section {
     padding-top: 0;
   }

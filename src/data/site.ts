@@ -60,3 +60,14 @@ export const galerieStatique = [
   { src: "/images/vacances.jpg", alt: "Groupe d'enfants en stage avec deux poneys blancs" },
   { src: "/images/adultes.jpg", alt: "Une cavalière franchit un obstacle de CSO" },
 ];
+
+/**
+ * Réseaux sociaux affichés dans le footer. Les liens renseignés dans
+ * "Réglages du site" (Studio) ont la priorité ; sans eux, on retombe sur
+ * ces valeurs. Facebook = le lien que l'ancien site du club proposait ;
+ * Instagram à ajouter ici (ou dans le Studio) dès qu'on a l'adresse.
+ */
+export const reseauxSociaux: { facebook?: string; instagram?: string } = {
+  facebook: "https://www.facebook.com/patrice.cottin",
+  instagram: undefined,
+};

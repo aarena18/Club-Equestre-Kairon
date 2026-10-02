@@ -1,5 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import BentoGrid from "../../components/ui/BentoGrid.astro";
+import BentoCard from "../../components/ui/BentoCard.astro";
 import PageHero from "../../components/PageHero.astro";
 import Horse from "../../components/Horse.astro";
 import { sanityClient } from "../../lib/sanity";
@@ -39,15 +41,37 @@ const services = [
           selon le niveau de pratique du cheval — du loisir jusqu'à la compétition élite ou amateur.
         </p>
       </div>
-      <div class="grid services">
-        {
-          services.map((s) => (
-            <div class="card">
-              <h3>{s.titre}</h3>
-              <p>{s.texte}</p>
-            </div>
-          ))
-        }
+      <div class="services">
+        <BentoGrid rows={2}>
+          <BentoCard
+            name="Box ou plein-air"
+            description="Box individuel ou vie au pré, selon les besoins de votre cheval."
+            icon="home"
+            image="/images/pre-baie.jpg"
+            area="1 / 1 / 2 / 3"
+          />
+          <BentoCard
+            name="Entre mer et campagne"
+            description="Carrières, sentiers et sorties en extérieur, sous conditions."
+            icon="leaf"
+            image="/images/balade-chemin.jpg"
+            area="1 / 3 / 3 / 4"
+          />
+          <BentoCard
+            name="Soins quotidiens"
+            description="Accès aux soins quotidiens et casier personnel pour votre matériel."
+            icon="sparkles"
+            tone="pine"
+            area="2 / 1 / 3 / 2"
+          />
+          <BentoCard
+            name="Cours & sorties"
+            description="Heures de cours encadrés et sorties individuelles sur le plat incluses."
+            icon="calendar"
+            image="/images/manege.jpg"
+            area="2 / 2 / 3 / 3"
+          />
+        </BentoGrid>
       </div>
       <p class="note center">Le travail à l'obstacle n'est pas autorisé lors d'un cours encadré.</p>
     </div>
@@ -166,10 +190,6 @@ const services = [
 <style>
   .services {
     margin: var(--space-4) 0 var(--space-2);
-  }
-
-  .services .card h3 {
-    color: var(--color-pine);
   }
 
   .precision {
