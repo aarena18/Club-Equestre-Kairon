@@ -29,7 +29,7 @@ const { name, description, icon, image, tone = "mist", href, cta = "En savoir pl
   class:list={["bento-card", `tone-${tone}`, { "has-image": !!image, "has-cta": !!href }]}
   style={area ? `--area:${area}` : undefined}
 >
-  {image && <img class="bento-bg" src={withBase(image)} alt="" loading="lazy" />}
+  {image && <img class="bento-bg" src={/^https?:/.test(image) ? image : withBase(image)} alt="" loading="lazy" />}
   <div class="bento-shade" aria-hidden="true"></div>
 
   <div class="bento-body">

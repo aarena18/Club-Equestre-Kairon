@@ -39,7 +39,7 @@ const siteSettings = await sanityClient.fetch(
           {siteSettings?.adresse ? <ul><li>{siteSettings.adresse}</li></ul> : <ul><li>Adresse précise à venir.</li></ul>}
         </BentoCard>
 
-        <BentoCard id="horaires" name="Horaires" icon="clock" tone="mist" area="1 / 2 / 2 / 4">
+        <BentoCard id="horaires" name="Horaires" icon="clock" image="/images/plage-coucher-soleil.jpg" area="1 / 2 / 2 / 4">
           {
             siteSettings?.horaires && siteSettings.horaires.length > 0 ? (
               <ul>
@@ -51,7 +51,7 @@ const siteSettings = await sanityClient.fetch(
           }
         </BentoCard>
 
-        <BentoCard name="Nous joindre" icon="phone" tone="sun" area="2 / 2 / 3 / 4">
+        <BentoCard name="Nous joindre" icon="phone" image="/images/pre-baie.jpg" area="2 / 2 / 3 / 4">
           {
             siteSettings?.telephone || siteSettings?.email ? (
               <ul>
