@@ -64,10 +64,9 @@ export const galerieStatique = [
 /**
  * Réseaux sociaux affichés dans le footer. Les liens renseignés dans
  * "Réglages du site" (Studio) ont la priorité ; sans eux, on retombe sur
- * ces valeurs. Facebook = le lien que l'ancien site du club proposait ;
- * Instagram à ajouter ici (ou dans le Studio) dès qu'on a l'adresse.
+ * ces valeurs.
  */
 export const reseauxSociaux: { facebook?: string; instagram?: string } = {
-  facebook: "https://www.facebook.com/patrice.cottin",
-  instagram: undefined,
+  facebook: "https://www.facebook.com/kairon.equitation",
+  instagram: "https://www.instagram.com/saint.pair.equitation/",
 };
