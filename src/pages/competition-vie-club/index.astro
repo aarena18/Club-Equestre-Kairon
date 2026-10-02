@@ -1,5 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import BentoGrid from "../../components/ui/BentoGrid.astro";
+import BentoCard from "../../components/ui/BentoCard.astro";
 import PageHero from "../../components/PageHero.astro";
 import SocialCards from "@/components/ui/card-fan-carousel";
 import { sanityClient, urlFor } from "../../lib/sanity";
@@ -52,26 +54,34 @@ const photosGalerie =
   />
 
   <section class="section">
-    <div class="container cards-2">
-      <article id="challenge" class="feature feature-sun">
-        <span class="kicker">Sur place, tous niveaux</span>
-        <h2>Challenge club d'hiver</h2>
-        <p>
-          Le centre organise un challenge d'hiver en CSO et Equifun, en 4 étapes — une première approche de la
-          compétition ouverte à tous les niveaux. Récompenses pour tous les participants, coupes aux trois premiers
-          du classement général.
-        </p>
-      </article>
-      <article id="sorties" class="feature feature-pine">
-        <span class="kicker">Dès le Galop 2</span>
-        <h2>Résultats & sorties officielles</h2>
-        <p>
-          Des sorties sont organisées tout au long de l'année, et le club organise sur place au moins deux
-          compétitions officielles chaque saison. Pour participer, un bulletin d'engagement doit être adressé au club
-          au plus tard le dimanche précédant la compétition.
-        </p>
-        <p class="small">Calendrier et résultats de la saison 2026/2027 à venir.</p>
-      </article>
+    <div class="container">
+      <BentoGrid rows={2}>
+        <BentoCard
+          id="challenge"
+          name="Challenge club d'hiver"
+          description="Un challenge en CSO et Equifun, en 4 étapes, sur place et ouvert à tous les niveaux : une première approche de la compétition. Récompenses pour tous les participants, coupes aux trois premiers du classement général."
+          icon="trophy"
+          image="/images/carriere.jpg"
+          area="1 / 1 / 3 / 2"
+        />
+        <BentoCard
+          id="sorties"
+          name="Résultats & sorties officielles"
+          description="Dès le Galop 2 : des sorties tout au long de l'année, et au moins deux compétitions officielles organisées sur place chaque saison. Un bulletin d'engagement est à adresser au club au plus tard le dimanche précédant la compétition."
+          icon="award"
+          image="/images/adultes.jpg"
+          area="1 / 2 / 2 / 4"
+        />
+        <BentoCard
+          name="Saison 2026/2027"
+          description="Calendrier et résultats à venir."
+          icon="calendar"
+          tone="sun"
+          href="/competition-vie-club#actualites"
+          cta="Suivre les actualités"
+          area="2 / 2 / 3 / 4"
+        />
+      </BentoGrid>
     </div>
   </section>
 
@@ -170,66 +180,6 @@ const photosGalerie =
 </script>
 
 <style>
-  .cards-2 {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
-    gap: var(--space-3);
-  }
-
-  .feature {
-    padding: var(--space-4);
-    border-radius: 36px;
-    scroll-margin-top: 110px;
-  }
-
-  .feature h2 {
-    font-size: 1.35rem;
-    margin: 0.6rem 0 var(--space-2);
-  }
-
-  .feature p {
-    margin: 0 0 0.8rem;
-  }
-
-  .feature .small {
-    font-size: 0.88rem;
-    opacity: 0.85;
-  }
-
-  .kicker {
-    display: inline-block;
-    padding: 0.25rem 0.8rem;
-    border-radius: var(--radius-pill);
-    font-size: 0.78rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-
-  .feature-sun {
-    background: var(--color-sun);
-    color: var(--color-ink);
-  }
-
-  .feature-sun .kicker {
-    background: var(--color-ink);
-    color: #fff;
-  }
-
-  .feature-pine {
-    background: var(--color-pine);
-    color: #fff;
-  }
-
-  .feature-pine h2 {
-    color: #fff;
-  }
-
-  .feature-pine .kicker {
-    background: var(--color-sun);
-    color: var(--color-ink);
-  }
-
   .filters {
     justify-content: center;
     margin-bottom: var(--space-2);

@@ -1,5 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import BentoGrid from "../../components/ui/BentoGrid.astro";
+import BentoCard from "../../components/ui/BentoCard.astro";
 import PageHero from "../../components/PageHero.astro";
 import { sanityClient } from "../../lib/sanity";
 import { withBase } from "../../lib/url";
@@ -95,53 +97,63 @@ const euro = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR"
       <div class="center">
         <h2 class="title-dots">Comment s'inscrire</h2>
       </div>
-      <ol class="steps">
-        <li>
-          <span class="num">1</span>
-          <h3>Réservez un cours d'essai</h3>
-          <p>Sans engagement, via le <a href={withBase("/infos-pratiques#essai")}>formulaire de contact</a>.</p>
-        </li>
-        <li>
-          <span class="num">2</span>
-          <h3>Remplissez le contrat</h3>
-          <p>Contrat d'inscription (mineur ou majeur), souscrit chaque année entre le centre et le cavalier.</p>
-        </li>
-        <li>
-          <span class="num">3</span>
-          <h3>Choisissez votre forfait</h3>
-          <p>Dans la grille ci-dessus. Un règlement échelonné jusqu'à 5 échéances peut être proposé.</p>
-        </li>
-      </ol>
+      <BentoGrid rows={2}>
+        <BentoCard
+          name="1 · Réservez un cours d'essai"
+          description="Sans engagement, via le formulaire de contact."
+          icon="calendar"
+          image="/images/enfants.jpg"
+          href="/infos-pratiques#essai"
+          cta="Réserver un cours d'essai"
+          area="1 / 1 / 3 / 2"
+        />
+        <BentoCard
+          name="2 · Remplissez le contrat"
+          description="Contrat d'inscription (mineur ou majeur), souscrit chaque année entre le centre et le cavalier."
+          icon="file"
+          tone="teal"
+          area="1 / 2 / 2 / 4"
+        />
+        <BentoCard
+          name="3 · Choisissez votre forfait"
+          description="Dans la grille ci-dessus. Un règlement échelonné jusqu'à 5 échéances peut être proposé."
+          icon="euro"
+          tone="pine"
+          area="2 / 2 / 3 / 4"
+        />
+      </BentoGrid>
     </div>
   </section>
 
-  <section id="solidarite" class="section">
-    <div class="container-narrow">
-      <div class="solidarite">
-        <h2 class="title-dots">Aides & solidarité</h2>
-        <p>
-          Le dispositif <strong>« Crinières solidaires »</strong>, porté par le Comité départemental d'équitation de
-          la Manche, aide les familles à revenus modestes à accéder aux forfaits marqués « Crinières solidaires »
-          ci-dessus. Contactez le centre pour connaître votre éligibilité.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section id="documents" class="section documents">
-    <div class="container-narrow">
-      <h2 class="title-dots">Documents & règlement</h2>
-      <p class="note">
-        Les documents du club (contrat d'inscription, règlement intérieur, conditions générales de vente,
-        attestation d'assurance) seront mis en téléchargement ici dès que le club nous aura transmis les fichiers à
-        jour.
-      </p>
-      <ul class="docs">
-        <li>Contrat d'inscription — cavalier mineur</li>
-        <li>Contrat d'inscription — cavalier majeur</li>
-        <li>Règlement intérieur du centre équestre</li>
-        <li>Conditions générales de vente</li>
-      </ul>
+  <section class="section">
+    <div class="container">
+      <BentoGrid rows={1}>
+        <BentoCard
+          id="solidarite"
+          name="Aides & solidarité"
+          description="Le dispositif « Crinières solidaires », porté par le Comité départemental d'équitation de la Manche, aide les familles à revenus modestes à accéder aux forfaits marqués « Crinières solidaires ». Contactez le centre pour connaître votre éligibilité."
+          icon="users"
+          tone="sun"
+          href="/infos-pratiques#essai"
+          cta="Contacter le centre"
+          area="1 / 1 / 2 / 3"
+        />
+        <BentoCard
+          id="documents"
+          name="Documents & règlement"
+          description="À télécharger ici dès que le club nous aura transmis les fichiers à jour."
+          icon="file"
+          tone="mist"
+          area="1 / 3 / 2 / 4"
+        >
+          <ul>
+            <li>Contrat d'inscription — mineur</li>
+            <li>Contrat d'inscription — majeur</li>
+            <li>Règlement intérieur</li>
+            <li>Conditions générales de vente</li>
+          </ul>
+        </BentoCard>
+      </BentoGrid>
     </div>
   </section>
 </Layout>
@@ -205,87 +217,6 @@ const euro = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR"
     margin-top: 0.3rem;
     font-size: 0.82rem;
     font-weight: 400;
-    color: var(--color-ink-faint);
-  }
-
-  /* étapes */
-  .steps {
-    list-style: none;
-    padding: 0;
-    margin: var(--space-2) 0 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
-    gap: var(--space-3);
-  }
-
-  .steps li {
-    background: #fff;
-    border-radius: var(--radius-card);
-    padding: var(--space-4) var(--space-3) var(--space-3);
-    position: relative;
-    text-align: center;
-  }
-
-  .num {
-    position: absolute;
-    top: -22px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: grid;
-    place-items: center;
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
-    background: var(--color-meadow-deep);
-    color: #fff;
-    font-weight: 700;
-    font-size: 1.2rem;
-  }
-
-  .steps h3 {
-    font-size: 1rem;
-    color: var(--color-pine);
-  }
-
-  .steps p {
-    margin: 0.6rem 0 0;
-    color: var(--color-ink-soft);
-    font-size: 0.95rem;
-  }
-
-  .solidarite {
-    padding: var(--space-4);
-    border-radius: 36px;
-    background: var(--color-sun);
-  }
-
-  .solidarite h2 {
-    --dots: var(--color-ink);
-  }
-
-  .solidarite p {
-    margin: 0;
-    color: var(--color-ink);
-    font-size: 1.05rem;
-  }
-
-  .documents {
-    padding-top: 0;
-  }
-
-  .docs {
-    list-style: none;
-    padding: 0;
-    margin: var(--space-3) 0 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-
-  .docs li {
-    padding: 0.9rem 1.2rem;
-    border: 2px dashed var(--color-line);
-    border-radius: 18px;
     color: var(--color-ink-faint);
   }
 </style>

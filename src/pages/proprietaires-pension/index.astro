@@ -114,13 +114,27 @@ const services = [
   </section>
 
   <section id="admission" class="section">
-    <div class="container-narrow center">
-      <h2 class="title-dots">Conditions d'admission</h2>
-      <p class="lede">
-        L'accueil d'un cheval ou poney en pension se prépare avec l'équipe du centre : vaccins à jour, période
-        d'adaptation, et échange préalable sur les habitudes du cheval. Contactez le centre pour organiser une
-        visite et convenir ensemble des modalités précises.
-      </p>
+    <div class="container">
+      <div class="center">
+        <h2 class="title-dots">Conditions d'admission</h2>
+        <p class="lede">L'accueil d'un cheval ou poney en pension se prépare avec l'équipe du centre.</p>
+      </div>
+      <div class="admission-grid">
+        <BentoGrid rows={2}>
+          <BentoCard name="Vaccins à jour" description="Une condition d'accueil, à préparer avec l'équipe." icon="shield" tone="mist" area="1 / 1 / 2 / 2" />
+          <BentoCard name="Période d'adaptation" description="Le temps de prendre ses marques au centre." icon="clock" tone="teal" area="1 / 2 / 2 / 3" />
+          <BentoCard name="Échange préalable" description="Sur les habitudes de votre cheval." icon="heart" tone="meadow" area="1 / 3 / 2 / 4" />
+          <BentoCard
+            name="Organiser une visite"
+            description="Contactez le centre pour convenir ensemble des modalités précises."
+            icon="home"
+            image="/images/pre-baie.jpg"
+            href="#contact-proprietaires"
+            cta="Nous écrire"
+            area="2 / 1 / 3 / 4"
+          />
+        </BentoGrid>
+      </div>
     </div>
   </section>
 
