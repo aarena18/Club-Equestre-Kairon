@@ -1,17 +1,23 @@
 ---
 import { withBase } from "../lib/url";
 
+interface Props {
+  overlay?: boolean;
+}
+
+const { overlay = false } = Astro.props;
+
 const links = [
   { href: "/le-centre", label: "Le centre" },
   { href: "/activites", label: "Activités & cours" },
-  { href: "/proprietaires-pension", label: "Propriétaires & pension" },
-  { href: "/tarifs", label: "Tarifs & inscription" },
-  { href: "/competition-vie-club", label: "Compétition & vie du club" },
+  { href: "/proprietaires-pension", label: "Pension" },
+  { href: "/tarifs", label: "Tarifs" },
+  { href: "/competition-vie-club", label: "Vie du club" },
   { href: "/infos-pratiques", label: "Infos pratiques" },
 ];
 ---
 
-<div class="header-shell">
+<div class:list={["header-shell", { overlay }]}>
   <header class="site-header">
     <a class="logo" href={withBase("/")}>Kairon Plage</a>
 
@@ -62,15 +68,29 @@ const links = [
     z-index: 20;
     padding: var(--space-2) var(--space-2) 0;
     background: transparent;
+    pointer-events: none;
+  }
+
+  /* Sur la home : la barre flotte PAR-DESSUS le hero (qui démarre tout
+     en haut de la page) au lieu de réserver une bande blanche au-dessus. */
+  .header-shell.overlay {
+    position: fixed;
+    left: 0;
+    right: 0;
+  }
+
+  .site-header,
+  .nav-mobile {
+    pointer-events: auto;
   }
 
   .site-header {
-    max-width: 1180px;
+    max-width: 1240px;
     margin: 0 auto;
     display: flex;
     align-items: center;
     gap: var(--space-2);
-    padding: 0.7rem 0.9rem 0.7rem 1.3rem;
+    padding: 0.6rem 0.7rem 0.6rem 1.3rem;
     background: var(--color-paper);
     border: 1px solid var(--color-line);
     border-radius: var(--radius-pill);
@@ -94,8 +114,9 @@ const links = [
 
   .nav a {
     font-family: var(--font-mono);
-    font-size: 0.74rem;
-    color: var(--color-ink-soft);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--color-ink);
     text-decoration: none;
     white-space: nowrap;
   }

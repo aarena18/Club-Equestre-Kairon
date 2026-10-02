@@ -2,7 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import ActivityCard from "../components/ActivityCard.astro";
-import Marquee from "../components/Marquee.astro";
+import Scallop from "../components/Scallop.astro";
 import Sparkle from "../components/Sparkle.astro";
 import { sanityClient } from "../lib/sanity";
 import { withBase } from "../lib/url";
@@ -23,10 +23,10 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
 ---
 
 <Layout title="Kairon Plage — Poney club & club hippique à Saint-Pair-sur-Mer">
-  <Header />
+  <Header overlay />
 
   <main>
-    <section class="hero scallop-bottom">
+    <section class="hero">
       <Sparkle color="var(--color-sun)" size={30} />
       <Sparkle color="var(--color-paper)" size={18} />
       <Sparkle color="var(--color-coral)" size={22} />
@@ -38,11 +38,7 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
       </div>
     </section>
 
-    <Marquee
-      text="RÉSERVEZ UN COURS D'ESSAI"
-      background="var(--color-sun)"
-      color="var(--color-ink)"
-    />
+    <Scallop color="var(--color-sky)" direction="down" height={26} />
 
     <div class="wrap">
       <section class="doors">
@@ -87,7 +83,8 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
       </section>
     </div>
 
-    <section class="reassurance scallop-top scallop-bottom">
+    <Scallop color="var(--color-pine)" direction="up" height={26} />
+    <section class="reassurance">
       <div class="wrap">
         <h2>Depuis plus de 50 ans</h2>
         <div class="reassurance-grid">
@@ -111,6 +108,7 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
         <a class="see-all see-all-light" href={withBase("/le-centre")}>Notre équipe, nos installations, nos valeurs →</a>
       </div>
     </section>
+    <Scallop color="var(--color-pine)" direction="down" height={26} />
 
     <div class="wrap">
       <section id="pension" class="pension-teaser">
@@ -187,7 +185,7 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
   .hero {
     position: relative;
     background: var(--color-sky);
-    padding-bottom: calc(var(--space-5) + 22px);
+    padding-bottom: var(--space-5);
     overflow: hidden;
   }
 
@@ -212,7 +210,7 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
 
   .hero-content {
     max-width: 640px;
-    padding-top: var(--space-5);
+    padding-top: 8rem;
     position: relative;
   }
 
@@ -324,8 +322,8 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: 
   .reassurance {
     background: var(--color-pine);
     color: var(--color-paper);
-    padding-top: calc(var(--space-5) + 22px);
-    padding-bottom: calc(var(--space-5) + 22px);
+    padding-top: var(--space-4);
+    padding-bottom: var(--space-4);
   }
 
   .reassurance h2 {
