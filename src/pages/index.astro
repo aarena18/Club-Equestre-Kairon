@@ -5,14 +5,42 @@ import Horse from "../components/Horse.astro";
 import Faq from "../components/Faq.astro";
 import ContactBlock from "../components/ContactBlock.astro";
 import SocialCards from "@/components/ui/card-fan-carousel";
+import BentoGrid from "../components/ui/BentoGrid.astro";
+import BentoCard from "../components/ui/BentoCard.astro";
+import { sanityClient, urlFor } from "../lib/sanity";
 import { withBase } from "../lib/url";
-import { faq, galerieStatique, ctaInscription } from "../data/site";
+import { faq, galerieStatique, ctaInscription, photoParCategorie } from "../data/site";
 
-const disciplines = [
-  { label: "Enfants", image: "/images/enfants.jpg", href: "/activites#baby-cavaliers", alt: "Un baby cavalier casqué marche dans la carrière" },
-  { label: "Adultes", image: "/images/adultes.jpg", href: "/activites#adultes", alt: "Une cavalière franchit un obstacle de CSO" },
-  { label: "Vacances", image: "/images/vacances.jpg", href: "/activites#stages-vacances", alt: "Groupe d'enfants en stage avec deux poneys blancs" },
-];
+// Les 5 activités mises en avant sur l'accueil, dans l'ordre du bento
+// (placement = row-start / col-start / row-end / col-end).
+const vedettes = [
+  { categorie: "baby-cavaliers", area: "1 / 1 / 3 / 2", icon: "heart" },
+  { categorie: "adultes", area: "1 / 2 / 2 / 3", icon: "users" },
+  { categorie: "expert-competition", area: "1 / 3 / 2 / 4", icon: "trophy" },
+  { categorie: "balades-randonnees", area: "2 / 2 / 3 / 3", icon: "leaf" },
+  { categorie: "stages-vacances", area: "2 / 3 / 3 / 4", icon: "calendar" },
+] as const;
+
+const activites = await sanityClient.fetch(
+  `*[_type == "activite" && categorie in $categories]{titre, "slug": slug.current, categorie, resume, photo}`,
+  { categories: vedettes.map((v) => v.categorie) },
+);
+
+const disciplines = vedettes.flatMap((v) => {
+  const a = activites.find((x: any) => x.categorie === v.categorie);
+  if (!a) return [];
+  return [
+    {
+      ...v,
+      titre: a.titre,
+      resume: a.resume,
+      href: a.slug ? `/activites/${a.slug}` : "/activites",
+      image: a.photo
+        ? urlFor(a.photo).width(900).height(900).fit("crop").url()
+        : photoParCategorie[v.categorie],
+    },
+  ];
+});
 
 const photos = galerieStatique.map((p) => ({ imgUrl: withBase(p.src), alt: p.alt }));
 ---
@@ -39,15 +67,22 @@ const photos = galerieStatique.map((p) => ({ imgUrl: withBase(p.src), alt: p.alt
         équestre de Kairon Plage propose de nombreuses activités, pour tous les âges et tous les niveaux !
       </p>
 
-      <div class="discipline-grid">
-        {
-          disciplines.map((d) => (
-            <a class="discipline" href={withBase(d.href)}>
-              <img src={withBase(d.image)} alt={d.alt} loading="lazy" />
-              <span class="label-dots">{d.label}</span>
-            </a>
-          ))
-        }
+      <div class="discipline-bento">
+        <BentoGrid rows={2}>
+          {
+            disciplines.map((d) => (
+              <BentoCard
+                name={d.titre}
+                description={d.resume}
+                icon={d.icon}
+                image={d.image}
+                href={d.href}
+                cta="Découvrir"
+                area={d.area}
+              />
+            ))
+          }
+        </BentoGrid>
       </div>
 
       <a class="btn" href={withBase("/activites")}>Voir toutes nos activités</a>
@@ -123,34 +158,9 @@ const photos = galerieStatique.map((p) => ({ imgUrl: withBase(p.src), alt: p.alt
     color: var(--color-meadow);
   }
 
-  .discipline-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 220px));
-    justify-content: center;
-    gap: clamp(1.5rem, 6vw, 5rem);
-    margin: var(--space-4) 0 var(--space-4);
-  }
-
-  .discipline {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-2);
-    color: var(--color-ink);
-    text-decoration: none;
-  }
-
-  .discipline img {
-    width: 100%;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    border-radius: var(--radius-photo);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .discipline:hover img {
-    transform: translateY(-6px) rotate(-1.5deg);
-    box-shadow: var(--shadow-soft);
+  .discipline-bento {
+    margin: var(--space-4) 0;
+    text-align: left;
   }
 
   /* --- bandeau orange --- */
@@ -185,15 +195,6 @@ const photos = galerieStatique.map((p) => ({ imgUrl: withBase(p.src), alt: p.alt
   }
 
   @media (max-width: 700px) {
-    .discipline-grid {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.8rem;
-    }
-
-    .discipline .label-dots {
-      font-size: 0.82rem;
-    }
-
     .deco {
       top: 20px;
       opacity: 0.35;
