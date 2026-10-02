@@ -1,5 +1,7 @@
 ---
 import "../styles/tokens.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
 import { withBase } from "../lib/url";
 
 interface Props {
@@ -11,6 +13,8 @@ const {
   title,
   description = "Centre équestre de Kairon Plage — poney club et club hippique entre mer et campagne à Saint-Pair-sur-Mer.",
 } = Astro.props;
+
+const ogImage = new URL(withBase("/images/hero-vue-aerienne.jpg"), Astro.site ?? Astro.url).href;
 ---
 
 <!doctype html>
@@ -20,27 +24,36 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href={withBase("/favicon.svg")} />
     <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#7cabb3" />
     <title>{title}</title>
     <meta name="description" content={description} />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&family=Schibsted+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
   </head>
   <body>
-    <!-- Formes de découpe partagées par tout le site (cadres photo
-         "neo pop") — 0×0, jamais visible directement. -->
-    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-      <clipPath id="clip-horseshoe" clipPathUnits="objectBoundingBox">
-        <path
-          d="M 0.783,0.203 A 0.44,0.44 0 1,1 0.217,0.203 L 0.346,0.356 A 0.24,0.24 0 1,0 0.654,0.356 Z"
-        ></path>
-      </clipPath>
-    </svg>
-
-    <slot />
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <Header />
+    <main id="contenu">
+      <slot />
+    </main>
+    <Footer />
   </body>
 </html>
+
+<style is:global>
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -100px;
+    z-index: 100;
+    background: var(--color-pine);
+    color: #fff;
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-pill);
+  }
+
+  .skip-link:focus {
+    top: 1rem;
+  }
+</style>

@@ -1,6 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import Header from "../../components/Header.astro";
+import PageHero from "../../components/PageHero.astro";
 import { sanityClient } from "../../lib/sanity";
 import { withBase } from "../../lib/url";
 
@@ -29,24 +29,26 @@ const euro = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR"
   title="Tarifs & inscription — Kairon Plage"
   description="Grille tarifaire complète du centre équestre de Kairon Plage : licence, cotisation, forfaits, pension. Comment s'inscrire et les aides disponibles."
 >
-  <Header />
+  <PageHero
+    image="/images/manege.jpg"
+    eyebrow="Tarifs & inscription"
+    title="Une grille claire, pas un PDF à télécharger"
+    subtitle="Tous les tarifs 2026/2027 du centre, à jour. Le contrat d'inscription reste disponible plus bas."
+  />
 
-  <main>
-    <section class="intro">
-      <p class="eyebrow">Tarifs & inscription</p>
-      <h1>Une grille claire, pas un PDF à télécharger</h1>
-      <p class="subtitle">
-        Tous les tarifs 2026/2027 du centre, à jour. Le contrat d'inscription reste disponible en PDF plus bas.
-      </p>
-    </section>
-
-    <section id="grille" class="grille">
-      <h2>Grille tarifaire</h2>
+  <section id="grille" class="section">
+    <div class="container">
+      <div class="center">
+        <h2 class="title-dots">Grille tarifaire</h2>
+      </div>
+      <nav class="filters jump" aria-label="Aller à une catégorie de tarifs">
+        {parGroupe.filter((g) => g.lignes.length > 0).map((g) => <a class="filter-btn" href={`#${g.value}`}>{g.label}</a>)}
+      </nav>
       {
         parGroupe.map(
           (groupe) =>
             groupe.lignes.length > 0 && (
-              <div class="groupe">
+              <div class="groupe" id={groupe.value}>
                 <div class="groupe-head">
                   <h3>{groupe.label}</h3>
                   <p>{groupe.note}</p>
@@ -71,7 +73,7 @@ const euro = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR"
                           </td>
                           {groupe.lignes.some((l: any) => l.publicConcerne) && <td>{ligne.publicConcerne ?? "—"}</td>}
                           {groupe.lignes.some((l: any) => l.prixPromo) && (
-                            <td>{ligne.prixPromo ? euro.format(ligne.prixPromo) : "—"}</td>
+                            <td class="promo">{ligne.prixPromo ? euro.format(ligne.prixPromo) : "—"}</td>
                           )}
                           <td>
                             {euro.format(ligne.prix)} <span class="periode">/ {ligne.periode}</span>
@@ -85,240 +87,205 @@ const euro = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR"
             ),
         )
       }
-    </section>
+    </div>
+  </section>
 
-    <section id="inscription" class="inscription">
-      <h2>Comment s'inscrire</h2>
-      <ol>
+  <section id="inscription" class="band band-mist scallop-top scallop-under">
+    <div class="container">
+      <div class="center">
+        <h2 class="title-dots">Comment s'inscrire</h2>
+      </div>
+      <ol class="steps">
         <li>
-          <strong>Réservez un cours d'essai</strong> — voir la page <a href={withBase("/infos-pratiques#essai")}>Nous contacter</a>, sans
-          engagement.
+          <span class="num">1</span>
+          <h3>Réservez un cours d'essai</h3>
+          <p>Sans engagement, via le <a href={withBase("/infos-pratiques#essai")}>formulaire de contact</a>.</p>
         </li>
         <li>
-          <strong>Remplissez le contrat d'inscription</strong> (mineur ou majeur) — souscrit chaque année entre le
-          centre et le cavalier.
+          <span class="num">2</span>
+          <h3>Remplissez le contrat</h3>
+          <p>Contrat d'inscription (mineur ou majeur), souscrit chaque année entre le centre et le cavalier.</p>
         </li>
         <li>
-          <strong>Choisissez votre forfait</strong> dans la grille ci-dessus. Un règlement échelonné jusqu'à 5
-          échéances peut être proposé.
+          <span class="num">3</span>
+          <h3>Choisissez votre forfait</h3>
+          <p>Dans la grille ci-dessus. Un règlement échelonné jusqu'à 5 échéances peut être proposé.</p>
         </li>
       </ol>
-    </section>
+    </div>
+  </section>
 
-    <section id="solidarite" class="solidarite">
-      <h2>Aides & solidarité</h2>
-      <p>
-        Le dispositif <strong>« Crinières solidaires »</strong>, porté par le Comité départemental d'équitation de
-        la Manche, aide les familles à revenus modestes à accéder aux forfaits marqués « Crinières solidaires »
-        ci-dessus. Contactez le centre pour connaître votre éligibilité.
-      </p>
-    </section>
+  <section id="solidarite" class="section">
+    <div class="container-narrow">
+      <div class="solidarite">
+        <h2 class="title-dots">Aides & solidarité</h2>
+        <p>
+          Le dispositif <strong>« Crinières solidaires »</strong>, porté par le Comité départemental d'équitation de
+          la Manche, aide les familles à revenus modestes à accéder aux forfaits marqués « Crinières solidaires »
+          ci-dessus. Contactez le centre pour connaître votre éligibilité.
+        </p>
+      </div>
+    </div>
+  </section>
 
-    <section id="documents" class="documents">
-      <h2>Documents & règlement</h2>
+  <section id="documents" class="section documents">
+    <div class="container-narrow">
+      <h2 class="title-dots">Documents & règlement</h2>
       <p class="note">
         Les documents du club (contrat d'inscription, règlement intérieur, conditions générales de vente,
         attestation d'assurance) seront mis en téléchargement ici dès que le club nous aura transmis les fichiers à
         jour.
       </p>
-      <ul>
+      <ul class="docs">
         <li>Contrat d'inscription — cavalier mineur</li>
         <li>Contrat d'inscription — cavalier majeur</li>
         <li>Règlement intérieur du centre équestre</li>
         <li>Conditions générales de vente</li>
       </ul>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <p>Centre équestre de Kairon Plage — Saint-Pair-sur-Mer</p>
-  </footer>
+    </div>
+  </section>
 </Layout>
 
 <style>
-  main {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 0 var(--space-3) var(--space-5);
+  .jump {
+    justify-content: center;
+    margin-bottom: var(--space-4);
   }
 
-  section {
-    padding: var(--space-4) 0;
+  .jump a {
+    text-decoration: none;
   }
 
-  section + section {
-    border-top: 1px solid var(--color-line);
+  .groupe {
+    scroll-margin-top: 110px;
   }
 
-  .intro {
-    padding-top: var(--space-5);
-    max-width: 640px;
-  }
-
-  .eyebrow {
-    font-family: var(--font-mono);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 0.8rem;
-    color: var(--color-sky-deep);
-    margin: 0;
-  }
-
-  h1 {
-    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
-    color: var(--color-pine);
-    margin: var(--space-2) 0;
-  }
-
-  .subtitle {
-    color: var(--color-ink-soft);
-    font-size: 1.05rem;
-    margin: 0;
-  }
-
-  h2 {
-    font-size: 1.5rem;
-    color: var(--color-ink);
-    margin: 0 0 var(--space-3);
-  }
-
-  /* grille */
   .groupe + .groupe {
-    margin-top: var(--space-4);
+    margin-top: var(--space-5);
   }
 
   .groupe-head h3 {
-    font-size: 1.05rem;
-    font-family: var(--font-body);
-    font-weight: 700;
+    font-size: 1.1rem;
     color: var(--color-pine);
-    margin: 0;
-    text-transform: none;
   }
 
   .groupe-head p {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.88rem;
     color: var(--color-ink-faint);
-    margin: 0.25rem 0 0.75rem;
+    margin: 0.3rem 0 0.9rem;
   }
 
-  .table-wrap {
-    overflow-x: auto;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-card);
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-    min-width: 480px;
-  }
-
-  th {
-    text-align: left;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--color-ink-faint);
-    font-weight: 500;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--color-line);
-    white-space: nowrap;
-  }
-
-  td {
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--color-line);
-    color: var(--color-ink-soft);
-    vertical-align: top;
-  }
-
-  tr:last-child td {
-    border-bottom: none;
-  }
-
-  td:first-child {
-    color: var(--color-ink);
+  .promo {
+    color: var(--color-meadow-deep) !important;
     font-weight: 600;
   }
 
   .periode {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     font-weight: 400;
     color: var(--color-ink-faint);
   }
 
   .badge {
-    display: block;
-    margin-top: 0.3rem;
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    font-weight: 400;
-    color: var(--color-meadow-deep);
+    display: inline-block;
+    margin: 0.35rem 0 0 0.5rem;
+    padding: 0.1rem 0.6rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-sun);
+    color: var(--color-ink);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    vertical-align: middle;
   }
 
   .precision {
     display: block;
     margin-top: 0.3rem;
-    font-family: var(--font-body);
     font-size: 0.82rem;
     font-weight: 400;
     color: var(--color-ink-faint);
   }
 
-  /* inscription */
-  .inscription ol {
-    padding-left: 1.2rem;
-    color: var(--color-ink-soft);
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    font-size: 0.98rem;
+  /* étapes */
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-2) 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+    gap: var(--space-3);
   }
 
-  .inscription strong,
-  .solidarite strong {
-    color: var(--color-ink);
-  }
-
-  .inscription a {
-    color: var(--color-coral);
-  }
-
-  /* solidarite */
-  .solidarite p {
-    color: var(--color-ink-soft);
-    max-width: 64ch;
-    line-height: 1.6;
-  }
-
-  /* documents */
-  .documents .note {
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    color: var(--color-ink-faint);
-    max-width: 64ch;
-  }
-
-  .documents ul {
-    margin-top: var(--space-2);
-    padding-left: 1.2rem;
-    color: var(--color-ink-soft);
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-
-  .site-footer {
-    padding: var(--space-3);
+  .steps li {
+    background: #fff;
+    border-radius: var(--radius-card);
+    padding: var(--space-4) var(--space-3) var(--space-3);
+    position: relative;
     text-align: center;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
+  }
+
+  .num {
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--color-meadow-deep);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+
+  .steps h3 {
+    font-size: 1rem;
+    color: var(--color-pine);
+  }
+
+  .steps p {
+    margin: 0.6rem 0 0;
+    color: var(--color-ink-soft);
+    font-size: 0.95rem;
+  }
+
+  .solidarite {
+    padding: var(--space-4);
+    border-radius: 36px;
+    background: var(--color-sun);
+  }
+
+  .solidarite h2 {
+    --dots: var(--color-ink);
+  }
+
+  .solidarite p {
+    margin: 0;
+    color: var(--color-ink);
+    font-size: 1.05rem;
+  }
+
+  .documents {
+    padding-top: 0;
+  }
+
+  .docs {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-3) 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .docs li {
+    padding: 0.9rem 1.2rem;
+    border: 2px dashed var(--color-line);
+    border-radius: 18px;
     color: var(--color-ink-faint);
-    border-top: 1px solid var(--color-line);
   }
 </style>

@@ -1,8 +1,10 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import Header from "../../components/Header.astro";
+import PageHero from "../../components/PageHero.astro";
+import SocialCards from "@/components/ui/card-fan-carousel";
 import { sanityClient, urlFor } from "../../lib/sanity";
 import { withBase } from "../../lib/url";
+import { galerieStatique } from "../../data/site";
 
 const articles = await sanityClient.fetch(
   `*[_type == "article"] | order(datePublication desc){titre, "slug": slug.current, categorie, datePublication, resume, photoCouverture}`,
@@ -30,52 +32,64 @@ const galerie = [
   ...photosActivites.map((a: any) => ({ alt: a.photo.alt || a.titre, image: a.photo })),
   ...articles.filter((a: any) => a.photoCouverture).map((a: any) => ({ alt: a.photoCouverture.alt || a.titre, image: a.photoCouverture })),
 ];
+// Tant que le Studio n'a pas de photos, la galerie montre les photos du club
+// fournies avec la maquette.
+const photosGalerie =
+  galerie.length > 0
+    ? galerie.map((g: any) => ({ imgUrl: urlFor(g.image).width(800).height(1066).fit("crop").url(), alt: g.alt }))
+    : galerieStatique.map((p) => ({ imgUrl: withBase(p.src), alt: p.alt }));
 ---
 
 <Layout
   title="Compétition & vie du club — Kairon Plage"
   description="Challenge club d'hiver, sorties officielles, actualités et vie du centre équestre de Kairon Plage."
 >
-  <Header />
+  <PageHero
+    image="/images/carriere.jpg"
+    eyebrow="Compétition & vie du club"
+    title="Ce qui se passe à Kairon Plage"
+    subtitle="Challenge d'hiver, sorties officielles, stages et moments partagés en famille."
+  />
 
-  <main>
-    <section class="intro">
-      <p class="eyebrow">Compétition & vie du club</p>
-      <h1>Ce qui se passe à Kairon Plage</h1>
-    </section>
+  <section class="section">
+    <div class="container cards-2">
+      <article id="challenge" class="feature feature-sun">
+        <span class="kicker">Sur place, tous niveaux</span>
+        <h2>Challenge club d'hiver</h2>
+        <p>
+          Le centre organise un challenge d'hiver en CSO et Equifun, en 4 étapes — une première approche de la
+          compétition ouverte à tous les niveaux. Récompenses pour tous les participants, coupes aux trois premiers
+          du classement général.
+        </p>
+      </article>
+      <article id="sorties" class="feature feature-pine">
+        <span class="kicker">Dès le Galop 2</span>
+        <h2>Résultats & sorties officielles</h2>
+        <p>
+          Des sorties sont organisées tout au long de l'année, et le club organise sur place au moins deux
+          compétitions officielles chaque saison. Pour participer, un bulletin d'engagement doit être adressé au club
+          au plus tard le dimanche précédant la compétition.
+        </p>
+        <p class="small">Calendrier et résultats de la saison 2026/2027 à venir.</p>
+      </article>
+    </div>
+  </section>
 
-    <section id="challenge" class="challenge">
-      <h2>Challenge club d'hiver</h2>
-      <p>
-        Le centre organise sur place un challenge d'hiver en CSO et Equifun, en 4 étapes — une première approche
-        de la compétition ouverte à tous les niveaux. Récompenses pour tous les participants, coupes aux trois
-        premiers du classement général.
-      </p>
-    </section>
-
-    <section id="sorties" class="sorties">
-      <h2>Résultats & sorties officielles</h2>
-      <p>
-        Accès à la compétition officielle dès le Galop 2. Des sorties sont organisées tout au long de l'année, et
-        le club organise sur place au moins deux compétitions officielles chaque saison. Pour participer à une
-        sortie, un bulletin d'engagement doit être adressé au club au plus tard le dimanche précédant la
-        compétition.
-      </p>
-      <p class="note">Calendrier et résultats de la saison 2026/2027 à venir.</p>
-    </section>
-
-    <section id="actualites" class="actualites">
-      <h2>Actualités & événements</h2>
+  <section id="actualites" class="band band-mist scallop-top scallop-under">
+    <div class="container">
+      <div class="center">
+        <h2 class="title-dots">Actualités & événements</h2>
+      </div>
 
       {
         articles.length > 0 ? (
           <>
-            <div class="filters" role="group" aria-label="Filtrer les actualités">
+            <div class="filters" role="group" aria-label="Filtrer les actualités par année">
               <button type="button" class="filter-btn" data-filter-type="annee" data-filter="tout" aria-pressed="true">
                 Toutes les années
               </button>
               {annees.map((a) => (
-                <button type="button" class="filter-btn" data-filter-type="annee" data-filter={String(a)}>
+                <button type="button" class="filter-btn" data-filter-type="annee" data-filter={String(a)} aria-pressed="false">
                   {a}
                 </button>
               ))}
@@ -85,20 +99,23 @@ const galerie = [
                 Tout
               </button>
               {categoriesActu.map((c) => (
-                <button type="button" class="filter-btn" data-filter-type="categorie" data-filter={c.value}>
+                <button type="button" class="filter-btn" data-filter-type="categorie" data-filter={c.value} aria-pressed="false">
                   {c.label}
                 </button>
               ))}
             </div>
 
-            <div class="actu-grid">
+            <div class="grid actu-grid">
               {articles.map((a: any) => (
                 <a
-                  class="actu-card"
+                  class="card actu-card"
                   href={withBase(`/competition-vie-club/actualites/${a.slug}`)}
                   data-annee={new Date(a.datePublication).getFullYear()}
                   data-categorie={a.categorie}
                 >
+                  {a.photoCouverture && (
+                    <img src={urlFor(a.photoCouverture).width(600).height(400).fit("crop").url()} alt="" loading="lazy" />
+                  )}
                   <span class="actu-date">{dateFormatter.format(new Date(a.datePublication))}</span>
                   <h3>{a.titre}</h3>
                   {a.resume && <p>{a.resume}</p>}
@@ -107,30 +124,18 @@ const galerie = [
             </div>
           </>
         ) : (
-          <p class="note">Les premières actualités arrivent bientôt.</p>
+          <p class="note center">Les premières actualités arrivent bientôt.</p>
         )
       }
-    </section>
+    </div>
+  </section>
 
-    <section id="galerie" class="galerie">
-      <h2>Galerie photos</h2>
-      {
-        galerie.length > 0 ? (
-          <div class="galerie-grid">
-            {galerie.map((g) => (
-              <img src={urlFor(g.image).width(400).height(400).fit("crop").url()} alt={g.alt} loading="lazy" />
-            ))}
-          </div>
-        ) : (
-          <p class="note">La galerie arrive dès que des photos sont ajoutées dans le Studio.</p>
-        )
-      }
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <p>Centre équestre de Kairon Plage — Saint-Pair-sur-Mer</p>
-  </footer>
+  <section id="galerie" class="section galerie">
+    <div class="container center">
+      <h2 class="title-dots">Le club en images</h2>
+    </div>
+    <SocialCards client:visible cards={photosGalerie} label="Le club en images" />
+  </section>
 </Layout>
 
 <script>
@@ -165,141 +170,102 @@ const galerie = [
 </script>
 
 <style>
-  main {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 0 var(--space-3) var(--space-5);
+  .cards-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+    gap: var(--space-3);
   }
 
-  section {
-    padding: var(--space-4) 0;
+  .feature {
+    padding: var(--space-4);
+    border-radius: 36px;
+    scroll-margin-top: 110px;
   }
 
-  section + section {
-    border-top: 1px solid var(--color-line);
+  .feature h2 {
+    font-size: 1.35rem;
+    margin: 0.6rem 0 var(--space-2);
   }
 
-  .intro {
-    padding-top: var(--space-5);
+  .feature p {
+    margin: 0 0 0.8rem;
   }
 
-  .eyebrow {
-    font-family: var(--font-mono);
+  .feature .small {
+    font-size: 0.88rem;
+    opacity: 0.85;
+  }
+
+  .kicker {
+    display: inline-block;
+    padding: 0.25rem 0.8rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.78rem;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 0.8rem;
-    color: var(--color-sky-deep);
-    margin: 0;
+    letter-spacing: 0.06em;
   }
 
-  h1 {
-    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
-    color: var(--color-pine);
-    margin: var(--space-2) 0;
-  }
-
-  h2 {
-    font-size: 1.4rem;
+  .feature-sun {
+    background: var(--color-sun);
     color: var(--color-ink);
-    margin: 0 0 var(--space-2);
   }
 
-  .challenge p,
-  .sorties p {
-    color: var(--color-ink-soft);
-    line-height: 1.65;
-    max-width: 64ch;
+  .feature-sun .kicker {
+    background: var(--color-ink);
+    color: #fff;
   }
 
-  .note {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    color: var(--color-ink-faint);
+  .feature-pine {
+    background: var(--color-pine);
+    color: #fff;
   }
 
-  /* actualités */
+  .feature-pine h2 {
+    color: #fff;
+  }
+
+  .feature-pine .kicker {
+    background: var(--color-sun);
+    color: var(--color-ink);
+  }
+
   .filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    justify-content: center;
     margin-bottom: var(--space-2);
   }
 
-  .filter-btn {
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
-    background: var(--color-paper);
-    border: 1px solid var(--color-line);
-    color: var(--color-ink-soft);
-    padding: 0.45rem 0.85rem;
-    border-radius: var(--radius-pill);
-    cursor: pointer;
-  }
-
-  .filter-btn:hover {
-    border-color: var(--color-pine);
-  }
-
-  .filter-btn[aria-pressed="true"] {
-    background: var(--color-pine);
-    border-color: var(--color-pine);
-    color: var(--color-paper);
-  }
-
   .actu-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: var(--space-2);
     margin-top: var(--space-3);
   }
 
   .actu-card {
-    display: block;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-card);
-    padding: var(--space-3);
-    text-decoration: none;
-    color: inherit;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .actu-card[hidden] {
+    display: none;
+  }
+
+  .actu-card img {
+    margin: calc(-1 * var(--space-3)) calc(-1 * var(--space-3)) var(--space-2);
+    width: calc(100% + 2 * var(--space-3));
+    max-width: none;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
   }
 
   .actu-date {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--color-ink-faint);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-meadow-deep);
+    margin-bottom: 0.4rem;
   }
 
-  .actu-card h3 {
-    font-size: 1.05rem;
-    margin: 0.4rem 0;
-    color: var(--color-pine);
-  }
-
-  .actu-card p {
-    margin: 0;
-    color: var(--color-ink-soft);
-    font-size: 0.88rem;
-  }
-
-  /* galerie */
-  .galerie-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: var(--space-1);
-  }
-
-  .galerie-grid img {
-    width: 100%;
-    aspect-ratio: 1;
-    object-fit: cover;
-    border-radius: 10px;
-  }
-
-  .site-footer {
-    padding: var(--space-3);
-    text-align: center;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--color-ink-faint);
-    border-top: 1px solid var(--color-line);
+  .galerie {
+    overflow-x: clip;
+    padding-bottom: 0;
   }
 </style>

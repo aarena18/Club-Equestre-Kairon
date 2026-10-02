@@ -1,0 +1,30 @@
+---
+/**
+ * Silhouette de cheval de la maquette, rendue en SVG inline.
+ * La couleur suit `color` (fill="currentColor") : à piloter en CSS.
+ */
+import { horses, type HorseName } from "../data/horses";
+
+interface Props {
+  name: HorseName;
+  class?: string;
+  flip?: boolean;
+  [key: string]: unknown;
+}
+
+// `...rest` transmet l'attribut de scope CSS du parent (data-astro-cid-*),
+// sinon les styles posés par la page sur la silhouette ne s'appliquent pas.
+const { name, class: className, flip = false, ...rest } = Astro.props;
+const h = horses[name];
+---
+
+<svg
+  {...rest}
+  class={className}
+  viewBox={`0 0 ${h.w} ${h.h}`}
+  aria-hidden="true"
+  focusable="false"
+  style={flip ? "transform: scaleX(-1)" : undefined}
+>
+  <path fill="currentColor" d={h.d}></path>
+</svg>
