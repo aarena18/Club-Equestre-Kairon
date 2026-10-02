@@ -1,0 +1,116 @@
+---
+/** Accordéon FAQ de la maquette : soulignés verts, icône fer à cheval qui pivote. */
+interface Props {
+  items: { q: string; r: string }[];
+  /** affiche la colonne de titre à gauche (version accueil) */
+  withAside?: boolean;
+}
+
+const { items, withAside = true } = Astro.props;
+---
+
+<div class:list={["faq", { "with-aside": withAside }]}>
+  {
+    withAside && (
+      <div class="aside">
+        <h2 class="title-dots">FAQ</h2>
+        <p>Vos questions les plus fréquentes</p>
+      </div>
+    )
+  }
+  <div class="list">
+    {
+      items.map((item, i) => (
+        <details open={i === 0}>
+          <summary>
+            <span>{item.q}</span>
+            <svg class="shoe" viewBox="0 0 32 32" aria-hidden="true">
+              <path
+                d="M9 27 C5.5 22 4.5 16 6.5 11 C8.5 6 12 4 16 4 C20 4 23.5 6 25.5 11 C27.5 16 26.5 22 23 27"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="4.2"
+                stroke-linecap="round"
+              />
+              <circle cx="8.4" cy="13" r="1" fill="#fff" />
+              <circle cx="23.6" cy="13" r="1" fill="#fff" />
+              <circle cx="7.4" cy="19" r="1" fill="#fff" />
+              <circle cx="24.6" cy="19" r="1" fill="#fff" />
+            </svg>
+          </summary>
+          <p>{item.r}</p>
+        </details>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .faq.with-aside {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: var(--space-5);
+  }
+
+  .aside h2 {
+    margin-bottom: var(--space-2);
+  }
+
+  .aside p {
+    margin: 0;
+    color: var(--color-ink-soft);
+  }
+
+  details {
+    border-bottom: 2.5px solid var(--color-meadow);
+  }
+
+  summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: 1.3rem 0.2rem 1.1rem;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--color-ink);
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .shoe {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    color: var(--color-ink);
+    transform: rotate(90deg);
+    transition: transform 0.3s ease, color 0.2s ease;
+  }
+
+  details[open] .shoe {
+    transform: rotate(180deg);
+    color: var(--color-meadow);
+  }
+
+  summary:hover .shoe {
+    color: var(--color-meadow);
+  }
+
+  details p {
+    margin: -0.3rem 0 1.2rem;
+    padding: 0 0.2rem;
+    color: var(--color-meadow-deep);
+    max-width: 62ch;
+  }
+
+  @media (max-width: 760px) {
+    .faq.with-aside {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+  }
+</style>

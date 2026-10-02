@@ -1,0 +1,118 @@
+---
+/**
+ * Bandeau photo en tête de page, bord inférieur festonné.
+ * `size="full"` pour l'accueil, `"page"` (défaut) pour les rubriques.
+ */
+import { withBase } from "../lib/url";
+
+interface Props {
+  image: string;
+  title: string;
+  eyebrow?: string;
+  subtitle?: string;
+  size?: "full" | "page";
+  /** position CSS de la photo (object-position) */
+  focus?: string;
+  /** true si `image` est déjà une URL absolue (photo Sanity) */
+  external?: boolean;
+}
+
+const { image, title, eyebrow, subtitle, size = "page", focus = "center", external = false } = Astro.props;
+const src = external ? image : withBase(image);
+---
+
+<section class:list={["page-hero", "scallop-bottom", size]}>
+  <img class="bg" src={src} alt="" style={`object-position:${focus}`} fetchpriority="high" />
+  <div class="inner container">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h1>{title}</h1>
+    {subtitle && <p class="subtitle">{subtitle}</p>}
+    {Astro.slots.has("default") && <div class="actions"><slot /></div>}
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    --scallop-color: var(--color-paper);
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 440px;
+    padding: 140px 0 calc(var(--space-5) + var(--scallop-h));
+    overflow: hidden;
+    text-align: center;
+    color: #fff;
+    isolation: isolate;
+  }
+
+  .page-hero.full {
+    min-height: min(100vh, 820px);
+  }
+
+  .bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+  }
+
+  /* voile pour la lisibilité du texte blanc, plus dense au centre */
+  .page-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 55%, rgba(20, 35, 25, 0.42), transparent 75%),
+      linear-gradient(180deg, rgba(20, 35, 25, 0.25), rgba(20, 35, 25, 0.1) 40%, rgba(20, 35, 25, 0.2));
+  }
+
+  .inner {
+    max-width: 760px;
+  }
+
+  .eyebrow {
+    display: inline-block;
+    margin: 0 0 var(--space-2);
+    padding: 0.35rem 0.9rem;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  h1 {
+    color: #fff;
+    font-size: clamp(1.8rem, 4.6vw, 3rem);
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.3);
+  }
+
+  .subtitle {
+    margin: var(--space-2) auto 0;
+    max-width: 46ch;
+    font-size: clamp(1rem, 1.6vw, 1.2rem);
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.35);
+  }
+
+  .actions {
+    margin-top: var(--space-4);
+    display: flex;
+    gap: var(--space-2);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 700px) {
+    .page-hero {
+      min-height: 380px;
+      padding-top: 120px;
+    }
+  }
+</style>

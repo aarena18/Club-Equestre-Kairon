@@ -1,0 +1,60 @@
+---
+/** Icônes Instagram / Facebook — n'affiche que les réseaux renseignés dans le Studio. */
+interface Props {
+  instagram?: string | null;
+  facebook?: string | null;
+  size?: number;
+}
+
+const { instagram, facebook, size = 34 } = Astro.props;
+---
+
+<div class="socials" style={`--size:${size}px`}>
+  {
+    instagram && (
+      <a href={instagram} target="_blank" rel="noopener" aria-label="Instagram du centre équestre">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm-2.6 6.4V17A2.6 2.6 0 0 0 7 19.6h10a2.6 2.6 0 0 0 2.6-2.6V8.4h-3.3a5 5 0 1 1-8.6 0H4.4ZM12 8.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8Zm5.4-4.2a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6Z"
+          />
+        </svg>
+      </a>
+    )
+  }
+  {
+    facebook && (
+      <a href={facebook} target="_blank" rel="noopener" aria-label="Facebook du centre équestre">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M13.6 22v-8.4h2.9l.4-3.4h-3.3V8.1c0-1 .3-1.6 1.7-1.6h1.8v-3a24 24 0 0 0-2.6-.2c-2.6 0-4.3 1.6-4.3 4.4v2.5H7.3v3.4h2.9V22h3.4Z"
+          />
+        </svg>
+      </a>
+    )
+  }
+</div>
+
+<style>
+  .socials {
+    display: flex;
+    gap: 1.1rem;
+    align-items: center;
+  }
+
+  .socials a {
+    color: inherit;
+    display: inline-flex;
+    transition: transform 0.2s ease;
+  }
+
+  .socials a:hover {
+    transform: translateY(-2px) rotate(-6deg);
+  }
+
+  .socials svg {
+    width: var(--size);
+    height: var(--size);
+  }
+</style>

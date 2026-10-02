@@ -1,0 +1,170 @@
+---
+/** "Besoin de plus d'information ?" — panneau de verre sur photo de la carrière, chevaux au galop. */
+import Horse from "./Horse.astro";
+import SocialIcons from "./SocialIcons.astro";
+import { sanityClient } from "../lib/sanity";
+import { withBase } from "../lib/url";
+
+const settings = await sanityClient.fetch(`*[_type == "siteSettings"][0]{telephone, email, facebook, instagram}`);
+---
+
+<section class="contact-block">
+  <img class="bg" src={withBase("/images/carriere.jpg")} alt="" loading="lazy" />
+  <div class="panel">
+    <h2 class="title-dots">Besoin de plus d'information ?</h2>
+
+    <p class="lead">Contactez-nous par :</p>
+    <ul class="channels">
+      {
+        settings?.email && (
+          <li>
+            <svg viewBox="0 0 40 40" aria-hidden="true">
+              <path d="M8 13 L32 13 L32 29 L8 29 Z M8 13 L20 22 L32 13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" />
+            </svg>
+            <a href={`mailto:${settings.email}`}>{settings.email}</a>
+          </li>
+        )
+      }
+      {
+        settings?.telephone && (
+          <li>
+            <svg viewBox="0 0 40 40" aria-hidden="true">
+              <path
+                d="M14 8 L18 15 L15 18 C16.5 21.5 18.5 23.5 22 25 L25 22 L32 26 L30 31 C21 32 9 20 9 10 Z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <a href={`tel:${settings.telephone.replace(/\s/g, "")}`}>{settings.telephone}</a>
+          </li>
+        )
+      }
+      <li>
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <path d="M9 11 H31 V30 H9 Z M9 17 H31 M15 8 V13 M25 8 V13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" />
+        </svg>
+        <a href={withBase("/infos-pratiques#essai")}>le formulaire de cours d'essai</a>
+      </li>
+    </ul>
+
+    {
+      (settings?.instagram || settings?.facebook) && (
+        <>
+          <p class="lead">Suivez-nous sur :</p>
+          <SocialIcons instagram={settings.instagram} facebook={settings.facebook} size={40} />
+        </>
+      )
+    }
+  </div>
+  <Horse name="gallopGreen" class="horse horse-left" />
+  <Horse name="gallopTeal" class="horse horse-right" />
+</section>
+
+<style>
+  .contact-block {
+    position: relative;
+    isolation: isolate;
+    padding: var(--space-5) var(--space-3) 0;
+    overflow: hidden;
+    min-height: 640px;
+  }
+
+  .bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+  }
+
+  .panel {
+    width: min(1000px, 100%);
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-3) 220px;
+    border-radius: 36px 36px 0 0;
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-bottom: none;
+    text-align: center;
+  }
+
+  .lead {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    margin: var(--space-4) 0 var(--space-2);
+  }
+
+  .channels {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    text-align: left;
+  }
+
+  .channels li {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+  }
+
+  .channels svg {
+    width: 40px;
+    height: 40px;
+    color: var(--color-ink);
+    flex: none;
+  }
+
+  .channels a {
+    color: var(--color-ink);
+    text-decoration: none;
+    border-bottom: 2px dotted var(--color-meadow);
+  }
+
+  .panel :global(.socials) {
+    justify-content: center;
+    color: var(--color-ink);
+  }
+
+  .horse {
+    position: absolute;
+    bottom: -6px;
+    height: auto;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .horse-left {
+    left: -1%;
+    width: min(30%, 420px);
+    color: var(--color-meadow);
+  }
+
+  .horse-right {
+    right: -1%;
+    width: min(36%, 500px);
+    color: var(--color-teal);
+  }
+
+  @media (max-width: 700px) {
+    .panel {
+      padding-bottom: 150px;
+    }
+
+    .horse-left {
+      width: 44%;
+    }
+
+    .horse-right {
+      width: 52%;
+    }
+  }
+</style>
