@@ -1,38 +1,51 @@
 ---
 import { withBase } from "../lib/url";
+import { navLinks, ctaInscription } from "../data/site";
 
-const links = [
-  { href: "/le-centre", label: "Le centre" },
-  { href: "/activites", label: "Activités & cours" },
-  { href: "/proprietaires-pension", label: "Propriétaires & pension" },
-  { href: "/tarifs", label: "Tarifs & inscription" },
-  { href: "/competition-vie-club", label: "Compétition & vie du club" },
-  { href: "/infos-pratiques", label: "Infos pratiques" },
-];
+const current = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ""), "");
+const isActive = (href: string) => current === href || current.startsWith(`${href}/`);
 ---
 
-<header class="site-header">
-  <a class="logo" href={withBase("/")}>Kairon Plage</a>
+<header class="site-header" id="site-header">
+  <div class="pill">
+    <a class="logo" href={withBase("/")} aria-label="Centre équestre de Kairon Plage — accueil">
+      <img src={withBase("/images/logo-kairon.png")} alt="" width="64" height="64" />
+    </a>
 
-  <nav class="nav" id="nav-desktop">
-    {links.map((l) => <a href={withBase(l.href)}>{l.label}</a>)}
+    <nav class="nav" aria-label="Navigation principale">
+      {
+        navLinks.map((l) => (
+          <a href={withBase(l.href)} aria-current={isActive(l.href) ? "page" : undefined}>
+            {l.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <a class="cta" href={withBase(ctaInscription.href)}>{ctaInscription.label}</a>
+
+    <button type="button" class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="nav-mobile">
+      <span class="sr-only">Menu</span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+  </div>
+
+  <nav class="nav-mobile" id="nav-mobile" aria-label="Navigation principale (mobile)" hidden>
+    {
+      navLinks.map((l) => (
+        <a href={withBase(l.href)} aria-current={isActive(l.href) ? "page" : undefined}>
+          {l.label}
+        </a>
+      ))
+    }
+    <a class="btn" href={withBase(ctaInscription.href)}>{ctaInscription.label}</a>
   </nav>
-  <a class="cta cta-desktop" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
-
-  <button type="button" class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="nav-mobile">
-    <span class="sr-only">Menu</span>
-    <span class="bar"></span>
-    <span class="bar"></span>
-    <span class="bar"></span>
-  </button>
 </header>
 
-<nav class="nav-mobile" id="nav-mobile" hidden>
-  {links.map((l) => <a href={withBase(l.href)}>{l.label}</a>)}
-  <a class="cta" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
-</nav>
-
 <script>
+  const header = document.getElementById("site-header")!;
   const toggle = document.getElementById("menu-toggle")!;
   const mobileNav = document.getElementById("nav-mobile")!;
 
@@ -48,109 +61,175 @@ const links = [
       mobileNav.hidden = true;
     });
   });
+
+  // Le verre devient plus opaque une fois qu'on a quitté la photo du haut.
+  const onScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 80);
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
 </script>
 
 <style>
   .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-2) var(--space-3);
-    background: var(--color-paper);
-    border-bottom: 1px solid var(--color-line);
+    position: fixed;
+    top: 14px;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    width: min(1200px, 100% - 28px);
+    margin-inline: auto;
   }
 
-  .logo {
-    font-family: var(--font-display);
-    text-transform: uppercase;
-    font-size: 1.1rem;
-    color: var(--color-pine);
-    text-decoration: none;
-    margin-right: auto;
+  .pill {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: 0.4rem 0.6rem 0.4rem 1.1rem;
+    border-radius: 40px;
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(14px) saturate(1.3);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 10px 30px -18px rgba(29, 33, 27, 0.45);
+    transition: background-color 0.25s ease;
+  }
+
+  .site-header.is-scrolled .pill {
+    background: rgba(255, 255, 255, 0.92);
+  }
+
+  .logo img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
   }
 
   .nav {
+    flex: 1;
     display: flex;
-    gap: var(--space-2);
+    justify-content: center;
+    gap: clamp(0.8rem, 2vw, 1.8rem);
   }
 
   .nav a {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--color-ink-soft);
+    position: relative;
+    font-size: 0.86rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-ink);
     text-decoration: none;
     white-space: nowrap;
+    padding-block: 0.3rem;
   }
 
-  .nav a:hover {
-    color: var(--color-pine);
+  .nav a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 5px;
+    background-image: radial-gradient(circle, var(--color-meadow) 2px, transparent 2.4px);
+    background-size: 6px 5px;
+    background-repeat: repeat-x;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .nav a:hover::after,
+  .nav a[aria-current="page"]::after {
+    opacity: 1;
   }
 
   .cta {
-    display: inline-block;
-    background: var(--color-pine);
-    color: var(--color-paper);
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    padding: 0.6rem 1.1rem;
+    font-size: 0.86rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #fff;
+    background: var(--color-teal-strong);
+    padding: 0.75rem 1.3rem;
     border-radius: var(--radius-pill);
     text-decoration: none;
     white-space: nowrap;
+    transition: background-color 0.2s ease;
   }
 
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
+  .cta:hover {
+    background: var(--color-pine);
   }
 
   .menu-toggle {
     display: none;
     flex-direction: column;
-    gap: 4px;
-    background: none;
-    border: 1px solid var(--color-line);
-    border-radius: 8px;
-    padding: 0.5rem 0.6rem;
+    justify-content: center;
+    gap: 5px;
+    width: 48px;
+    height: 48px;
+    margin-left: auto;
+    background: var(--color-teal-strong);
+    border: none;
+    border-radius: 50%;
     cursor: pointer;
+    align-items: center;
   }
 
   .menu-toggle .bar {
-    width: 18px;
+    width: 20px;
     height: 2px;
-    background: var(--color-ink);
+    border-radius: 2px;
+    background: #fff;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  .menu-toggle[aria-expanded="true"] .bar:nth-child(2) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .menu-toggle[aria-expanded="true"] .bar:nth-child(3) {
+    opacity: 0;
+  }
+
+  .menu-toggle[aria-expanded="true"] .bar:nth-child(4) {
+    transform: translateY(-7px) rotate(-45deg);
   }
 
   .nav-mobile {
     display: none;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: 0.2rem;
+    margin-top: 0.6rem;
     padding: var(--space-2) var(--space-3) var(--space-3);
-    border-bottom: 1px solid var(--color-line);
-    background: var(--color-paper);
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 18px 40px -20px rgba(29, 33, 27, 0.45);
   }
 
-  .nav-mobile a {
-    font-family: var(--font-mono);
-    font-size: 0.9rem;
-    color: var(--color-ink-soft);
+  .nav-mobile a:not(.btn) {
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-ink);
     text-decoration: none;
+    padding: 0.7rem 0;
+    border-bottom: 2px dotted var(--color-line);
   }
 
-  .nav-mobile a.cta {
+  .nav-mobile a[aria-current="page"] {
+    color: var(--color-meadow-deep);
+  }
+
+  .nav-mobile .btn {
+    margin-top: var(--space-2);
     align-self: flex-start;
-    margin-top: 0.3rem;
-    color: var(--color-paper);
   }
 
-  @media (max-width: 860px) {
+  @media (max-width: 1080px) {
     .nav,
-    .cta-desktop {
+    .cta {
       display: none;
     }
 
@@ -160,6 +239,11 @@ const links = [
 
     .nav-mobile:not([hidden]) {
       display: flex;
+    }
+
+    .logo img {
+      width: 52px;
+      height: 52px;
     }
   }
 </style>

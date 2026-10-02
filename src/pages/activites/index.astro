@@ -1,17 +1,18 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import Header from "../../components/Header.astro";
+import PageHero from "../../components/PageHero.astro";
 import ActivityCard from "../../components/ActivityCard.astro";
+import Horse from "../../components/Horse.astro";
 import { sanityClient } from "../../lib/sanity";
 import { withBase } from "../../lib/url";
 
 const activites = await sanityClient.fetch(
-  `*[_type == "activite"] | order(ordre asc){titre, "slug": slug.current, categorie, trancheAge, resume, texteBouton}`,
+  `*[_type == "activite"] | order(ordre asc){titre, "slug": slug.current, categorie, trancheAge, resume, texteBouton, photo}`,
 );
 
-// Reprend le découpage validé dans la direction artistique : les cours
-// réguliers d'un côté, la découverte et les vacances de l'autre — plutôt
-// qu'un menu à 8 entrées.
+// Reprend le découpage validé dans l'arborescence : un hub filtrable
+// plutôt qu'un menu à 8 entrées. Le filtre se pré-sélectionne via l'ancre
+// (ex. /activites#adultes, utilisé par les cartes "Nos disciplines").
 const categories = [
   { value: "tout", label: "Tout" },
   { value: "baby-cavaliers", label: "Baby cavaliers" },
@@ -28,140 +29,121 @@ const categories = [
   title="Activités & cours — Kairon Plage"
   description="Baby cavaliers, cours Expert, Equifeel, balades, stages vacances : toutes les activités du centre équestre de Kairon Plage, filtrables par public."
 >
-  <Header />
+  <PageHero
+    image="/images/balade-chemin.jpg"
+    eyebrow="Activités & cours"
+    title="Une activité pour chaque cavalier"
+    subtitle="Du baby cavalier au cours Expert, en passant par l'Equifeel et les balades en bord de mer."
+  />
 
-  <main>
-    <section class="intro">
-      <p class="eyebrow">Activités & cours</p>
-      <h1>Une activité pour chaque cavalier</h1>
-      <p class="subtitle">
-        Du baby cavalier au cours Expert, en passant par l'Equifeel et les balades en bord de mer — filtrez par
-        public pour trouver la vôtre.
-      </p>
-    </section>
+  <section class="section hub">
+    <Horse name="headLeft" class="deco" />
+    <div class="container">
+      <div class="center">
+        <h2 class="title-dots">Trouvez la vôtre</h2>
+      </div>
+      <div class="filters" role="group" aria-label="Filtrer les activités par catégorie">
+        {
+          categories.map((c) => (
+            <button type="button" class="filter-btn" data-filter={c.value} aria-pressed={c.value === "tout" ? "true" : "false"}>
+              {c.label}
+            </button>
+          ))
+        }
+      </div>
 
-    <section class="filters" role="group" aria-label="Filtrer les activités par catégorie">
-      {
-        categories.map((c) => (
-          <button type="button" class="filter-btn" data-filter={c.value} aria-pressed={c.value === "tout"}>
-            {c.label}
-          </button>
-        ))
-      }
-    </section>
+      <div class="grid activites-grid">
+        {
+          activites.map((a: any) => (
+            <ActivityCard
+              titre={a.titre}
+              trancheAge={a.trancheAge}
+              resume={a.resume}
+              categorie={a.categorie}
+              texteBouton={a.texteBouton}
+              photo={a.photo}
+              href={a.slug ? withBase(`/activites/${a.slug}`) : undefined}
+            />
+          ))
+        }
+      </div>
+      <p class="empty note" hidden>Pas encore d'activité dans cette catégorie — contactez le centre pour en savoir plus.</p>
+    </div>
+  </section>
 
-    <section class="activites-grid">
-      {
-        activites.map((a: any) => (
-          <ActivityCard
-            titre={a.titre}
-            trancheAge={a.trancheAge}
-            resume={a.resume}
-            categorie={a.categorie}
-            texteBouton={a.texteBouton}
-            href={a.slug ? withBase(`/activites/${a.slug}`) : undefined}
-          />
-        ))
-      }
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <p>Centre équestre de Kairon Plage — Saint-Pair-sur-Mer</p>
-  </footer>
+  <section class="band scallop-top scallop-under">
+    <div class="container-narrow center">
+      <h2 class="title-dots on-color">Pas sûr de votre choix ?</h2>
+      <p>Un cours d'essai permet de faire connaissance avec les poneys, l'équipe et le cadre. On vous oriente ensuite.</p>
+      <a class="btn" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
+    </div>
+  </section>
 </Layout>
 
 <script>
   const buttons = document.querySelectorAll<HTMLButtonElement>(".filter-btn");
   const cards = document.querySelectorAll<HTMLElement>(".activity-card");
+  const empty = document.querySelector<HTMLElement>(".empty")!;
+
+  function apply(filter: string) {
+    let visible = 0;
+    buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.filter === filter)));
+    cards.forEach((card) => {
+      const match = filter === "tout" || card.dataset.categorie === filter;
+      card.hidden = !match;
+      if (match) visible++;
+    });
+    empty.hidden = visible > 0;
+  }
 
   buttons.forEach((button) => {
     button.addEventListener("click", () => {
-      const filter = button.dataset.filter;
-
-      buttons.forEach((b) => b.setAttribute("aria-pressed", String(b === button)));
-
-      cards.forEach((card) => {
-        const match = filter === "tout" || card.dataset.categorie === filter;
-        card.hidden = !match;
-      });
+      const filter = button.dataset.filter!;
+      apply(filter);
+      history.replaceState(null, "", filter === "tout" ? location.pathname : `#${filter}`);
     });
   });
+
+  const fromHash = location.hash.slice(1);
+  if (fromHash && [...buttons].some((b) => b.dataset.filter === fromHash)) apply(fromHash);
 </script>
 
 <style>
-  main {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 0 var(--space-3) var(--space-5);
+  .hub {
+    overflow-x: clip;
   }
 
-  .intro {
-    padding: var(--space-5) 0 var(--space-3);
-    max-width: 640px;
-  }
-
-  .eyebrow {
-    font-family: var(--font-mono);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 0.8rem;
-    color: var(--color-sky-deep);
-    margin: 0;
-  }
-
-  h1 {
-    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
-    color: var(--color-pine);
-    margin: var(--space-2) 0;
-  }
-
-  .subtitle {
-    color: var(--color-ink-soft);
-    font-size: 1.05rem;
-    margin: 0;
+  .deco {
+    position: absolute;
+    left: 0;
+    top: 60px;
+    width: clamp(60px, 9vw, 130px);
+    height: auto;
+    color: var(--color-teal);
   }
 
   .filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding-bottom: var(--space-3);
-  }
-
-  .filter-btn {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    background: var(--color-paper);
-    border: 1px solid var(--color-line);
-    color: var(--color-ink-soft);
-    padding: 0.5rem 0.9rem;
-    border-radius: var(--radius-pill);
-    cursor: pointer;
-  }
-
-  .filter-btn:hover {
-    border-color: var(--color-pine);
-  }
-
-  .filter-btn[aria-pressed="true"] {
-    background: var(--color-pine);
-    border-color: var(--color-pine);
-    color: var(--color-paper);
+    justify-content: center;
+    margin-bottom: var(--space-4);
   }
 
   .activites-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: var(--space-2);
+    grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
   }
 
-  .site-footer {
-    padding: var(--space-3);
+  .activites-grid :global([hidden]) {
+    display: none;
+  }
+
+  .empty {
     text-align: center;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--color-ink-faint);
-    border-top: 1px solid var(--color-line);
+  }
+
+  .band .btn {
+    margin-top: var(--space-2);
+  }
+
+  .band p {
+    font-size: 1.08rem;
   }
 </style>

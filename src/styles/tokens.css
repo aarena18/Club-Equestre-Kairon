@@ -1,43 +1,62 @@
 /*
-  Design tokens — direction artistique validée (phase 2/3 du projet).
-  Palette ancrée sur la photo réelle de la baie de Kairon plutôt que sur
-  un vert sapin "club privé" : blanc dominant, vert/bleu de prairie et de
-  ciel, corail en accent premier plan, jaune réservé aux illustrations
-  dessinées à la main, vert profond réservé au CTA principal et au footer.
+  Design tokens & styles partagés — direction artistique v2 (maquette
+  d'accueil d'Ambre, octobre 2026).
+
+  Intention : famille, fraîcheur, sport.
+  - famille  → formes rondes (festons, cartes arrondies, pilules), silhouettes
+               de chevaux en aplat, une seule police douce et géométrique ;
+  - fraîcheur → blanc dominant, bleu-vert de ciel normand, vert prairie ;
+  - sport     → orange vif en bandeau d'accent, vert sapin pour le CTA
+               principal, titres en capitales soulignés en pointillés.
 */
 
+@import "@fontsource-variable/elms-sans";
+
 :root {
-  /* couleur */
+  /* --- couleur (relevées sur la maquette) --- */
   --color-paper: #ffffff;
-  --color-ink: #23281e;
-  --color-ink-soft: #565f49;
-  --color-ink-faint: #8a9180;
-  --color-line: #e2d9be;
+  --color-ink: #1d211b;
+  --color-ink-soft: #4a5145;
+  --color-ink-faint: #7d8478;
+  --color-line: #e3e8e0;
 
-  --color-sky: #86aab2;
-  --color-sky-deep: #4e7681;
-  --color-meadow: #74905a;
-  --color-meadow-deep: #4c6238;
-  --color-coral: #d97c4c; /* accent premier plan : CTA secondaires, surlignage, tags */
-  --color-sun: #e2a238; /* réservé aux illustrations dessinées à la main */
-  --color-pine: #2c4430; /* CTA principal, footer, texte fort */
+  --color-teal: #7cabb3; /* ciel voilé — footer, silhouettes, boutons secondaires */
+  --color-teal-strong: #467d87; /* teal assombri : fond de bouton avec texte blanc lisible (4.6:1) */
+  --color-teal-deep: #3f7079; /* version lisible du teal pour du texte sur blanc */
+  --color-teal-mist: #eef5f6; /* fonds de section très clairs */
+  --color-meadow: #6e9153; /* vert prairie — soulignés, silhouettes, réponses FAQ */
+  --color-meadow-deep: #4d6b37; /* vert prairie lisible en texte */
+  --color-sun: #ef9e05; /* orange sport — bandeau d'accent */
+  --color-pine: #22462e; /* vert sapin — CTA principal */
 
-  /* typographie */
-  /* "Big Shoulders Display" est un stand-in libre pour Chopen (police
-     commerciale de la DA d'origine) — à remplacer une fois la licence
-     Chopen acquise pour le site en production. */
-  --font-display: "Big Shoulders Display", system-ui, sans-serif;
-  --font-body: "Schibsted Grotesk", system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  /* alias de l'ancienne DA, gardés pour ne rien casser */
+  --color-sky: var(--color-teal);
+  --color-sky-deep: var(--color-teal-deep);
+  --color-coral: var(--color-meadow-deep);
 
-  /* échelle */
+  /* --- typographie : une seule famille, Elms Sans (Google Fonts, auto-hébergée
+     via @fontsource pour ne pas transmettre l'IP des visiteurs à Google) --- */
+  --font-display: "Elms Sans Variable", "Elms Sans", system-ui, sans-serif;
+  --font-body: "Elms Sans Variable", "Elms Sans", system-ui, sans-serif;
+  --font-mono: var(--font-body); /* l'ancienne mono n'a plus cours */
+
+  /* --- échelle --- */
   --space-1: 0.5rem;
   --space-2: 1rem;
   --space-3: 1.5rem;
   --space-4: 2.5rem;
   --space-5: 4rem;
-  --radius-card: 14px;
+  --space-6: 6rem;
+  --radius-card: 28px;
+  --radius-photo: 44px;
   --radius-pill: 100px;
+  --container: 1120px;
+
+  /* festons : un demi-disque tous les --scallop px */
+  --scallop: 60px;
+  --scallop-h: 26px;
+
+  --shadow-soft: 0 18px 40px -22px rgba(34, 70, 46, 0.35);
 }
 
 *,
@@ -48,6 +67,8 @@
 
 html {
   color-scheme: light;
+  scroll-behavior: smooth;
+  scroll-padding-top: 110px;
 }
 
 body {
@@ -55,21 +76,507 @@ body {
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-body);
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.6;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  display: block;
 }
 
 h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
   color: var(--color-ink);
   margin: 0;
+  text-wrap: balance;
 }
 
 a {
-  color: var(--color-sky-deep);
+  color: var(--color-meadow-deep);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-sun);
+  outline-offset: 3px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Mise en page                                                        */
+/* ------------------------------------------------------------------ */
+
+.container {
+  width: min(var(--container), 100% - 2 * var(--space-3));
+  margin-inline: auto;
+}
+
+.container-narrow {
+  width: min(760px, 100% - 2 * var(--space-3));
+  margin-inline: auto;
+}
+
+.section {
+  padding-block: var(--space-6);
+  position: relative;
+}
+
+.section-tight {
+  padding-block: var(--space-4);
+}
+
+.center {
+  text-align: center;
+}
+
+.lede {
+  font-size: 1.08rem;
+  color: var(--color-ink-soft);
+  max-width: 60ch;
+}
+
+.center .lede {
+  margin-inline: auto;
+}
+
+.note {
+  font-size: 0.88rem;
+  color: var(--color-ink-faint);
+  font-style: italic;
+}
+
+/* ------------------------------------------------------------------ */
+/* Titre souligné en pointillés — la signature de la maquette          */
+/* ------------------------------------------------------------------ */
+
+.title-dots {
+  display: inline-block;
+  font-size: clamp(1.35rem, 2.6vw, 1.75rem);
+  padding-bottom: 0.55rem;
+  margin-bottom: var(--space-3);
+  background-image: radial-gradient(circle, var(--dots, var(--color-meadow)) 2.6px, transparent 3px);
+  background-size: 8px 8px;
+  background-repeat: repeat-x;
+  background-position: 0 100%;
+}
+
+.title-dots.on-color {
+  --dots: #fff;
+  color: #fff;
+}
+
+/* petite variante pour les libellés de cartes */
+.label-dots {
+  display: inline-block;
+  font-size: 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-bottom: 0.4rem;
+  background-image: radial-gradient(circle, var(--color-meadow) 2.2px, transparent 2.6px);
+  background-size: 7px 7px;
+  background-repeat: repeat-x;
+  background-position: 0 100%;
+}
+
+/* ------------------------------------------------------------------ */
+/* Boutons (pilules)                                                   */
+/* ------------------------------------------------------------------ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.85rem 1.6rem;
+  border-radius: var(--radius-pill);
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+  background: var(--color-pine);
+  color: #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-soft);
+}
+
+.btn-teal {
+  background: var(--color-teal-strong);
+  color: #fff;
+}
+
+.btn-sun {
+  background: var(--color-sun);
+  color: var(--color-ink);
+}
+
+/* bouton "verre" posé sur une photo */
+.btn-glass {
+  background: rgba(255, 255, 255, 0.28);
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.link-arrow {
+  display: inline-block;
+  margin-top: var(--space-2);
+  font-weight: 500;
+  color: var(--color-meadow-deep);
+  text-decoration: none;
+  border-bottom: 2px dotted currentColor;
+}
+
+/* ------------------------------------------------------------------ */
+/* Festons (bord arrondi en "dentelle" haut / bas)                      */
+/* À poser sur une section : la couleur du feston = --scallop-color.     */
+/* ------------------------------------------------------------------ */
+
+.scallop-top,
+.scallop-bottom {
+  position: relative;
+}
+
+.scallop-top::before,
+.scallop-bottom::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--scallop-h);
+  background: radial-gradient(
+      circle at 50% 100%,
+      var(--scallop-color, var(--color-paper)) calc(var(--scallop) / 2 - 3px),
+      transparent calc(var(--scallop) / 2 - 2px)
+    )
+    50% 0 / var(--scallop) calc(var(--scallop) / 2) repeat-x;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* bosses vers le haut, au-dessus de la section (même couleur que la section) */
+.scallop-top::before {
+  bottom: 100%;
+}
+
+/* bosses vers le haut, en bas de la section (couleur de la section suivante) */
+.scallop-bottom::after {
+  bottom: -1px;
+}
+
+/* variante : bosses vers le bas sous la section */
+.scallop-under::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: var(--scallop-h);
+  background: radial-gradient(
+      circle at 50% 0,
+      var(--scallop-color, var(--color-paper)) calc(var(--scallop) / 2 - 3px),
+      transparent calc(var(--scallop) / 2 - 2px)
+    )
+    50% 0 / var(--scallop) calc(var(--scallop) / 2) repeat-x;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ------------------------------------------------------------------ */
+/* Bandeau de couleur festonné (ex. "Notre centre équestre")            */
+/* ------------------------------------------------------------------ */
+
+.band {
+  --scallop-color: var(--band-color, var(--color-sun));
+  background: var(--band-color, var(--color-sun));
+  color: #fff;
+  margin-block: calc(var(--scallop-h) + var(--space-4));
+  padding-block: var(--space-5);
+}
+
+.band p {
+  color: #fff;
+}
+
+.band-teal {
+  --band-color: var(--color-teal);
+}
+
+.band-meadow {
+  --band-color: var(--color-meadow);
+}
+
+.band-mist {
+  --band-color: var(--color-teal-mist);
+  color: var(--color-ink);
+}
+
+.band-mist p {
+  color: var(--color-ink-soft);
+}
+
+/* ------------------------------------------------------------------ */
+/* Cartes                                                              */
+/* ------------------------------------------------------------------ */
+
+.card {
+  background: var(--color-paper);
+  border: 2px solid var(--color-line);
+  border-radius: var(--radius-card);
+  padding: var(--space-3);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+a.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-meadow);
+  box-shadow: var(--shadow-soft);
+}
+
+.card h3 {
+  font-size: 1.05rem;
+  color: var(--color-ink);
+}
+
+.card p {
+  margin: 0.6rem 0 0;
+  color: var(--color-ink-soft);
+  font-size: 0.95rem;
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+}
+
+.photo {
+  border-radius: var(--radius-photo);
+  object-fit: cover;
+  width: 100%;
+}
+
+/* ------------------------------------------------------------------ */
+/* Filtres (pilules)                                                   */
+/* ------------------------------------------------------------------ */
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter-btn {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: var(--color-paper);
+  border: 2px solid var(--color-line);
+  color: var(--color-ink-soft);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-btn:hover {
+  border-color: var(--color-meadow);
+  color: var(--color-ink);
+}
+
+.filter-btn[aria-pressed="true"] {
+  background: var(--color-meadow);
+  border-color: var(--color-meadow);
+  color: #fff;
+}
+
+/* ------------------------------------------------------------------ */
+/* Tableaux (tarifs)                                                    */
+/* ------------------------------------------------------------------ */
+
+.table-wrap {
+  overflow-x: auto;
+  border: 2px solid var(--color-line);
+  border-radius: 22px;
+  background: #fff;
+}
+
+.table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  min-width: 460px;
+}
+
+.table-wrap th {
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #fff;
+  background: var(--color-teal);
+  padding: 0.85rem 1.1rem;
+  white-space: nowrap;
+}
+
+.table-wrap td {
+  padding: 0.85rem 1.1rem;
+  border-bottom: 2px dotted var(--color-line);
+  color: var(--color-ink-soft);
+  vertical-align: top;
+}
+
+.table-wrap tr:last-child td {
+  border-bottom: none;
+}
+
+.table-wrap td:first-child {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
+.table-wrap td:last-child {
+  white-space: nowrap;
+  font-weight: 600;
+  color: var(--color-pine);
+}
+
+/* ------------------------------------------------------------------ */
+/* Formulaires                                                          */
+/* ------------------------------------------------------------------ */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.form .hidden-field {
+  position: absolute;
+  left: -9999px;
+}
+
+.form .field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.form .field-row {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.form label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-ink-soft);
+}
+
+.form input,
+.form select,
+.form textarea {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--color-line);
+  border-radius: 16px;
+  background: #fff;
+  color: var(--color-ink);
+}
+
+.form input:focus,
+.form select:focus,
+.form textarea:focus {
+  outline: none;
+  border-color: var(--color-meadow);
+}
+
+.form .btn {
+  align-self: flex-start;
+  margin-top: var(--space-1);
+}
+
+/* ------------------------------------------------------------------ */
+/* Contenu riche (Portable Text Sanity)                                 */
+/* ------------------------------------------------------------------ */
+
+.prose {
+  color: var(--color-ink-soft);
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.prose p {
+  margin: 0 0 1em;
+}
+
+.prose img {
+  width: 100%;
+  border-radius: var(--radius-card);
+  margin: 1.2em 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  :root {
+    --space-6: 4rem;
+    --scallop: 44px;
+    --scallop-h: 20px;
+    --radius-photo: 32px;
+  }
+
+  body {
+    font-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* quand une page se termine par un bandeau de couleur, on rapproche le footer */
+main:has(> .band:last-child) + .site-footer {
+  margin-top: calc(var(--scallop-h) * 2 + var(--space-3));
 }

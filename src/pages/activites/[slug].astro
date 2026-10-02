@@ -1,9 +1,10 @@
 ---
 import { toHTML } from "@portabletext/to-html";
 import Layout from "../../layouts/Layout.astro";
-import Header from "../../components/Header.astro";
-import { sanityClient } from "../../lib/sanity";
+import PageHero from "../../components/PageHero.astro";
+import { sanityClient, urlFor } from "../../lib/sanity";
 import { withBase } from "../../lib/url";
+import { photoParCategorie } from "../../data/site";
 
 export async function getStaticPaths() {
   const activites = await sanityClient.fetch(
@@ -16,103 +17,70 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 
 const activite = await sanityClient.fetch(
-  `*[_type == "activite" && slug.current == $slug][0]{titre, categorie, trancheAge, resume, description}`,
+  `*[_type == "activite" && slug.current == $slug][0]{titre, categorie, trancheAge, resume, description, photo}`,
   { slug },
 );
 
 const descriptionHtml = activite?.description ? toHTML(activite.description) : "";
+const heroExternal = Boolean(activite.photo);
+const heroImage = activite.photo
+  ? urlFor(activite.photo).width(1800).height(900).fit("crop").url()
+  : photoParCategorie[activite.categorie] ?? "/images/manege.jpg";
 ---
 
 <Layout title={`${activite.titre} — Kairon Plage`} description={activite.resume ?? undefined}>
-  <Header />
+  <PageHero
+    image={heroImage}
+    external={heroExternal}
+    eyebrow={activite.trancheAge ?? "Activités & cours"}
+    title={activite.titre}
+    subtitle={activite.resume ?? undefined}
+  />
 
-  <main>
-    <a class="back" href={withBase("/activites")}>← Toutes les activités</a>
-    <p class="eyebrow">Activités & cours</p>
-    <h1>{activite.titre}</h1>
-    {activite.trancheAge && <span class="tranche">{activite.trancheAge}</span>}
+  <section class="section">
+    <div class="container-narrow">
+      <a class="back" href={withBase("/activites")}>← Toutes les activités</a>
+      {descriptionHtml ? <div class="prose" set:html={descriptionHtml} /> : <p class="note">Description détaillée à venir.</p>}
 
-    <div class="body" set:html={descriptionHtml} />
-
-    <a class="cta-primary" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
-  </main>
-
-  <footer class="site-footer">
-    <p>Centre équestre de Kairon Plage — Saint-Pair-sur-Mer</p>
-  </footer>
+      <div class="cta-card">
+        <div>
+          <h2>Envie d'essayer ?</h2>
+          <p>Un premier cours pour découvrir le club, sans engagement.</p>
+        </div>
+        <a class="btn" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
+      </div>
+    </div>
+  </section>
 </Layout>
 
 <style>
-  main {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: var(--space-5) var(--space-3);
-  }
-
   .back {
     display: inline-block;
     margin-bottom: var(--space-3);
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--color-sky-deep);
+    font-weight: 500;
+    color: var(--color-meadow-deep);
     text-decoration: none;
   }
 
-  .eyebrow {
-    font-family: var(--font-mono);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 0.8rem;
-    color: var(--color-sky-deep);
-    margin: 0;
-  }
-
-  h1 {
-    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
-    color: var(--color-pine);
-    margin: var(--space-2) 0 0;
-  }
-
-  .tranche {
-    display: inline-block;
-    margin-top: 0.6rem;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--color-coral);
-  }
-
-  .body {
-    margin-top: var(--space-3);
-    color: var(--color-ink-soft);
-    font-size: 1.02rem;
-    line-height: 1.7;
-  }
-
-  .body :global(p) {
-    margin: 0 0 1em;
-  }
-
-  .cta-primary {
-    display: inline-block;
-    margin-top: var(--space-3);
-    background: var(--color-pine);
-    color: var(--color-paper);
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    padding: 0.8rem 1.4rem;
-    border-radius: var(--radius-pill);
-    text-decoration: none;
-  }
-
-  .site-footer {
+  .cta-card {
     margin-top: var(--space-5);
-    padding: var(--space-3);
-    text-align: center;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--color-ink-faint);
-    border-top: 1px solid var(--color-line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-card);
+    background: var(--color-teal-mist);
+  }
+
+  .cta-card h2 {
+    font-size: 1.2rem;
+    color: var(--color-pine);
+  }
+
+  .cta-card p {
+    margin: 0.3rem 0 0;
+    color: var(--color-ink-soft);
   }
 </style>

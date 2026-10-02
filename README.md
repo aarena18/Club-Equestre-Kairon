@@ -26,13 +26,16 @@ passer à la suivante :
    dédiée aux propriétaires de chevaux en pension, absente du site actuel,
    a été ajoutée. Un CTA unique et permanent : « Réserver un cours
    d'essai ».
-2. **Direction artistique** — fond blanc dominant, palette ancrée sur la
-   vraie photo de la baie (bleu-gris de ciel, vert prairie) plutôt que sur
-   le vert sapin des clubs premium classiques, corail en accent premier
-   plan, jaune réservé aux illustrations dessinées à la main par le
-   porteur du projet. Typo : une display condensée et affirmée (stand-in
-   libre pour Chopen, police commerciale à licencier pour la prod) associée
-   à une sans-serif douce en texte courant.
+2. **Direction artistique** — *v2 (octobre 2026), d'après la maquette
+   d'accueil d'Ambre.* Intention : **famille, fraîcheur, sport**. Fond
+   blanc dominant ; bleu-vert de ciel normand (`#7CABB3`), vert prairie
+   (`#6E9153`), orange vif en bandeau d'accent (`#EF9E05`), vert sapin
+   pour le CTA principal (`#22462E`). Une seule police douce et
+   géométrique, **Elms Sans** (Google Fonts, auto-hébergée via
+   `@fontsource` — aucune requête vers Google). Signatures graphiques :
+   titres en capitales soulignés en pointillés, bords festonnés, photos
+   aux coins très arrondis, silhouettes de chevaux en aplat (extraites
+   de la maquette, `src/data/horses.ts`).
 3. **Stack** — voir ci-dessous.
 
 ## Stack
@@ -53,8 +56,13 @@ une fois le site en ligne).
 src/
   layouts/     Layout.astro — squelette HTML, polices, meta
   pages/       une route par fichier (routing Astro)
-  styles/      tokens.css — palette, typo et espacements de la DA
-public/        assets statiques (favicon, images non optimisées)
+  components/  Header, Footer, PageHero, Faq, Gallery, ContactBlock,
+               ActivityCard, Horse (silhouettes), SocialIcons
+  data/        site.ts (navigation, FAQ, photos par défaut), horses.ts
+  styles/      tokens.css — palette, typo, festons, boutons, cartes,
+               tableaux, formulaires : tout le vocabulaire de la DA
+public/
+  images/      photos du club, logo et labels (extraits de la maquette)
 ```
 
 ## Démarrer en local
@@ -171,6 +179,8 @@ Pas bloquant pour continuer à développer, mais à ne pas oublier — tout est 
 
 - **4 lignes tarifaires** (Trimestre 1 ×2, Forfait famille ×2) affichent encore une note interne « à vérifier » dans leur champ Précisions — à relire sur le document source et à nettoyer dans le Studio.
 - **Réglages du site** (téléphone, email, adresse, horaires) jamais renseignés — plusieurs pages s'en accommodent (« coordonnées à venir ») mais ce n'est pas vendeur.
-- **Photos** : aucune pour l'instant, nulle part (équipe, activités, galerie). Les pages sont prêtes à les afficher dès qu'elles sont ajoutées dans le Studio.
+- **Photos** : les photos de la maquette sont dans `public/images/` et servent de photos par défaut (bandeaux, cartes activités, galerie). Dès qu'une photo est ajoutée à une activité ou une actualité dans le Studio, elle prend le relais automatiquement.
+- **Logo** : seule une version 100×100 px existe (extraite de la maquette) — à remplacer par un fichier HD ou SVG dans `public/images/logo-kairon.png`.
+- **Photo aérienne de l'accueil** : 800 px de large seulement, un peu juste en plein écran — une version HD serait bienvenue.
 - L'actualité de rentrée n'a que son résumé, pas son contenu complet (le corps de la fiche détail est vide).
 - Nombre exact de carrières/box/manège sur la page Le centre — resté volontairement vague, faute de donnée vérifiée.
