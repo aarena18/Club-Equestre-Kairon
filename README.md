@@ -56,8 +56,11 @@ une fois le site en ligne).
 src/
   layouts/     Layout.astro — squelette HTML, polices, meta
   pages/       une route par fichier (routing Astro)
-  components/  Header, Footer, PageHero, Faq, Gallery, ContactBlock,
+  components/  Header, Footer, PageHero, Faq, ContactBlock,
                ActivityCard, Horse (silhouettes), SocialIcons
+    ui/        composants React importés (convention shadcn) :
+               card-fan-carousel.tsx — galerie en éventail (GSAP),
+               rendue en île Astro `client:visible`
   data/        site.ts (navigation, FAQ, photos par défaut), horses.ts
   styles/      tokens.css — palette, typo, festons, boutons, cartes,
                tableaux, formulaires : tout le vocabulaire de la DA

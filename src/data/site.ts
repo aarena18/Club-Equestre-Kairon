@@ -56,4 +56,7 @@ export const galerieStatique = [
   { src: "/images/pre-baie.jpg", alt: "Cheval au pré, la baie en arrière-plan" },
   { src: "/images/balade-chemin.jpg", alt: "Balade à cheval sur un chemin de campagne" },
   { src: "/images/manege.jpg", alt: "Cours à pied avec les poneys dans le manège" },
+  { src: "/images/carriere.jpg", alt: "La carrière de saut d'obstacles du centre" },
+  { src: "/images/vacances.jpg", alt: "Groupe d'enfants en stage avec deux poneys blancs" },
+  { src: "/images/adultes.jpg", alt: "Une cavalière franchit un obstacle de CSO" },
 ];

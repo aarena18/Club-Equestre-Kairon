@@ -4,7 +4,7 @@ import PageHero from "../components/PageHero.astro";
 import Horse from "../components/Horse.astro";
 import Faq from "../components/Faq.astro";
 import ContactBlock from "../components/ContactBlock.astro";
-import Gallery from "../components/Gallery.astro";
+import SocialCards from "@/components/ui/card-fan-carousel";
 import { withBase } from "../lib/url";
 import { faq, galerieStatique, ctaInscription } from "../data/site";
 
@@ -14,7 +14,7 @@ const disciplines = [
   { label: "Vacances", image: "/images/vacances.jpg", href: "/activites#stages-vacances", alt: "Groupe d'enfants en stage avec deux poneys blancs" },
 ];
 
-const photos = galerieStatique.map((p) => ({ ...p, src: withBase(p.src) }));
+const photos = galerieStatique.map((p) => ({ imgUrl: withBase(p.src), alt: p.alt }));
 ---
 
 <Layout title="Kairon Plage — Poney club & club hippique à Saint-Pair-sur-Mer">
@@ -93,7 +93,7 @@ const photos = galerieStatique.map((p) => ({ ...p, src: withBase(p.src) }));
     <div class="container center">
       <h2 class="title-dots">Le club en images</h2>
     </div>
-    <Gallery photos={photos} />
+    <SocialCards client:visible cards={photos} label="Le club en images" />
   </section>
 </Layout>
 
