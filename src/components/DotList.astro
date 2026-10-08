@@ -1,0 +1,110 @@
+---
+/**
+ * Liste de points séparés par la ligne pointillée de la DA : valeurs,
+ * services, conditions, étapes. Remplace les grilles de cartes
+ * « icône + titre + texte ». `numbered` quand l'ordre compte (étapes).
+ */
+interface Item {
+  title: string;
+  text?: string;
+  href?: string;
+  cta?: string;
+}
+
+interface Props {
+  items: Item[];
+  numbered?: boolean;
+  columns?: 1 | 2;
+  headingLevel?: 2 | 3;
+}
+
+const { items, numbered = false, columns = 1, headingLevel = 3 } = Astro.props;
+const List = numbered ? "ol" : "ul";
+const H = `h${headingLevel}` as "h2" | "h3";
+---
+
+<List class:list={["dot-list", { numbered, "two-cols": columns === 2 }]}>
+  {
+    items.map((item, i) => (
+      <li>
+        {numbered && <span class="num" aria-hidden="true">{i + 1}</span>}
+        <div class="body">
+          <H>{item.title}</H>
+          {item.text && <p>{item.text}</p>}
+          {item.href && (
+            <a class="link-arrow" href={item.href}>
+              <span>{item.cta ?? "En savoir plus"}</span>&nbsp;→
+            </a>
+          )}
+        </div>
+      </li>
+    ))
+  }
+</List>
+
+<style>
+  .dot-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    column-gap: var(--space-5);
+  }
+
+  .dot-list.two-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  li {
+    position: relative;
+    display: flex;
+    gap: var(--space-2);
+    padding: var(--space-3) 0;
+  }
+
+  /* la ligne pointillée de la DA, sous chaque point */
+  li::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 7px;
+    background-image: radial-gradient(circle, var(--dots, var(--color-meadow)) 2px, transparent 2.4px);
+    background-size: 7px 7px;
+    background-repeat: repeat-x;
+  }
+
+  .num {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color-meadow-deep);
+    color: #fff;
+    font-weight: 700;
+    font-size: var(--text-lg);
+  }
+
+  .body {
+    min-width: 0;
+  }
+
+  p {
+    margin: 0.45rem 0 0;
+    color: var(--color-ink-soft);
+    max-width: 60ch;
+  }
+
+  .link-arrow {
+    margin-top: 0.2rem;
+  }
+
+  @media (max-width: 760px) {
+    .dot-list.two-cols {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

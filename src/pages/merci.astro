@@ -1,12 +1,25 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import PageHero from "../components/PageHero.astro";
+import ThankYou from "../components/ThankYou.astro";
 import { withBase } from "../lib/url";
 ---
 
-<Layout title="Merci — Kairon Plage">
-  <PageHero image="/images/vacances.jpg" eyebrow="Demande envoyée" title="Merci !" subtitle="Votre demande de cours d'essai a bien été reçue. Le centre équestre de Kairon Plage vous recontacte rapidement.">
-    <a class="btn btn-glass" href={withBase("/")}>← Retour à l'accueil</a>
-    <a class="btn btn-teal" href={withBase("/activites")}>Voir les activités</a>
-  </PageHero>
-</Layout>
+<ThankYou
+  image="vacances"
+  title="Merci, à très vite au club !"
+  subtitle="Votre demande de cours d'essai est bien partie. Le centre équestre de Kairon Plage vous recontacte pour convenir d'un créneau."
+  steps={[
+    { title: "Le centre vous recontacte", text: "Par téléphone ou par email, selon les coordonnées que vous avez laissées." },
+    {
+      title: "Vous choisissez un créneau",
+      text: "Le premier cours est adapté à l'âge et au niveau du cavalier.",
+      href: withBase("/activites"),
+      cta: "Parcourir les activités en attendant",
+    },
+    {
+      title: "Ensuite, l'inscription",
+      text: "Si l'essai vous plaît : contrat d'inscription et choix du forfait.",
+      href: withBase("/tarifs"),
+      cta: "Voir les tarifs",
+    },
+  ]}
+/>

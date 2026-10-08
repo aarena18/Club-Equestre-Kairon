@@ -8,7 +8,11 @@ export const navLinks = [
   { href: "/infos-pratiques", label: "Infos pratiques" },
 ];
 
-/** CTA permanent : renvoie vers le formulaire de cours d'essai. */
+/**
+ * L'action principale du site, partout le même libellé et le même bouton
+ * (`.btn-teal`). La page d'arrivée explique que l'inscription commence
+ * par un cours d'essai.
+ */
 export const ctaInscription = { href: "/infos-pratiques#essai", label: "S'inscrire" };
 
 /** Questions fréquentes — partagées entre l'accueil et Infos pratiques. */
@@ -27,11 +31,11 @@ export const faq = [
   },
   {
     q: "Proposez-vous l'équitation adaptée aux cavaliers en situation de handicap ?",
-    r: "Oui — voir la fiche Équitation adaptée dans les activités.",
+    r: "Oui, voir la fiche Équitation adaptée dans les activités.",
   },
   {
     q: "Puis-je mettre mon cheval en pension au centre ?",
-    r: "Oui, en box individuel ou en plein-air, selon 3 classes — voir la rubrique Propriétaires.",
+    r: "Oui, en box individuel ou en plein-air, selon 3 classes. Voir la rubrique Propriétaires.",
   },
 ];
 
@@ -40,25 +44,39 @@ export const faq = [
  * fiche n'a pas sa propre photo dans le Studio Sanity.
  */
 export const photoParCategorie: Record<string, string> = {
-  "baby-cavaliers": "/images/enfants.jpg",
-  "enfants-ados": "/images/vacances.jpg",
-  adultes: "/images/adultes.jpg",
-  "expert-competition": "/images/carriere.jpg",
-  "equitation-adaptee": "/images/manege.jpg",
-  "balades-randonnees": "/images/balade-chemin.jpg",
-  "stages-vacances": "/images/plage-groupe.jpg",
+  "baby-cavaliers": "enfants",
+  "enfants-ados": "vacances",
+  adultes: "adultes",
+  "expert-competition": "carriere",
+  "equitation-adaptee": "manege",
+  "balades-randonnees": "balade-chemin",
+  "stages-vacances": "plage-groupe",
+};
+
+/**
+ * Photo de bandeau (plein écran) par catégorie : uniquement des photos
+ * assez grandes pour ne pas être floues en 1440 px.
+ */
+export const bandeauParCategorie: Record<string, string> = {
+  "baby-cavaliers": "manege",
+  "enfants-ados": "manege",
+  adultes: "carriere",
+  "expert-competition": "carriere",
+  "equitation-adaptee": "manege",
+  "balades-randonnees": "plage-groupe",
+  "stages-vacances": "plage-groupe",
 };
 
 /** Photos de la galerie "Le club en images" (en attendant la galerie CMS). */
 export const galerieStatique = [
-  { src: "/images/plage-coucher-soleil.jpg", alt: "Cavalier au galop sur la plage au coucher du soleil" },
-  { src: "/images/plage-groupe.jpg", alt: "Balade en groupe sur la plage à marée basse" },
-  { src: "/images/pre-baie.jpg", alt: "Cheval au pré, la baie en arrière-plan" },
-  { src: "/images/balade-chemin.jpg", alt: "Balade à cheval sur un chemin de campagne" },
-  { src: "/images/manege.jpg", alt: "Cours à pied avec les poneys dans le manège" },
-  { src: "/images/carriere.jpg", alt: "La carrière de saut d'obstacles du centre" },
-  { src: "/images/vacances.jpg", alt: "Groupe d'enfants en stage avec deux poneys blancs" },
-  { src: "/images/adultes.jpg", alt: "Une cavalière franchit un obstacle de CSO" },
+  { src: "plage-coucher-soleil", alt: "Cavalier au galop sur la plage au coucher du soleil" },
+  { src: "plage-groupe", alt: "Balade en groupe sur la plage à marée basse" },
+  { src: "pre-baie", alt: "Cheval au pré, la baie en arrière-plan" },
+  { src: "balade-chemin", alt: "Balade à cheval sur un chemin de campagne" },
+  { src: "manege", alt: "Cours à pied avec les poneys dans le manège" },
+  { src: "carriere", alt: "La carrière de saut d'obstacles du centre" },
+  { src: "vacances", alt: "Groupe d'enfants en stage avec deux poneys blancs" },
+  { src: "adultes", alt: "Une cavalière franchit un obstacle de CSO" },
 ];
 
 /**

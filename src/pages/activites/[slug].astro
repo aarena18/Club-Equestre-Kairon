@@ -4,7 +4,7 @@ import Layout from "../../layouts/Layout.astro";
 import PageHero from "../../components/PageHero.astro";
 import { sanityClient, urlFor } from "../../lib/sanity";
 import { withBase } from "../../lib/url";
-import { photoParCategorie } from "../../data/site";
+import { bandeauParCategorie, ctaInscription } from "../../data/site";
 
 export async function getStaticPaths() {
   const activites = await sanityClient.fetch(
@@ -22,32 +22,26 @@ const activite = await sanityClient.fetch(
 );
 
 const descriptionHtml = activite?.description ? toHTML(activite.description) : "";
-const heroExternal = Boolean(activite.photo);
 const heroImage = activite.photo
   ? urlFor(activite.photo).width(1800).height(900).fit("crop").url()
-  : photoParCategorie[activite.categorie] ?? "/images/manege.jpg";
+  : (bandeauParCategorie[activite.categorie] ?? "manege");
 ---
 
 <Layout title={`${activite.titre} — Kairon Plage`} description={activite.resume ?? undefined}>
-  <PageHero
-    image={heroImage}
-    external={heroExternal}
-    eyebrow={activite.trancheAge ?? "Activités & cours"}
-    title={activite.titre}
-    subtitle={activite.resume ?? undefined}
-  />
+  <PageHero image={heroImage} title={activite.titre} subtitle={activite.resume ?? undefined} />
 
   <section class="section">
     <div class="container-narrow">
-      <a class="back" href={withBase("/activites")}>← Toutes les activités</a>
-      {descriptionHtml ? <div class="prose" set:html={descriptionHtml} /> : <p class="note">Description détaillée à venir.</p>}
+      <a class="link-arrow back" href={withBase("/activites")}>← <span>Toutes les activités</span></a>
+      {activite.trancheAge && <p class="tag">{activite.trancheAge}</p>}
+      {descriptionHtml && <div class="prose" set:html={descriptionHtml} />}
 
-      <div class="cta-card">
+      <div class="panel panel-mist cta-panel">
         <div>
           <h2>Envie d'essayer ?</h2>
-          <p>Un premier cours pour découvrir le club, sans engagement.</p>
+          <p>L'inscription commence par un cours d'essai, sans engagement.</p>
         </div>
-        <a class="btn" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
+        <a class="btn btn-teal" href={withBase(ctaInscription.href)}>{ctaInscription.label}</a>
       </div>
     </div>
   </section>
@@ -55,31 +49,37 @@ const heroImage = activite.photo
 
 <style>
   .back {
-    display: inline-block;
-    margin-bottom: var(--space-3);
-    font-weight: 500;
-    color: var(--color-meadow-deep);
-    text-decoration: none;
+    margin-bottom: var(--space-2);
   }
 
-  .cta-card {
+  .tag {
+    display: inline-block;
+    margin: 0 0 var(--space-3);
+    padding: 0.2rem 0.75rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-teal-mist);
+    color: var(--color-teal-deep);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .cta-panel {
     margin-top: var(--space-5);
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-3);
     flex-wrap: wrap;
-    padding: var(--space-3) var(--space-4);
-    border-radius: var(--radius-card);
-    background: var(--color-teal-mist);
   }
 
-  .cta-card h2 {
-    font-size: 1.2rem;
+  .cta-panel h2 {
+    font-size: var(--text-h3);
     color: var(--color-pine);
   }
 
-  .cta-card p {
+  .cta-panel p {
     margin: 0.3rem 0 0;
     color: var(--color-ink-soft);
   }

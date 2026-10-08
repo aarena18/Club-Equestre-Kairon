@@ -56,16 +56,23 @@ une fois le site en ligne).
 src/
   layouts/     Layout.astro — squelette HTML, polices, meta
   pages/       une route par fichier (routing Astro)
-  components/  Header, Footer, PageHero, Faq, ContactBlock,
-               ActivityCard, Horse (silhouettes), SocialIcons
+  components/  Header, Footer, PageHero, Faq, ContactBlock, ThankYou,
+               Card (LA carte du site), DotList (listes à pointillés),
+               Photo (images optimisées), ActivityCard, Horse, SocialIcons
     ui/        composants React importés (convention shadcn) :
                card-fan-carousel.tsx — galerie en éventail (GSAP),
                rendue en île Astro `client:visible`
+  assets/
+    photos/    photos du club, optimisées au build (AVIF/WebP, srcset)
+  lib/         photos.ts, gallery.ts, sanity.ts, url.ts
   data/        site.ts (navigation, FAQ, photos par défaut), horses.ts
-  styles/      tokens.css — palette, typo, festons, boutons, cartes,
-               tableaux, formulaires : tout le vocabulaire de la DA
+  styles/      tokens.css — palette, échelle typo, festons, boutons,
+               bandeaux, panneaux, tableaux, formulaires + les règles
+               du système visuel (en tête de fichier)
 public/
-  images/      photos du club, logo et labels (extraits de la maquette)
+  images/      logo et labels (servis tels quels)
+.impeccable/   historique des diagnostics Impeccable (critique)
+.claude/skills/impeccable/   skill de design Impeccable pour Claude Code
 ```
 
 ## Démarrer en local
@@ -182,7 +189,7 @@ Pas bloquant pour continuer à développer, mais à ne pas oublier — tout est 
 
 - **4 lignes tarifaires** (Trimestre 1 ×2, Forfait famille ×2) affichent encore une note interne « à vérifier » dans leur champ Précisions — à relire sur le document source et à nettoyer dans le Studio.
 - **Réglages du site** (téléphone, email, adresse, horaires) jamais renseignés — plusieurs pages s'en accommodent (« coordonnées à venir ») mais ce n'est pas vendeur.
-- **Photos** : les photos de la maquette sont dans `public/images/` et servent de photos par défaut (bandeaux, cartes activités, galerie). Dès qu'une photo est ajoutée à une activité ou une actualité dans le Studio, elle prend le relais automatiquement.
+- **Photos** : les photos de la maquette sont dans `src/assets/photos/` et servent de photos par défaut (bandeaux, cartes activités, galerie). Dès qu'une photo est ajoutée à une activité ou une actualité dans le Studio, elle prend le relais automatiquement.
 - **Logo** : seule une version 100×100 px existe (extraite de la maquette) — à remplacer par un fichier HD ou SVG dans `public/images/logo-kairon.png`.
 - **Photo aérienne de l'accueil** : 800 px de large seulement, un peu juste en plein écran — une version HD serait bienvenue.
 - L'actualité de rentrée n'a que son résumé, pas son contenu complet (le corps de la fiche détail est vide).

@@ -1,12 +1,20 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import PageHero from "../components/PageHero.astro";
+import ThankYou from "../components/ThankYou.astro";
 import { withBase } from "../lib/url";
 ---
 
-<Layout title="Merci — Kairon Plage">
-  <PageHero image="/images/pre-baie.jpg" eyebrow="Demande envoyée" title="Merci !" subtitle="Votre demande de pension a bien été reçue. Le centre équestre de Kairon Plage vous recontacte avec les disponibilités.">
-    <a class="btn btn-glass" href={withBase("/")}>← Retour à l'accueil</a>
-    <a class="btn btn-teal" href={withBase("/activites")}>Voir les activités</a>
-  </PageHero>
-</Layout>
+<ThankYou
+  image="pre-baie"
+  title="Merci, demande bien reçue"
+  subtitle="Le centre équestre de Kairon Plage vous recontacte avec les disponibilités en pension."
+  steps={[
+    { title: "Le centre vous recontacte", text: "Avec les disponibilités et les formules adaptées à votre cheval." },
+    { title: "Visite et échange préalable", text: "Pour faire connaissance avec votre cheval et ses habitudes." },
+    {
+      title: "Arrivée au centre",
+      text: "Vaccins à jour, puis une période d'adaptation pour prendre ses marques.",
+      href: withBase("/proprietaires-pension#contact-proprietaires"),
+      cta: "Revoir les conditions d'admission",
+    },
+  ]}
+/>

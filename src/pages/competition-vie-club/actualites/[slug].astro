@@ -31,35 +31,32 @@ const contenuHtml = article?.contenu
       },
     })
   : "";
-const heroExternal = Boolean(article.photoCouverture);
 const heroImage = article.photoCouverture
   ? urlFor(article.photoCouverture).width(1800).height(900).fit("crop").url()
-  : "/images/plage-coucher-soleil.jpg";
+  : "plage-groupe";
 ---
 
 <Layout title={`${article.titre} — Kairon Plage`} description={article.resume ?? undefined}>
-  <PageHero
-    image={heroImage}
-    external={heroExternal}
-    eyebrow={dateFormatter.format(new Date(article.datePublication))}
-    title={article.titre}
-    subtitle={article.resume ?? undefined}
-  />
+  <PageHero image={heroImage} title={article.titre} subtitle={article.resume ?? undefined} />
 
   <section class="section">
     <div class="container-narrow">
-      <a class="back" href={withBase("/competition-vie-club#actualites")}>← Toutes les actualités</a>
-      {contenuHtml ? <div class="prose" set:html={contenuHtml} /> : <p class="note">Article complet à venir.</p>}
+      <a class="link-arrow back" href={withBase("/competition-vie-club#actualites")}>← <span>Toutes les actualités</span></a>
+      <p class="date">Publié le {dateFormatter.format(new Date(article.datePublication))}</p>
+      {contenuHtml && <div class="prose" set:html={contenuHtml} />}
     </div>
   </section>
 </Layout>
 
 <style>
   .back {
-    display: inline-block;
-    margin-bottom: var(--space-3);
-    font-weight: 500;
+    margin-bottom: var(--space-1);
+  }
+
+  .date {
+    margin: 0 0 var(--space-3);
+    font-size: var(--text-sm);
+    font-weight: 600;
     color: var(--color-meadow-deep);
-    text-decoration: none;
   }
 </style>

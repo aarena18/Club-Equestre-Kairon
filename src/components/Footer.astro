@@ -41,7 +41,7 @@ const hasSocials = Boolean(instagram || facebook);
         {settings?.telephone && <li><a href={`tel:${settings.telephone.replace(/\s/g, "")}`}>{settings.telephone}</a></li>}
         {settings?.email && <li><a href={`mailto:${settings.email}`}>{settings.email}</a></li>}
         <li>{settings?.adresse ?? "Saint-Pair-sur-Mer, Manche"}</li>
-        <li><a href={withBase(ctaInscription.href)}>Réserver un cours d'essai</a></li>
+        <li><a href={withBase(ctaInscription.href)}>Demander un cours d'essai</a></li>
       </ul>
     </div>
 
@@ -53,7 +53,7 @@ const hasSocials = Boolean(instagram || facebook);
   .site-footer {
     --scallop-color: var(--color-teal);
     background: var(--color-teal);
-    color: #fff;
+    color: var(--color-ink); /* encre sur teal : 6,5:1 (le blanc n'atteignait que 2,5:1) */
     margin-top: calc(var(--space-6) + var(--scallop-h));
     padding-top: var(--space-5);
   }
@@ -84,7 +84,7 @@ const hasSocials = Boolean(instagram || facebook);
 
   .brand p {
     margin: var(--space-1) 0 0;
-    font-size: 0.95rem;
+    font-size: var(--text-sm);
   }
 
   .peek {
@@ -107,10 +107,10 @@ const hasSocials = Boolean(instagram || facebook);
   }
 
   .col h2 {
-    font-size: 1.05rem;
+    font-size: var(--text-base);
     text-transform: none;
     letter-spacing: 0.02em;
-    color: #fff;
+    color: var(--color-ink);
     margin-bottom: var(--space-2);
   }
 
@@ -121,17 +121,17 @@ const hasSocials = Boolean(instagram || facebook);
     display: flex;
     flex-direction: column;
     gap: 0.55rem;
-    font-size: 0.95rem;
+    font-size: var(--text-sm);
   }
 
   .col a {
-    color: #fff;
+    color: var(--color-ink);
     text-decoration: none;
     border-bottom: 1px solid transparent;
   }
 
   .col a:hover {
-    border-bottom-color: #fff;
+    border-bottom-color: var(--color-ink);
   }
 
   .legal {
@@ -139,8 +139,8 @@ const hasSocials = Boolean(instagram || facebook);
     align-self: end;
     margin: var(--space-4) 0 0;
     padding-bottom: var(--space-3);
-    font-size: 0.78rem;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: var(--text-xs);
+    color: var(--color-ink);
   }
 
   @media (max-width: 820px) {

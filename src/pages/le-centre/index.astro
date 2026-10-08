@@ -1,8 +1,8 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import BentoGrid from "../../components/ui/BentoGrid.astro";
-import BentoCard from "../../components/ui/BentoCard.astro";
 import PageHero from "../../components/PageHero.astro";
+import Photo from "../../components/Photo.astro";
+import DotList from "../../components/DotList.astro";
 import Horse from "../../components/Horse.astro";
 import { sanityClient, urlFor } from "../../lib/sanity";
 import { withBase } from "../../lib/url";
@@ -12,9 +12,24 @@ const equipe = await sanityClient.fetch(
 );
 
 const valeurs = [
-  { titre: "Association loi 1901", texte: "Le centre équestre de Kairon Plage est porté par l'association « Saint Pair Équitation »." },
-  { titre: "Label Bien-être animal", texte: "Le centre est labellisé Bien-être animal par la FFE, et inscrit ses cavaliers dans cette démarche." },
-  { titre: "Club affilié FFE", texte: "Poney club et club hippique affiliés à la Fédération Française d'Équitation." },
+  {
+    title: "Label Bien-être animal",
+    text: "Le centre est labellisé Bien-être animal par la FFE, et inscrit ses cavaliers dans cette démarche.",
+  },
+  {
+    title: "Association loi 1901",
+    text: "Le centre équestre de Kairon Plage est porté par l'association « Saint Pair Équitation ».",
+  },
+  {
+    title: "Club affilié FFE",
+    text: "Poney club et club hippique affiliés à la Fédération Française d'Équitation.",
+  },
+  {
+    title: "Crinières solidaires",
+    text: "Un dispositif du Comité départemental d'équitation de la Manche pour les familles à revenus modestes.",
+    href: withBase("/tarifs#solidarite"),
+    cta: "Aides & solidarité",
+  },
 ];
 ---
 
@@ -23,42 +38,43 @@ const valeurs = [
   description="Pédagogie, équipe, installations, cavalerie et valeurs du centre équestre de Kairon Plage, entre mer et campagne à Saint-Pair-sur-Mer."
 >
   <PageHero
-    image="/images/hero-vue-aerienne.jpg"
-    eyebrow="Le centre"
+    image="hero-vue-aerienne"
     title="Un club qui accompagne chaque cavalier"
     subtitle="Une pédagogie poney depuis plus de 50 ans, entre mer et campagne."
   />
 
-  <section id="pedagogie" class="section split">
-    <div class="container split-grid">
-      <div>
-        <h2 class="title-dots">Notre pédagogie</h2>
-        <p class="lede">
-          Le centre équestre de Kairon Plage développe depuis plus de 50 ans une pédagogie « poney », dans l'esprit
-          du mouvement poney né en France dans les années 1970.
-        </p>
-        <p class="lede">
-          Dès 2 ans, les baby cavaliers se familiarisent avec le poney ; la pédagogie ludique accompagne ensuite
-          chaque cavalier vers l'instruction et les passages de galops, jusqu'à la compétition pour qui le
-          souhaite — CSO, Equifun, pony games. Les cours « Expert », réservés aux cavaliers d'un minimum Galop 4,
-          sont plafonnés à 4 cavaliers.
-        </p>
-        <a class="btn" href={withBase("/activites")}>Voir toutes les activités</a>
+  <section class="section">
+    <div class="container">
+      <div id="pedagogie" class="split">
+        <div>
+          <h2 class="title-dots">Notre pédagogie</h2>
+          <p class="lede">
+            Le centre équestre de Kairon Plage développe depuis plus de 50 ans une pédagogie « poney », dans
+            l'esprit du mouvement poney né en France dans les années 1970.
+          </p>
+          <p class="lede">
+            Dès 2 ans, les baby cavaliers se familiarisent avec le poney ; la pédagogie ludique accompagne ensuite
+            chaque cavalier vers l'instruction et les passages de galops, jusqu'à la compétition pour qui le
+            souhaite : CSO, Equifun, pony games. Les cours « Expert », réservés aux cavaliers d'un minimum Galop 4,
+            sont plafonnés à 4 cavaliers.
+          </p>
+          <a class="btn" href={withBase("/activites")}>Voir toutes les activités</a>
+        </div>
+        <Photo class="photo split-img" src="manege" alt="Cours à pied avec les poneys dans le manège" sizes="(max-width: 800px) 100vw, 480px" />
       </div>
-      <img class="photo tilt" src={withBase("/images/manege.jpg")} alt="Cours à pied avec les poneys dans le manège" loading="lazy" />
     </div>
   </section>
 
-  <section id="equipe" class="band band-mist scallop-top scallop-under">
-    <div class="container center">
-      <h2 class="title-dots">Notre équipe</h2>
-      {
-        equipe.length > 0 ? (
-          <div class="equipe-grid">
+  {
+    equipe.length > 0 && (
+      <section id="equipe" class="band band-mist scallop-top scallop-under">
+        <div class="container center">
+          <h2 class="title-dots">Notre équipe</h2>
+          <ul class="equipe-grid">
             {equipe.map((m: any) => (
-              <div class="membre">
+              <li class="membre">
                 {m.photo ? (
-                  <img src={urlFor(m.photo).width(320).height(320).fit("crop").url()} alt={m.photo.alt || m.nom} />
+                  <img src={urlFor(m.photo).width(320).height(320).fit("crop").url()} alt={m.photo.alt || m.nom} loading="lazy" />
                 ) : (
                   <div class="avatar" aria-hidden="true">
                     <Horse name="peek" />
@@ -67,82 +83,46 @@ const valeurs = [
                 <h3>{m.nom}</h3>
                 {m.role && <span class="role">{m.role}</span>}
                 {m.bio && <p>{m.bio}</p>}
-              </div>
+              </li>
             ))}
-          </div>
-        ) : (
-          <p>L'équipe arrive bientôt.</p>
-        )
-      }
-    </div>
-  </section>
+          </ul>
+        </div>
+      </section>
+    )
+  }
 
-  <section id="installations" class="section split">
-    <div class="container split-grid reverse">
-      <img class="photo tilt-right" src={withBase("/images/carriere.jpg")} alt="La carrière de saut d'obstacles du centre" loading="lazy" />
-      <div>
-        <h2 class="title-dots">Nos installations & notre cadre</h2>
-        <p class="lede">
-          Situé entre mer et campagne à Saint-Pair-sur-Mer, le centre équestre de Kairon Plage bénéficie d'un cadre
-          particulièrement adapté à la pratique de l'équitation comme aux promenades et randonnées — carrières,
-          sentiers, et un accès direct aux paysages normands de la baie.
-        </p>
-        <p class="note">Détail des équipements (nombre de carrières, box, manège…) à préciser avec le club.</p>
+  <section class="section">
+    <div class="container">
+      <div id="installations" class="split reverse">
+        <div>
+          <h2 class="title-dots">Nos installations & notre cadre</h2>
+          <p class="lede">
+            Situé entre mer et campagne à Saint-Pair-sur-Mer, le centre équestre de Kairon Plage bénéficie d'un cadre
+            particulièrement adapté à la pratique de l'équitation comme aux promenades et randonnées : carrières,
+            sentiers, et un accès direct aux paysages normands de la baie.
+          </p>
+        </div>
+        <Photo class="photo split-img" src="carriere" alt="La carrière de saut d'obstacles du centre" sizes="(max-width: 800px) 100vw, 480px" />
       </div>
-    </div>
-  </section>
 
-  <section id="cavalerie" class="section split">
-    <div class="container split-grid">
-      <div>
-        <h2 class="title-dots">Notre cavalerie</h2>
-        <p class="lede">
-          Le centre accueille des poneys d'expérience, dont certains pratiquent la compétition : Shetland, Welsh et
-          poney B notamment. La cavalerie s'enrichit chaque saison, en lien avec l'entreprise familiale de l'un de
-          nos enseignants.
-        </p>
+      <div id="cavalerie" class="split">
+        <div>
+          <h2 class="title-dots">Notre cavalerie</h2>
+          <p class="lede">
+            Le centre accueille des poneys d'expérience, dont certains pratiquent la compétition : Shetland, Welsh et
+            poney B notamment. La cavalerie s'enrichit chaque saison, en lien avec l'entreprise familiale de l'un de
+            nos enseignants.
+          </p>
+        </div>
+        <Photo class="photo split-img" src="pre-baie" alt="Un cheval au pré, la baie en arrière-plan" sizes="(max-width: 800px) 100vw, 480px" />
       </div>
-      <img class="photo tilt" src={withBase("/images/pre-baie.jpg")} alt="Un cheval au pré, la baie en arrière-plan" loading="lazy" />
     </div>
   </section>
 
   <section id="valeurs" class="section">
     <div class="container">
-      <div class="center">
-        <h2 class="title-dots">Nos valeurs, notre association & nos labels</h2>
-      </div>
-      <BentoGrid rows={2}>
-        <BentoCard
-          name="Label Bien-être animal"
-          description="Le centre est labellisé Bien-être animal par la FFE, et inscrit ses cavaliers dans cette démarche."
-          icon="heart"
-          image="/images/pre-baie.jpg"
-          area="1 / 1 / 3 / 2"
-        />
-        <BentoCard
-          name="Association loi 1901"
-          description="Le centre équestre de Kairon Plage est porté par l'association « Saint Pair Équitation »."
-          icon="shield"
-          image="/images/vacances.jpg"
-          area="1 / 2 / 2 / 4"
-        />
-        <BentoCard
-          name="Club affilié FFE"
-          description="Poney club et club hippique affiliés à la Fédération Française d'Équitation."
-          icon="award"
-          image="/images/carriere.jpg"
-          area="2 / 2 / 3 / 3"
-        />
-        <BentoCard
-          name="Crinières solidaires"
-          description="Un dispositif du Comité départemental d'équitation de la Manche pour les familles à revenus modestes."
-          icon="users"
-          tone="sun"
-          href="/tarifs#solidarite"
-          cta="Aides & solidarité"
-          area="2 / 3 / 3 / 4"
-        />
-      </BentoGrid>
+      <h2 class="title-dots">Nos valeurs, notre association & nos labels</h2>
+      <DotList items={valeurs} columns={2} />
       <img
         class="labels"
         src={withBase("/images/labels.png")}
@@ -156,45 +136,18 @@ const valeurs = [
 </Layout>
 
 <style>
-  .split-grid {
-    display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: var(--space-5);
-    align-items: center;
-  }
-
-  .split-grid.reverse {
-    grid-template-columns: 0.9fr 1.1fr;
-  }
-
-  .split-grid .btn {
-    margin-top: var(--space-2);
-  }
-
-  .split-grid .photo {
+  .split-img {
     aspect-ratio: 4 / 3;
-    max-height: 420px;
   }
 
-  .tilt {
-    transform: rotate(2deg);
-  }
-
-  .tilt-right {
-    transform: rotate(-2deg);
-  }
-
-  .section.split + .section.split {
-    padding-top: 0;
-  }
-
-  /* équipe */
   .equipe-grid {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-2) 0 0;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 240px));
     justify-content: center;
     gap: var(--space-4);
-    margin-top: var(--space-2);
   }
 
   .membre img,
@@ -211,7 +164,7 @@ const valeurs = [
     display: grid;
     place-items: end center;
     overflow: hidden;
-    background: var(--color-teal-mist);
+    background: #fff;
     color: var(--color-meadow);
   }
 
@@ -223,55 +176,26 @@ const valeurs = [
 
   .membre h3 {
     color: var(--color-pine);
-    font-size: 1.1rem;
   }
 
   .membre .role {
     display: inline-block;
     margin-top: 0.4rem;
-    padding: 0.15rem 0.7rem;
+    padding: 0.15rem 0.75rem;
     border-radius: var(--radius-pill);
     background: var(--color-teal-strong);
     color: #fff;
-    font-size: 0.82rem;
+    font-size: var(--text-xs);
   }
 
   .membre p {
-    font-size: 0.95rem;
-    margin-top: 0.7rem;
-  }
-
-  /* valeurs */
-  .valeurs .card h3 {
-    color: var(--color-pine);
-  }
-
-  .card-sun {
-    background: var(--color-sun);
-    border-color: var(--color-sun);
-  }
-
-  .card-sun h3,
-  .card-sun p,
-  .card-sun a {
-    color: var(--color-ink) !important;
+    font-size: var(--text-sm);
+    margin: 0.7rem 0 0;
   }
 
   .labels {
     width: min(640px, 100%);
     height: auto;
     margin: var(--space-5) auto 0;
-  }
-
-  @media (max-width: 800px) {
-    .split-grid,
-    .split-grid.reverse {
-      grid-template-columns: 1fr;
-      gap: var(--space-4);
-    }
-
-    .split-grid.reverse img {
-      order: 2;
-    }
   }
 </style>

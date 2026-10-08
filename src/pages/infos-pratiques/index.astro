@@ -1,99 +1,60 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import BentoGrid from "../../components/ui/BentoGrid.astro";
-import BentoCard from "../../components/ui/BentoCard.astro";
 import PageHero from "../../components/PageHero.astro";
 import Faq from "../../components/Faq.astro";
+import DotList from "../../components/DotList.astro";
 import Horse from "../../components/Horse.astro";
+import SocialIcons from "../../components/SocialIcons.astro";
 import { sanityClient } from "../../lib/sanity";
 import { withBase } from "../../lib/url";
-import { faq } from "../../data/site";
+import { faq, reseauxSociaux } from "../../data/site";
 
 const siteSettings = await sanityClient.fetch(
   `*[_type == "siteSettings"][0]{telephone, email, adresse, horaires, facebook, instagram}`,
 );
+
+const instagram = siteSettings?.instagram ?? reseauxSociaux.instagram;
+const facebook = siteSettings?.facebook ?? reseauxSociaux.facebook;
+
+const deroule = [
+  { title: "Vous envoyez la demande", text: "Deux minutes : l'âge et le niveau du cavalier suffisent pour commencer." },
+  { title: "Le centre vous recontacte", text: "Pour convenir ensemble d'un créneau qui vous arrange." },
+  { title: "Premier cours", text: "Un cours adapté à l'âge et au niveau du cavalier, sans engagement." },
+];
 ---
 
 <Layout
   title="Infos pratiques & contact — Kairon Plage"
-  description="Horaires, accès et formulaire de demande de cours d'essai au centre équestre de Kairon Plage, Saint-Pair-sur-Mer."
+  description="Demande de cours d'essai, accès, horaires et contact du centre équestre de Kairon Plage, Saint-Pair-sur-Mer."
 >
   <PageHero
-    image="/images/plage-groupe.jpg"
-    eyebrow="Infos pratiques"
-    title="Nous trouver, nous contacter"
-    subtitle="Entre mer et campagne, à Saint-Pair-sur-Mer (Manche)."
+    image="plage-groupe"
+    title="S'inscrire, nous trouver, nous contacter"
+    subtitle="L'inscription commence par un cours d'essai : faites votre demande juste en dessous."
   />
-
-  <section class="section">
-    <div class="container">
-      <BentoGrid rows={2}>
-        <BentoCard
-          id="trouver"
-          name="Nous trouver"
-          description="Centre équestre de Kairon Plage, Saint-Pair-sur-Mer, Manche (Normandie)."
-          icon="pin"
-          image="/images/hero-vue-aerienne.jpg"
-          area="1 / 1 / 3 / 2"
-        >
-          {siteSettings?.adresse ? <ul><li>{siteSettings.adresse}</li></ul> : <ul><li>Adresse précise à venir.</li></ul>}
-        </BentoCard>
-
-        <BentoCard id="horaires" name="Horaires" icon="clock" image="/images/plage-coucher-soleil.jpg" area="1 / 2 / 2 / 4">
-          {
-            siteSettings?.horaires && siteSettings.horaires.length > 0 ? (
-              <ul>
-                {siteSettings.horaires.map((h: string) => <li>{h}</li>)}
-              </ul>
-            ) : (
-              <ul><li>Horaires à venir — contactez le centre directement en attendant.</li></ul>
-            )
-          }
-        </BentoCard>
-
-        <BentoCard name="Nous joindre" icon="phone" image="/images/pre-baie.jpg" area="2 / 2 / 3 / 4">
-          {
-            siteSettings?.telephone || siteSettings?.email ? (
-              <ul>
-                {siteSettings.telephone && <li><a href={`tel:${siteSettings.telephone.replace(/\s/g, "")}`}>{siteSettings.telephone}</a></li>}
-                {siteSettings.email && <li><a href={`mailto:${siteSettings.email}`}>{siteSettings.email}</a></li>}
-              </ul>
-            ) : (
-              <ul><li>Coordonnées à venir — utilisez le formulaire ci-dessous.</li></ul>
-            )
-          }
-        </BentoCard>
-      </BentoGrid>
-    </div>
-  </section>
-
-  <section id="faq" class="section faq-section">
-    <div class="container">
-      <Faq items={faq} />
-    </div>
-  </section>
 
   <section id="essai" class="band scallop-top scallop-under essai">
     <Horse name="gallopTeal" class="deco" />
-    <div class="container-narrow">
-      <div class="form-card">
-        <h2 class="title-dots">Réserver un cours d'essai</h2>
-        <p class="lede">Remplissez ce formulaire, le centre vous recontacte pour convenir d'un créneau.</p>
+    <div class="container essai-grid">
+      <div class="panel">
+        <h2 class="title-dots">Demander un cours d'essai</h2>
 
         <form class="form" name="demande-essai" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" action={withBase("/merci")}>
           <input type="hidden" name="form-name" value="demande-essai" />
-          <p class="hidden-field">
-            <label>Ne pas remplir : <input name="bot-field" /></label>
-          </p>
+          <div class="hidden-field" aria-hidden="true">
+            <label>Ne pas remplir : <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+          </div>
+
+          <p class="form-hint">Les champs marqués <span class="required">*</span> sont obligatoires.</p>
 
           <div class="field">
-            <label for="nom">Nom et prénom</label>
+            <label for="nom">Nom et prénom <span class="required" aria-hidden="true">*</span></label>
             <input id="nom" name="nom" type="text" autocomplete="name" required />
           </div>
 
           <div class="field-row">
             <div class="field">
-              <label for="email">Email</label>
+              <label for="email">Email <span class="required" aria-hidden="true">*</span></label>
               <input id="email" name="email" type="email" autocomplete="email" required />
             </div>
             <div class="field">
@@ -104,8 +65,8 @@ const siteSettings = await sanityClient.fetch(
 
           <div class="field-row">
             <div class="field">
-              <label for="age">Âge du cavalier</label>
-              <input id="age" name="age" type="text" placeholder="Ex. 5 ans" />
+              <label for="age">Âge du cavalier (en années)</label>
+              <input id="age" name="age" type="number" inputmode="numeric" min="2" max="99" placeholder="Ex. 5" />
             </div>
             <div class="field">
               <label for="niveau">Niveau</label>
@@ -124,37 +85,99 @@ const siteSettings = await sanityClient.fetch(
 
           <div class="field">
             <label for="message">Message (facultatif)</label>
-            <textarea id="message" name="message" rows="4"></textarea>
+            <textarea id="message" name="message" rows="3"></textarea>
           </div>
 
-          <button type="submit" class="btn">Envoyer ma demande</button>
+          <button type="submit" class="btn btn-teal">Envoyer ma demande d'essai</button>
+          <p class="privacy">Vos coordonnées servent uniquement à vous recontacter au sujet de cette demande.</p>
         </form>
       </div>
+
+      <aside class="deroule" aria-label="Comment se passe la suite">
+        <h2 class="title-dots on-color">Comment ça se passe</h2>
+        <DotList items={deroule} numbered />
+      </aside>
+    </div>
+  </section>
+
+  <section id="coordonnees" class="section">
+    <div class="container coords">
+      <div>
+        <h2 class="title-dots">Nous trouver</h2>
+        <p class="lede">
+          Centre équestre de Kairon Plage<br />
+          {siteSettings?.adresse ?? "Saint-Pair-sur-Mer, Manche (Normandie)"}
+        </p>
+      </div>
+
+      {
+        siteSettings?.horaires?.length > 0 && (
+          <div>
+            <h2 class="title-dots">Horaires</h2>
+            <ul class="plain">
+              {siteSettings.horaires.map((h: string) => (
+                <li>{h}</li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+
+      {
+        (siteSettings?.telephone || siteSettings?.email) && (
+          <div>
+            <h2 class="title-dots">Nous joindre</h2>
+            <ul class="plain">
+              {siteSettings.telephone && <li>{siteSettings.telephone}</li>}
+              {siteSettings.email && <li>{siteSettings.email}</li>}
+            </ul>
+          </div>
+        )
+      }
+
+      {
+        (instagram || facebook) && (
+          <div>
+            <h2 class="title-dots">Suivre le club</h2>
+            <SocialIcons instagram={instagram} facebook={facebook} size={34} />
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <section id="faq" class="section">
+    <div class="container">
+      <Faq items={faq} />
     </div>
   </section>
 </Layout>
 
 <style>
-  .faq-section {
-    padding-top: 0;
-  }
-
   .essai {
     overflow-x: clip;
   }
 
-  .form-card {
+  .essai-grid {
     position: relative;
     z-index: 2;
-    padding: var(--space-4);
-    border-radius: 36px;
-    background: #fff;
-    color: var(--color-ink);
-    box-shadow: 0 30px 60px -30px rgba(29, 33, 27, 0.45);
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+    gap: var(--space-5);
+    align-items: start;
   }
 
-  .form-card .lede {
-    color: var(--color-ink-soft);
+  .deroule {
+    --dots: var(--color-pine);
+  }
+
+  .deroule :global(.dot-list p) {
+    color: var(--color-ink);
+    font-size: var(--text-base);
+  }
+
+  .deroule :global(.num) {
+    background: var(--color-pine);
   }
 
   .deco {
@@ -168,9 +191,39 @@ const siteSettings = await sanityClient.fetch(
     z-index: 1;
   }
 
-  @media (max-width: 700px) {
-    .form-card {
-      padding: var(--space-3) var(--space-2);
+  .coords {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+    gap: var(--space-4);
+  }
+
+  .coords .title-dots {
+    font-size: var(--text-h3);
+    margin-bottom: var(--space-2);
+  }
+
+  .coords .lede {
+    font-size: var(--text-base);
+  }
+
+  .plain {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    color: var(--color-ink-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  @media (max-width: 900px) {
+    .essai-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+
+    .deco {
+      display: none;
     }
   }
 </style>

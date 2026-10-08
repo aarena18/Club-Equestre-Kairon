@@ -1,0 +1,41 @@
+---
+/**
+ * Image du site : photo locale optimisée (<picture> AVIF/WebP + srcset)
+ * ou URL distante (photo Sanity, déjà redimensionnée par son CDN).
+ * `...rest` transmet l'attribut de scope CSS de la page appelante à <img>.
+ */
+import { Picture } from "astro:assets";
+import { photo, isRemote } from "../lib/photos";
+
+interface Props {
+  src: string;
+  alt: string;
+  /** largeur d'affichage, pour choisir la bonne taille : ex. "(max-width: 700px) 100vw, 380px" */
+  sizes: string;
+  widths?: number[];
+  loading?: "lazy" | "eager";
+  fetchpriority?: "high" | "low" | "auto";
+  class?: string;
+  style?: string;
+  [key: string]: unknown;
+}
+
+const { src, alt, sizes, widths = [400, 700, 1000, 1400], loading = "lazy", ...rest } = Astro.props;
+---
+
+{
+  isRemote(src) ? (
+    <img src={src} alt={alt} loading={loading} decoding="async" {...rest} />
+  ) : (
+    <Picture
+      src={photo(src)}
+      alt={alt}
+      widths={widths.filter((w) => w <= photo(src).width).concat(widths.some((w) => w > photo(src).width) ? [photo(src).width] : [])}
+      sizes={sizes}
+      formats={["avif", "webp"]}
+      loading={loading}
+      decoding="async"
+      {...rest}
+    />
+  )
+}

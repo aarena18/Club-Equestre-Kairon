@@ -1,59 +1,63 @@
 ---
 /** "Besoin de plus d'information ?" — panneau de verre sur photo de la carrière, chevaux au galop. */
 import Horse from "./Horse.astro";
+import Photo from "./Photo.astro";
 import SocialIcons from "./SocialIcons.astro";
 import { sanityClient } from "../lib/sanity";
 import { withBase } from "../lib/url";
+import { ctaInscription, reseauxSociaux } from "../data/site";
 
 const settings = await sanityClient.fetch(`*[_type == "siteSettings"][0]{telephone, email, facebook, instagram}`);
+const instagram = settings?.instagram ?? reseauxSociaux.instagram;
+const facebook = settings?.facebook ?? reseauxSociaux.facebook;
+const hasDirect = Boolean(settings?.email || settings?.telephone);
 ---
 
 <section class="contact-block">
-  <img class="bg" src={withBase("/images/carriere.jpg")} alt="" loading="lazy" />
-  <div class="panel">
+  <Photo class="bg" src="carriere" alt="" sizes="100vw" widths={[640, 1024, 1600]} />
+  <div class="glass">
     <h2 class="title-dots">Besoin de plus d'information ?</h2>
 
-    <p class="lead">Contactez-nous par :</p>
-    <ul class="channels">
-      {
-        settings?.email && (
-          <li>
-            <svg viewBox="0 0 40 40" aria-hidden="true">
-              <path d="M8 13 L32 13 L32 29 L8 29 Z M8 13 L20 22 L32 13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" />
-            </svg>
-            <a href={`mailto:${settings.email}`}>{settings.email}</a>
-          </li>
-        )
-      }
-      {
-        settings?.telephone && (
-          <li>
-            <svg viewBox="0 0 40 40" aria-hidden="true">
-              <path
-                d="M14 8 L18 15 L15 18 C16.5 21.5 18.5 23.5 22 25 L25 22 L32 26 L30 31 C21 32 9 20 9 10 Z"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.2"
-                stroke-linejoin="round"
-              />
-            </svg>
-            <a href={`tel:${settings.telephone.replace(/\s/g, "")}`}>{settings.telephone}</a>
-          </li>
-        )
-      }
-      <li>
-        <svg viewBox="0 0 40 40" aria-hidden="true">
-          <path d="M9 11 H31 V30 H9 Z M9 17 H31 M15 8 V13 M25 8 V13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" />
-        </svg>
-        <a href={withBase("/infos-pratiques#essai")}>le formulaire de cours d'essai</a>
-      </li>
-    </ul>
+    {
+      hasDirect && (
+        <>
+          <p class="lead">Contactez-nous par :</p>
+          <ul class="channels">
+            {settings?.email && (
+              <li>
+                <svg viewBox="0 0 40 40" aria-hidden="true">
+                  <path d="M8 13 L32 13 L32 29 L8 29 Z M8 13 L20 22 L32 13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" />
+                </svg>
+                <a href={`mailto:${settings.email}`}>{settings.email}</a>
+              </li>
+            )}
+            {settings?.telephone && (
+              <li>
+                <svg viewBox="0 0 40 40" aria-hidden="true">
+                  <path
+                    d="M14 8 L18 15 L15 18 C16.5 21.5 18.5 23.5 22 25 L25 22 L32 26 L30 31 C21 32 9 20 9 10 Z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <a href={`tel:${settings.telephone.replace(/\s/g, "")}`}>{settings.telephone}</a>
+              </li>
+            )}
+          </ul>
+        </>
+      )
+    }
+
+    <p class="lead">{hasDirect ? "Ou commencez par un cours d'essai :" : "Le plus simple : demandez un cours d'essai, le centre vous recontacte."}</p>
+    <a class="btn btn-teal" href={withBase(ctaInscription.href)}>{ctaInscription.label}</a>
 
     {
-      (settings?.instagram || settings?.facebook) && (
+      (instagram || facebook) && (
         <>
-          <p class="lead">Suivez-nous sur :</p>
-          <SocialIcons instagram={settings.instagram} facebook={settings.facebook} size={40} />
+          <p class="lead">Suivez la vie du club :</p>
+          <SocialIcons instagram={instagram} facebook={facebook} size={40} />
         </>
       )
     }
@@ -71,6 +75,12 @@ const settings = await sanityClient.fetch(`*[_type == "siteSettings"][0]{telepho
     min-height: 640px;
   }
 
+  .contact-block :global(picture) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+
   .bg {
     position: absolute;
     inset: 0;
@@ -80,7 +90,7 @@ const settings = await sanityClient.fetch(`*[_type == "siteSettings"][0]{telepho
     z-index: -2;
   }
 
-  .panel {
+  .glass {
     width: min(1000px, 100%);
     margin: 0 auto;
     padding: var(--space-4) var(--space-3) 220px;
@@ -94,7 +104,7 @@ const settings = await sanityClient.fetch(`*[_type == "siteSettings"][0]{telepho
   }
 
   .lead {
-    font-size: 1.15rem;
+    font-size: var(--text-lg);
     font-weight: 600;
     letter-spacing: 0.03em;
     margin: var(--space-4) 0 var(--space-2);
@@ -129,7 +139,7 @@ const settings = await sanityClient.fetch(`*[_type == "siteSettings"][0]{telepho
     border-bottom: 2px dotted var(--color-meadow);
   }
 
-  .panel :global(.socials) {
+  .glass :global(.socials) {
     justify-content: center;
     color: var(--color-ink);
   }
@@ -155,7 +165,7 @@ const settings = await sanityClient.fetch(`*[_type == "siteSettings"][0]{telepho
   }
 
   @media (max-width: 700px) {
-    .panel {
+    .glass {
       padding-bottom: 150px;
     }
 

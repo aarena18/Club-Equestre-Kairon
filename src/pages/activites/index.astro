@@ -5,6 +5,7 @@ import ActivityCard from "../../components/ActivityCard.astro";
 import Horse from "../../components/Horse.astro";
 import { sanityClient } from "../../lib/sanity";
 import { withBase } from "../../lib/url";
+import { ctaInscription } from "../../data/site";
 
 const activites = await sanityClient.fetch(
   `*[_type == "activite"] | order(ordre asc){titre, "slug": slug.current, categorie, trancheAge, resume, texteBouton, photo}`,
@@ -30,8 +31,7 @@ const categories = [
   description="Baby cavaliers, cours Expert, Equifeel, balades, stages vacances : toutes les activités du centre équestre de Kairon Plage, filtrables par public."
 >
   <PageHero
-    image="/images/balade-chemin.jpg"
-    eyebrow="Activités & cours"
+    image="balade-chemin"
     title="Une activité pour chaque cavalier"
     subtitle="Du baby cavalier au cours Expert, en passant par l'Equifeel et les balades en bord de mer."
   />
@@ -42,7 +42,7 @@ const categories = [
       <div class="center">
         <h2 class="title-dots">Trouvez la vôtre</h2>
       </div>
-      <div class="filters" role="group" aria-label="Filtrer les activités par catégorie">
+      <div class="filters scroll-row" role="group" aria-label="Filtrer les activités par catégorie">
         {
           categories.map((c) => (
             <button type="button" class="filter-btn" data-filter={c.value} aria-pressed={c.value === "tout" ? "true" : "false"}>
@@ -74,8 +74,8 @@ const categories = [
   <section class="band scallop-top scallop-under">
     <div class="container-narrow center">
       <h2 class="title-dots on-color">Pas sûr de votre choix ?</h2>
-      <p>Un cours d'essai permet de faire connaissance avec les poneys, l'équipe et le cadre. On vous oriente ensuite.</p>
-      <a class="btn" href={withBase("/infos-pratiques#essai")}>Réserver un cours d'essai</a>
+      <p>L'inscription commence par un cours d'essai : il permet de faire connaissance avec les poneys, l'équipe et le cadre. On vous oriente ensuite.</p>
+      <a class="btn btn-teal" href={withBase(ctaInscription.href)}>{ctaInscription.label}</a>
     </div>
   </section>
 </Layout>
@@ -141,9 +141,5 @@ const categories = [
 
   .band .btn {
     margin-top: var(--space-2);
-  }
-
-  .band p {
-    font-size: 1.08rem;
   }
 </style>

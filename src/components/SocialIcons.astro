@@ -39,13 +39,17 @@ const { instagram, facebook, size = 34 } = Astro.props;
 <style>
   .socials {
     display: flex;
-    gap: 1.1rem;
+    gap: 0.6rem;
     align-items: center;
   }
 
   .socials a {
     color: inherit;
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
     transition: transform 0.2s ease;
   }
 

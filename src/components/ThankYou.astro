@@ -1,0 +1,25 @@
+---
+/** Page de confirmation après un formulaire : la fin du parcours doit rassurer et orienter. */
+import Layout from "../layouts/Layout.astro";
+import PageHero from "./PageHero.astro";
+import DotList from "./DotList.astro";
+
+interface Props {
+  title: string;
+  subtitle: string;
+  image: string;
+  steps: { title: string; text?: string; href?: string; cta?: string }[];
+}
+
+const { title, subtitle, image, steps } = Astro.props;
+---
+
+<Layout title="Merci — Kairon Plage" description={subtitle}>
+  <PageHero image={image} title={title} subtitle={subtitle} />
+  <section class="section">
+    <div class="container-narrow">
+      <h2 class="title-dots">Et maintenant ?</h2>
+      <DotList items={steps} numbered />
+    </div>
+  </section>
+</Layout>

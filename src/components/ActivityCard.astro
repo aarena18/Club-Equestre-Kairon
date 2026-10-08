@@ -1,6 +1,7 @@
 ---
+/** Une activité du CMS, rendue avec la carte unique du site. */
+import Card from "./Card.astro";
 import { urlFor } from "../lib/sanity";
-import { withBase } from "../lib/url";
 import { photoParCategorie } from "../data/site";
 
 interface Props {
@@ -15,89 +16,21 @@ interface Props {
 }
 
 const { titre, trancheAge, resume, href, categorie, texteBouton, photo } = Astro.props;
-const Tag = href ? "a" : "div";
-const fallback = categorie ? photoParCategorie[categorie] : undefined;
-const src = photo ? urlFor(photo).width(600).height(480).fit("crop").url() : fallback ? withBase(fallback) : undefined;
+const image = photo
+  ? urlFor(photo).width(720).height(540).fit("crop").url()
+  : categorie
+    ? photoParCategorie[categorie]
+    : undefined;
 ---
 
-<article class="activity-card" data-categorie={categorie}>
-  <Tag class="inner" href={href}>
-    {src && <img src={src} alt={photo?.alt ?? ""} loading="lazy" />}
-    <div class="body">
-      {trancheAge && <span class="tranche">{trancheAge}</span>}
-      <h3>{titre}</h3>
-      {resume && <p>{resume}</p>}
-      {href && <span class="lien">{texteBouton || "Découvrir"} →</span>}
-    </div>
-  </Tag>
-</article>
-
-<style>
-  .activity-card {
-    height: 100%;
-  }
-
-  .inner {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    background: #fff;
-    border: 2px solid var(--color-line);
-    border-radius: var(--radius-card);
-    overflow: hidden;
-    color: inherit;
-    text-decoration: none;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  }
-
-  a.inner:hover {
-    transform: translateY(-4px);
-    border-color: var(--color-meadow);
-    box-shadow: var(--shadow-soft);
-  }
-
-  img {
-    width: 100%;
-    aspect-ratio: 5 / 4;
-    object-fit: cover;
-  }
-
-  .body {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    padding: var(--space-3);
-  }
-
-  .tranche {
-    align-self: flex-start;
-    margin-bottom: 0.6rem;
-    padding: 0.2rem 0.7rem;
-    border-radius: var(--radius-pill);
-    background: var(--color-teal-mist);
-    color: var(--color-teal-deep);
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  h3 {
-    font-size: 1.05rem;
-  }
-
-  p {
-    margin: 0.6rem 0 0;
-    color: var(--color-ink-soft);
-    font-size: 0.95rem;
-    line-height: 1.55;
-  }
-
-  .lien {
-    margin-top: auto;
-    padding-top: var(--space-2);
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--color-meadow-deep);
-  }
-</style>
+<Card
+  class="activity-card"
+  data-categorie={categorie}
+  title={titre}
+  text={resume}
+  image={image}
+  imageAlt={photo?.alt ?? ""}
+  href={href}
+  cta={texteBouton || "Découvrir"}
+  tag={trancheAge}
+/>

@@ -1,62 +1,73 @@
 /*
-  Design tokens & styles partagés — direction artistique v2 (maquette
-  d'accueil d'Ambre, octobre 2026).
+  Système visuel Kairon Plage — DA v2 (maquette d'accueil d'Ambre),
+  resserrée après le diagnostic Impeccable d'octobre 2026.
 
   Intention : famille, fraîcheur, sport.
-  - famille  → formes rondes (festons, cartes arrondies, pilules), silhouettes
-               de chevaux en aplat, une seule police douce et géométrique ;
-  - fraîcheur → blanc dominant, bleu-vert de ciel normand, vert prairie ;
-  - sport     → orange vif en bandeau d'accent, vert sapin pour le CTA
-               principal, titres en capitales soulignés en pointillés.
+
+  Règles du système (à respecter pour toute nouvelle section) :
+  - UNE famille de cartes : `Card` (photo claire en haut, texte sur blanc).
+  - Les listes de points (valeurs, services, étapes) sont des `DotList`,
+    pas des cartes.
+  - Festons : uniquement sur le bandeau photo du haut, sur UN bandeau de
+    couleur par page au maximum, et sur le footer.
+  - 3 rayons (champ 16, carte/panneau 28, photo 44) + pilule ; 1 ombre.
+  - Boutons : teal = s'inscrire / envoyer une demande ; sapin = aller voir
+    une page ; verre = uniquement posé sur une photo.
+  - Couleurs claires (teal, orange, prairie) = fonds et décor ; le texte
+    posé dessus est en encre, jamais en blanc.
 */
 
 @import "@fontsource-variable/elms-sans";
 
 :root {
-  /* --- couleur (relevées sur la maquette) --- */
+  /* --- couleur --- */
   --color-paper: #ffffff;
   --color-ink: #1d211b;
   --color-ink-soft: #4a5145;
-  --color-ink-faint: #7d8478;
+  --color-ink-faint: #646b5f; /* 5,4:1 sur blanc : notes, périodicités */
   --color-line: #e3e8e0;
 
-  --color-teal: #7cabb3; /* ciel voilé — footer, silhouettes, boutons secondaires */
-  --color-teal-strong: #467d87; /* teal assombri : fond de bouton avec texte blanc lisible (4.6:1) */
-  --color-teal-deep: #3f7079; /* version lisible du teal pour du texte sur blanc */
-  --color-teal-mist: #eef5f6; /* fonds de section très clairs */
-  --color-meadow: #6e9153; /* vert prairie — soulignés, silhouettes, réponses FAQ */
-  --color-meadow-deep: #4d6b37; /* vert prairie lisible en texte */
-  --color-sun: #ef9e05; /* orange sport — bandeau d'accent */
-  --color-pine: #22462e; /* vert sapin — CTA principal */
+  --color-teal: #7cabb3; /* ciel voilé : footer, silhouettes, en-têtes de tableaux */
+  --color-teal-strong: #467d87; /* bouton « s'inscrire » : blanc lisible (4,6:1) */
+  --color-teal-deep: #3f7079; /* teal en texte sur blanc */
+  --color-teal-mist: #eef5f6; /* fond du bandeau calme */
+  --color-meadow: #6e9153; /* prairie : pointillés, soulignés, silhouettes */
+  --color-meadow-deep: #4d6b37; /* prairie en texte ou en fond de texte blanc */
+  --color-sun: #ef9e05; /* orange sport : bandeau d'accent, encart solidarité */
+  --color-pine: #22462e; /* sapin : boutons « aller voir », focus */
 
-  /* alias de l'ancienne DA, gardés pour ne rien casser */
-  --color-sky: var(--color-teal);
-  --color-sky-deep: var(--color-teal-deep);
-  --color-coral: var(--color-meadow-deep);
-
-  /* --- typographie : une seule famille, Elms Sans (Google Fonts, auto-hébergée
-     via @fontsource pour ne pas transmettre l'IP des visiteurs à Google) --- */
+  /* --- typographie : Elms Sans, auto-hébergée (aucune requête vers Google) --- */
   --font-display: "Elms Sans Variable", "Elms Sans", system-ui, sans-serif;
   --font-body: "Elms Sans Variable", "Elms Sans", system-ui, sans-serif;
-  --font-mono: var(--font-body); /* l'ancienne mono n'a plus cours */
 
-  /* --- échelle --- */
+  --text-xs: 0.8125rem; /* 13 px : mentions, pastilles */
+  --text-sm: 0.9375rem; /* 15 px : textes de carte, tableaux */
+  --text-base: 1.0625rem; /* 17 px : texte courant */
+  --text-lg: 1.1875rem; /* 19 px : chapeaux */
+  --text-h3: 1.125rem; /* titres de carte et de liste */
+  --text-h2: clamp(1.4rem, 2.6vw, 1.75rem);
+  --text-h1: clamp(1.9rem, 4.6vw, 3rem);
+
+  /* --- espace --- */
   --space-1: 0.5rem;
   --space-2: 1rem;
   --space-3: 1.5rem;
   --space-4: 2.5rem;
   --space-5: 4rem;
   --space-6: 6rem;
+  --container: 1120px;
+  --header-offset: 110px;
+
+  /* --- formes : 3 rayons, 1 ombre --- */
+  --radius-field: 16px;
   --radius-card: 28px;
   --radius-photo: 44px;
   --radius-pill: 100px;
-  --container: 1120px;
+  --shadow-soft: 0 18px 40px -22px rgba(34, 70, 46, 0.35);
 
   /* festons : un demi-disque tous les --scallop px */
   --scallop: 60px;
   --scallop-h: 26px;
-
-  --shadow-soft: 0 18px 40px -22px rgba(34, 70, 46, 0.35);
 }
 
 *,
@@ -68,7 +79,7 @@
 html {
   color-scheme: light;
   scroll-behavior: smooth;
-  scroll-padding-top: 110px;
+  scroll-padding-top: var(--header-offset);
 }
 
 body {
@@ -76,15 +87,20 @@ body {
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-body);
-  font-size: 17px;
+  font-size: var(--text-base);
   line-height: 1.6;
   letter-spacing: 0.01em;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-teal);
+  color: var(--color-ink);
 }
 
 img {
   max-width: 100%;
+  height: auto; /* les attributs width/height servent au ratio, la CSS décide de la taille */
   display: block;
 }
 
@@ -101,13 +117,23 @@ h3 {
   text-wrap: balance;
 }
 
+h3 {
+  font-size: var(--text-h3);
+}
+
+p {
+  text-wrap: pretty;
+}
+
 a {
   color: var(--color-meadow-deep);
+  text-underline-offset: 0.2em;
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-sun);
+  outline: 3px solid var(--color-pine);
   outline-offset: 3px;
+  border-radius: 6px;
 }
 
 /* ------------------------------------------------------------------ */
@@ -129,8 +155,9 @@ a {
   position: relative;
 }
 
-.section-tight {
-  padding-block: var(--space-4);
+/* deux sections blanches qui se suivent partagent leur espace */
+.section + .section {
+  padding-top: 0;
 }
 
 .center {
@@ -138,9 +165,10 @@ a {
 }
 
 .lede {
-  font-size: 1.08rem;
+  font-size: var(--text-lg);
   color: var(--color-ink-soft);
-  max-width: 60ch;
+  max-width: 62ch;
+  margin: 0 0 var(--space-2);
 }
 
 .center .lede {
@@ -148,9 +176,28 @@ a {
 }
 
 .note {
-  font-size: 0.88rem;
+  font-size: var(--text-sm);
   color: var(--color-ink-faint);
-  font-style: italic;
+}
+
+/* Texte + photo côte à côte (récit du club) */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: var(--space-5);
+  align-items: center;
+}
+
+.split.reverse > :first-child {
+  order: 2;
+}
+
+.split .btn {
+  margin-top: var(--space-2);
+}
+
+.split + .split {
+  margin-top: var(--space-6);
 }
 
 /* ------------------------------------------------------------------ */
@@ -159,7 +206,7 @@ a {
 
 .title-dots {
   display: inline-block;
-  font-size: clamp(1.35rem, 2.6vw, 1.75rem);
+  font-size: var(--text-h2);
   padding-bottom: 0.55rem;
   margin-bottom: var(--space-3);
   background-image: radial-gradient(circle, var(--dots, var(--color-meadow)) 2.6px, transparent 3px);
@@ -168,23 +215,10 @@ a {
   background-position: 0 100%;
 }
 
+/* sur l'orange : texte encre, pointillés sapin */
 .title-dots.on-color {
-  --dots: #fff;
-  color: #fff;
-}
-
-/* petite variante pour les libellés de cartes */
-.label-dots {
-  display: inline-block;
-  font-size: 1rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding-bottom: 0.4rem;
-  background-image: radial-gradient(circle, var(--color-meadow) 2.2px, transparent 2.6px);
-  background-size: 7px 7px;
-  background-repeat: repeat-x;
-  background-position: 0 100%;
+  --dots: var(--color-pine);
+  color: var(--color-ink);
 }
 
 /* ------------------------------------------------------------------ */
@@ -194,13 +228,15 @@ a {
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
+  min-height: 48px;
   font-family: var(--font-body);
-  font-size: 0.92rem;
+  font-size: var(--text-sm);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 0.85rem 1.6rem;
+  padding: 0.8rem 1.6rem;
   border-radius: var(--radius-pill);
   border: none;
   text-decoration: none;
@@ -215,41 +251,39 @@ a {
   box-shadow: var(--shadow-soft);
 }
 
+/* l'action d'inscription : toujours ce bouton-là */
 .btn-teal {
   background: var(--color-teal-strong);
-  color: #fff;
 }
 
-.btn-sun {
-  background: var(--color-sun);
-  color: var(--color-ink);
-}
-
-/* bouton "verre" posé sur une photo */
+/* uniquement posé sur une photo */
 .btn-glass {
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(20, 35, 25, 0.28);
   color: #fff;
-  border: 1.5px solid rgba(255, 255, 255, 0.75);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
 
 .btn-glass:hover {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(20, 35, 25, 0.42);
 }
 
 .link-arrow {
-  display: inline-block;
-  margin-top: var(--space-2);
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 600;
   color: var(--color-meadow-deep);
   text-decoration: none;
+}
+
+.link-arrow span {
   border-bottom: 2px dotted currentColor;
 }
 
 /* ------------------------------------------------------------------ */
-/* Festons (bord arrondi en "dentelle" haut / bas)                      */
-/* À poser sur une section : la couleur du feston = --scallop-color.     */
+/* Festons                                                             */
 /* ------------------------------------------------------------------ */
 
 .scallop-top,
@@ -258,124 +292,120 @@ a {
 }
 
 .scallop-top::before,
-.scallop-bottom::after {
+.scallop-bottom::after,
+.scallop-under::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
   height: var(--scallop-h);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.scallop-top::before,
+.scallop-bottom::after {
   background: radial-gradient(
       circle at 50% 100%,
       var(--scallop-color, var(--color-paper)) calc(var(--scallop) / 2 - 3px),
       transparent calc(var(--scallop) / 2 - 2px)
     )
     50% 0 / var(--scallop) calc(var(--scallop) / 2) repeat-x;
-  pointer-events: none;
-  z-index: 1;
 }
 
-/* bosses vers le haut, au-dessus de la section (même couleur que la section) */
 .scallop-top::before {
   bottom: 100%;
 }
 
-/* bosses vers le haut, en bas de la section (couleur de la section suivante) */
 .scallop-bottom::after {
   bottom: -1px;
 }
 
-/* variante : bosses vers le bas sous la section */
 .scallop-under::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
   top: 100%;
-  height: var(--scallop-h);
   background: radial-gradient(
       circle at 50% 0,
       var(--scallop-color, var(--color-paper)) calc(var(--scallop) / 2 - 3px),
       transparent calc(var(--scallop) / 2 - 2px)
     )
     50% 0 / var(--scallop) calc(var(--scallop) / 2) repeat-x;
-  pointer-events: none;
-  z-index: 1;
 }
 
 /* ------------------------------------------------------------------ */
-/* Bandeau de couleur festonné (ex. "Notre centre équestre")            */
+/* Bandeau de couleur festonné — UN par page au maximum                */
 /* ------------------------------------------------------------------ */
 
 .band {
-  --scallop-color: var(--band-color, var(--color-sun));
-  background: var(--band-color, var(--color-sun));
-  color: #fff;
+  --band-color: var(--color-sun);
+  --scallop-color: var(--band-color);
+  position: relative;
+  background: var(--band-color);
+  color: var(--color-ink);
   margin-block: calc(var(--scallop-h) + var(--space-4));
   padding-block: var(--space-5);
 }
 
 .band p {
-  color: #fff;
-}
-
-.band-teal {
-  --band-color: var(--color-teal);
-}
-
-.band-meadow {
-  --band-color: var(--color-meadow);
+  color: var(--color-ink);
+  font-size: var(--text-lg);
 }
 
 .band-mist {
   --band-color: var(--color-teal-mist);
-  color: var(--color-ink);
 }
 
 .band-mist p {
   color: var(--color-ink-soft);
+  font-size: var(--text-base);
+}
+
+/* bandeau juste sous la photo d'en-tête : on écarte les deux rangées de festons */
+.page-hero + .band {
+  margin-top: calc(var(--scallop-h) + var(--space-5));
+}
+
+/* le bandeau absorbe l'espace des sections voisines */
+.band + .section {
+  padding-top: var(--space-5);
 }
 
 /* ------------------------------------------------------------------ */
-/* Cartes                                                              */
+/* Grilles                                                             */
 /* ------------------------------------------------------------------ */
-
-.card {
-  background: var(--color-paper);
-  border: 2px solid var(--color-line);
-  border-radius: var(--radius-card);
-  padding: var(--space-3);
-  color: inherit;
-  text-decoration: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-}
-
-a.card:hover {
-  transform: translateY(-4px);
-  border-color: var(--color-meadow);
-  box-shadow: var(--shadow-soft);
-}
-
-.card h3 {
-  font-size: 1.05rem;
-  color: var(--color-ink);
-}
-
-.card p {
-  margin: 0.6rem 0 0;
-  color: var(--color-ink-soft);
-  font-size: 0.95rem;
-}
 
 .grid {
   display: grid;
   gap: var(--space-3);
-  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
 }
 
 .photo {
   border-radius: var(--radius-photo);
   object-fit: cover;
   width: 100%;
+}
+
+/* Panneau : formulaire, encart. Un seul cadre pour tout le site. */
+.panel {
+  background: #fff;
+  border: 2px solid var(--color-line);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+}
+
+.panel-mist {
+  background: var(--color-teal-mist);
+  border-color: transparent;
+}
+
+.panel-sun {
+  background: var(--color-sun);
+  border-color: transparent;
+  color: var(--color-ink);
+}
+
+.panel-sun .title-dots {
+  --dots: var(--color-pine);
 }
 
 /* ------------------------------------------------------------------ */
@@ -389,16 +419,21 @@ a.card:hover {
 }
 
 .filter-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
   font-weight: 500;
-  background: var(--color-paper);
+  background: #fff;
   border: 2px solid var(--color-line);
   color: var(--color-ink-soft);
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 1.05rem;
   border-radius: var(--radius-pill);
   cursor: pointer;
-  transition: all 0.15s ease;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
 }
 
 .filter-btn:hover {
@@ -407,9 +442,26 @@ a.card:hover {
 }
 
 .filter-btn[aria-pressed="true"] {
-  background: var(--color-meadow);
-  border-color: var(--color-meadow);
+  background: var(--color-meadow-deep);
+  border-color: var(--color-meadow-deep);
   color: #fff;
+}
+
+/* sur mobile : une seule rangée qui défile, au lieu de 4 lignes empilées */
+@media (max-width: 700px) {
+  .filters.scroll-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start !important;
+    margin-inline: calc(-1 * var(--space-3));
+    padding-inline: var(--space-3);
+    padding-bottom: 0.4rem;
+    scrollbar-width: none;
+  }
+
+  .filters.scroll-row::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -417,26 +469,26 @@ a.card:hover {
 /* ------------------------------------------------------------------ */
 
 .table-wrap {
-  overflow-x: auto;
   border: 2px solid var(--color-line);
-  border-radius: 22px;
+  border-radius: var(--radius-card);
   background: #fff;
+  overflow: hidden;
 }
 
 .table-wrap table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.95rem;
-  min-width: 460px;
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
 }
 
 .table-wrap th {
   text-align: left;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: var(--text-xs);
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #fff;
+  color: var(--color-ink);
   background: var(--color-teal);
   padding: 0.85rem 1.1rem;
   white-space: nowrap;
@@ -458,10 +510,63 @@ a.card:hover {
   font-weight: 600;
 }
 
-.table-wrap td:last-child {
+.table-wrap .price {
   white-space: nowrap;
   font-weight: 600;
   color: var(--color-pine);
+}
+
+.table-wrap .price-promo {
+  white-space: nowrap;
+  font-weight: 700;
+  color: var(--color-meadow-deep);
+}
+
+/* sur mobile : chaque ligne devient une petite fiche « intitulé → prix » */
+@media (max-width: 640px) {
+  .table-wrap thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .table-wrap table,
+  .table-wrap tbody,
+  .table-wrap tr,
+  .table-wrap td {
+    display: block;
+  }
+
+  .table-wrap tr {
+    padding: 0.9rem 1.1rem;
+    border-bottom: 2px dotted var(--color-line);
+  }
+
+  .table-wrap tr:last-child {
+    border-bottom: none;
+  }
+
+  .table-wrap td {
+    padding: 0.15rem 0;
+    border: none;
+  }
+
+  .table-wrap td[data-label] {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+
+  .table-wrap td[data-label]::before {
+    content: attr(data-label);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-ink-faint);
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -484,7 +589,7 @@ a.card:hover {
   flex-direction: column;
   gap: 0.35rem;
   flex: 1;
-  min-width: 200px;
+  min-width: min(200px, 100%);
 }
 
 .form .field-row {
@@ -494,9 +599,20 @@ a.card:hover {
 }
 
 .form label {
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
   font-weight: 500;
   color: var(--color-ink-soft);
+}
+
+.form .required {
+  color: var(--color-meadow-deep);
+  font-weight: 700;
+}
+
+.form .form-hint {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-ink-faint);
 }
 
 .form input,
@@ -504,23 +620,35 @@ a.card:hover {
 .form textarea {
   font-family: var(--font-body);
   font-size: 1rem;
+  min-height: 48px;
   padding: 0.75rem 1rem;
   border: 2px solid var(--color-line);
-  border-radius: 16px;
+  border-radius: var(--radius-field);
   background: #fff;
   color: var(--color-ink);
 }
 
-.form input:focus,
-.form select:focus,
-.form textarea:focus {
-  outline: none;
-  border-color: var(--color-meadow);
+.form input:focus-visible,
+.form select:focus-visible,
+.form textarea:focus-visible {
+  outline: 3px solid var(--color-pine);
+  outline-offset: 1px;
+  border-color: var(--color-pine);
+}
+
+.form input:user-invalid {
+  border-color: #b3261e;
 }
 
 .form .btn {
   align-self: flex-start;
   margin-top: var(--space-1);
+}
+
+.form .privacy {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-ink-faint);
 }
 
 /* ------------------------------------------------------------------ */
@@ -529,8 +657,9 @@ a.card:hover {
 
 .prose {
   color: var(--color-ink-soft);
-  font-size: 1.05rem;
+  font-size: var(--text-base);
   line-height: 1.75;
+  max-width: 68ch;
 }
 
 .prose p {
@@ -552,6 +681,17 @@ a.card:hover {
   white-space: nowrap;
 }
 
+@media (max-width: 800px) {
+  .split {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .split.reverse > :first-child {
+    order: 0;
+  }
+}
+
 @media (max-width: 700px) {
   :root {
     --space-6: 4rem;
@@ -560,15 +700,17 @@ a.card:hover {
     --radius-photo: 32px;
   }
 
-  body {
-    font-size: 16px;
+  .panel {
+    padding: var(--space-3) var(--space-2);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * {
-    transition: none !important;
-    animation: none !important;
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 
   html {
